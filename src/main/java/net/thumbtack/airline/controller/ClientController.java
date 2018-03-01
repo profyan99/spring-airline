@@ -1,17 +1,16 @@
 package net.thumbtack.airline.controller;
 
 import net.thumbtack.airline.dto.request.ClientRegistrationRequestDTO;
+import net.thumbtack.airline.dto.request.ClientUpdateRequestDTO;
 import net.thumbtack.airline.dto.response.ClientResponseDTO;
+import net.thumbtack.airline.dto.response.ClientUpdateResponseDTO;
 import net.thumbtack.airline.dto.response.ErrorDTO;
 import net.thumbtack.airline.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -47,6 +46,21 @@ public class ClientController {
                         new ErrorDTO("ERROR_WITH_CLIENT_REGISTRATION", "Don't know", "Error")
                 );
             }
+        }
+        return resp;
+    }
+
+    @PutMapping
+    public ResponseEntity<?> update(@RequestBody ClientUpdateRequestDTO request) {
+        ResponseEntity resp;
+        ClientUpdateResponseDTO clientResponse =  clientService.update(request);
+        if(clientResponse != null) {
+            resp = ResponseEntity.ok(clientResponse);
+        }
+        else {
+            resp = ResponseEntity.badRequest().body(
+                    new ErrorDTO("ERROR_WITH_UPDATING_CLIENT_PROFILE", "Don't know", "Error")
+            );
         }
         return resp;
     }

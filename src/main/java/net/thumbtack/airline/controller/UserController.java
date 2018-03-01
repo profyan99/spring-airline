@@ -51,6 +51,7 @@ public class UserController {
 
     @GetMapping("/account")
     public ResponseEntity<?> information() {
+        //TODO make in OOP style
         ResponseEntity resp;
         UserResponseDTO userResponse =  userService.information();
         if(userResponse != null) {
