@@ -50,10 +50,10 @@ public class UserController {
     }
 
     @GetMapping("/account")
-    public ResponseEntity<?> information() {
+    public ResponseEntity<?> get() {
         //TODO make in OOP style
         ResponseEntity resp;
-        UserResponseDTO userResponse =  userService.information();
+        UserResponseDTO userResponse =  userService.get();
         if(userResponse != null) {
             resp = ResponseEntity.ok(userResponse);
         }

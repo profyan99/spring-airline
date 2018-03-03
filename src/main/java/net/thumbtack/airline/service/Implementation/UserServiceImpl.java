@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDTO information() {
+    public UserResponseDTO get() {
         return null;
     }
 }

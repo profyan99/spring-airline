@@ -8,5 +8,5 @@ public interface UserService {
 
     boolean logout();
 
-    UserResponseDTO information();
+    UserResponseDTO get();
 }
