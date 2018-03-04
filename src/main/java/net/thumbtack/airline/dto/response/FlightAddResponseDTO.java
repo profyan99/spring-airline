@@ -1,12 +1,12 @@
 package net.thumbtack.airline.dto.response;
 
 import net.thumbtack.airline.dto.Schedule;
-import net.thumbtack.airline.dto.request.FlightAddRequestDTO;
+import net.thumbtack.airline.dto.FlightDTO;
 import net.thumbtack.airline.model.Plane;
 
 import java.util.List;
 
-public class FlightAddResponseDTO extends FlightAddRequestDTO {
+public class FlightAddResponseDTO extends FlightDTO {
     private int flightId;
     private Plane plane;
     private boolean approved;

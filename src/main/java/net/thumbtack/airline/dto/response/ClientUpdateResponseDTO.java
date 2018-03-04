@@ -1,69 +1,46 @@
 package net.thumbtack.airline.dto.response;
 
-public class ClientUpdateResponseDTO {
-    private UserResponseDTO userResponseDTO;
+import net.thumbtack.airline.dto.UserDTO;
 
-    public ClientUpdateResponseDTO(String firstName, String lastName, String patronymic, String phone,
-                             String email, String userType) {
+public class ClientUpdateResponseDTO extends UserDTO {
+    private String userType;
+    private String phone;
+    private String email;
 
-        userResponseDTO = new UserResponseDTO();
-        userResponseDTO.setFirstName(firstName);
-        userResponseDTO.setLastName(lastName);
-        userResponseDTO.setPatronymic(patronymic);
-        userResponseDTO.setUserType(userType);
-        userResponseDTO.setPhone(phone);
-        userResponseDTO.setEmail(email);
+    public ClientUpdateResponseDTO(String firstName, String lastName, String patronymic, String userType,
+                                   String phone, String email) {
+
+        super(firstName, lastName, patronymic);
+        this.userType = userType;
+        this.phone = phone;
+        this.email = email;
     }
 
     public ClientUpdateResponseDTO() {
-        userResponseDTO = new UserResponseDTO();
-    }
 
-    public String getFirstName() {
-        return userResponseDTO.getFirstName();
-    }
-
-    public String getLastName() {
-        return userResponseDTO.getLastName();
-    }
-
-    public String getPatronymic() {
-        return userResponseDTO.getPatronymic();
-    }
-
-    public String getEmail() {
-        return userResponseDTO.getEmail();
-    }
-
-    public String getPhone() {
-        return userResponseDTO.getPhone();
     }
 
     public String getUserType() {
-        return userResponseDTO.getUserType();
-    }
-
-    public void setFirstName(String firstName) {
-        userResponseDTO.setFirstName(firstName);
-    }
-
-    public void setLastName(String lastName) {
-        userResponseDTO.setLastName(lastName);
-    }
-
-    public void setPatronymic(String patronymic) {
-        userResponseDTO.setPatronymic(patronymic);
-    }
-
-    public void setEmail(String email) {
-        userResponseDTO.setEmail(email);
-    }
-
-    public void setPhone(String phone) {
-        userResponseDTO.setPhone(phone);
+        return userType;
     }
 
     public void setUserType(String userType) {
-        userResponseDTO.setUserType(userType);
+        this.userType = userType;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

@@ -1,8 +1,8 @@
 package net.thumbtack.airline.controller;
 
+import net.thumbtack.airline.dto.UserDTO;
 import net.thumbtack.airline.dto.request.LoginRequestDTO;
 import net.thumbtack.airline.dto.response.ErrorDTO;
-import net.thumbtack.airline.dto.response.UserResponseDTO;
 import net.thumbtack.airline.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -23,7 +23,7 @@ public class UserController {
     @PostMapping("/session")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequestDTO) {
         ResponseEntity resp;
-        UserResponseDTO userResponse = userService.login(loginRequestDTO);
+        UserDTO userResponse = userService.login(loginRequestDTO);
        if(userResponse != null) {
             resp = ResponseEntity.ok(userResponse);
         }
@@ -51,9 +51,8 @@ public class UserController {
 
     @GetMapping("/account")
     public ResponseEntity<?> get() {
-        //TODO make in OOP style
         ResponseEntity resp;
-        UserResponseDTO userResponse =  userService.get();
+        UserDTO userResponse =  userService.get();
         if(userResponse != null) {
             resp = ResponseEntity.ok(userResponse);
         }

@@ -8,12 +8,16 @@ import net.thumbtack.airline.dto.response.ClientResponseDTO;
 import net.thumbtack.airline.dto.response.ErrorDTO;
 import net.thumbtack.airline.model.Plane;
 import net.thumbtack.airline.service.AdminService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -23,13 +27,18 @@ public class AdminController {
 
     private AdminService adminService;
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private final String COOKIE = "JAVASESSIONID";
+
     @Autowired
     public void setAdminService(AdminService adminService) {
         this.adminService = adminService;
     }
 
     @PostMapping("/admin")
-    public ResponseEntity<?> registration(@RequestBody @Valid AdminRegistrationRequestDTO reg, BindingResult result) {
+    public ResponseEntity<?> registration(@RequestBody @Valid AdminRegistrationRequestDTO reg, BindingResult result,
+                                          HttpServletResponse response) {
         ResponseEntity resp;
         if(result.hasErrors()) {
             resp = ResponseEntity.badRequest().body(
@@ -44,6 +53,8 @@ public class AdminController {
             AdminResponseDTO adminResponse = adminService.register(reg);
             if (adminResponse != null) {
                 resp = ResponseEntity.ok(adminResponse);
+                Cookie cookie = new Cookie(COOKIE, ""+adminResponse.getId());
+                response.addCookie(cookie);
             } else {
                 resp = ResponseEntity.badRequest().body(
                         new ErrorDTO("ERROR_WITH_ADMIN_REGISTRATION", "Don't know", "Error")

@@ -1,12 +1,12 @@
 package net.thumbtack.airline.service;
 
+import net.thumbtack.airline.dto.UserDTO;
 import net.thumbtack.airline.dto.request.LoginRequestDTO;
-import net.thumbtack.airline.dto.response.UserResponseDTO;
 
 public interface UserService {
-    UserResponseDTO login(LoginRequestDTO loginRequestDTO);
+    UserDTO login(LoginRequestDTO loginRequestDTO);
 
     boolean logout();
 
-    UserResponseDTO get();
+    UserDTO get();
 }

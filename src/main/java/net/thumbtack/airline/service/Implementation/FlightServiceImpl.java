@@ -1,5 +1,6 @@
 package net.thumbtack.airline.service.Implementation;
 
+import net.thumbtack.airline.dto.FlightDTO;
 import net.thumbtack.airline.dto.request.FlightAddRequestDTO;
 import net.thumbtack.airline.dto.request.FlightGetParamsRequestDTO;
 import net.thumbtack.airline.dto.response.FlightAddResponseDTO;
@@ -12,13 +13,14 @@ import java.util.List;
 
 @Service
 public class FlightServiceImpl implements FlightService {
+
     @Override
     public FlightAddResponseDTO add(FlightAddRequestDTO request) {
         return null;
     }
 
     @Override
-    public FlightUpdateResponseDTO update(FlightAddRequestDTO request) {
+    public FlightUpdateResponseDTO update(FlightDTO request) {
         return null;
     }
 

@@ -1,42 +1,32 @@
 package net.thumbtack.airline.dto.request;
 
+import net.thumbtack.airline.dto.UserDTO;
+import net.thumbtack.airline.dto.validator.annotation.LoginValid;
+import org.hibernate.validator.constraints.NotBlank;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-public class AdminRegistrationRequestDTO {
-    //TODO @max and @min from properties
+public class AdminRegistrationRequestDTO extends UserDTO {
 
-    @Max(20)
-    @Min(6)
-    private String firstName;
-
-    @Max(20)
-    @Min(6)
-    private String lastName;
-
-    @Max(20)
-    @Min(6)
-    private String patronymic;
 
     private String position;
 
-    @NotNull
-    @Max(20)
-    @Min(6)
+    @LoginValid(message = "Login isn't valid")
     private String login;
 
-    @NotNull
-    @Max(20)
-    @Min(6)
+    //TODO @max and @min from properties
+    @NotNull(message = "Password must be not null!")
+    @NotBlank(message = "Password must be not blank!")
+    @Max(value = 20, message = "Maximal length of password must be 6 characters!")
+    @Min(value = 6, message = "Minimal length of password must be 6 characters!")
     private String password;
 
     public AdminRegistrationRequestDTO(String firstName, String lastName, String patronymic,
                                        String position, String login, String password) {
 
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.patronymic = patronymic;
+        super(firstName, lastName, patronymic);
         this.position = position;
         this.login = login;
         this.password = password;
@@ -44,30 +34,6 @@ public class AdminRegistrationRequestDTO {
 
     public AdminRegistrationRequestDTO() {
 
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getPatronymic() {
-        return patronymic;
-    }
-
-    public void setPatronymic(String patronymic) {
-        this.patronymic = patronymic;
     }
 
     public String getPosition() {

@@ -1,60 +1,35 @@
 package net.thumbtack.airline.dto.response;
 
-public class AdminUpdateResponseDTO {
-    private UserResponseDTO userResponseDTO;
+import net.thumbtack.airline.dto.UserDTO;
 
-    public AdminUpdateResponseDTO(String firstName, String lastName, String patronymic,
-                            String position, String userType) {
+public class AdminUpdateResponseDTO extends UserDTO {
+    private String position;
 
-        userResponseDTO = new UserResponseDTO();
-        userResponseDTO.setFirstName(firstName);
-        userResponseDTO.setLastName(lastName);
-        userResponseDTO.setPatronymic(patronymic);
-        userResponseDTO.setPosition(position);
-        userResponseDTO.setUserType(userType);
+    private String userType;
+
+    public AdminUpdateResponseDTO(String firstName, String lastName, String patronymic, String position, String userType) {
+        super(firstName, lastName, patronymic);
+        this.position = position;
+        this.userType = userType;
     }
 
     public AdminUpdateResponseDTO() {
-        userResponseDTO = new UserResponseDTO();
-    }
 
-    public String getFirstName() {
-        return userResponseDTO.getFirstName();
-    }
-
-    public String getLastName() {
-        return userResponseDTO.getLastName();
-    }
-
-    public String getPatronymic() {
-        return userResponseDTO.getPatronymic();
     }
 
     public String getPosition() {
-        return userResponseDTO.getPosition();
-    }
-
-    public String getUserType() {
-        return userResponseDTO.getUserType();
-    }
-
-    public void setFirstName(String firstName) {
-        userResponseDTO.setFirstName(firstName);
-    }
-
-    public void setLastName(String lastName) {
-        userResponseDTO.setLastName(lastName);
-    }
-
-    public void setPatronymic(String patronymic) {
-        userResponseDTO.setPatronymic(patronymic);
+        return position;
     }
 
     public void setPosition(String position) {
-        userResponseDTO.setPosition(position);
+        this.position = position;
+    }
+
+    public String getUserType() {
+        return userType;
     }
 
     public void setUserType(String userType) {
-        userResponseDTO.setUserType(userType);
+        this.userType = userType;
     }
 }

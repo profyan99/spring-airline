@@ -1,5 +1,6 @@
 package net.thumbtack.airline.service;
 
+import net.thumbtack.airline.dto.FlightDTO;
 import net.thumbtack.airline.dto.request.FlightAddRequestDTO;
 import net.thumbtack.airline.dto.request.FlightGetParamsRequestDTO;
 import net.thumbtack.airline.dto.response.FlightAddResponseDTO;
@@ -10,7 +11,7 @@ import java.util.List;
 public interface FlightService {
     FlightAddResponseDTO add(FlightAddRequestDTO request);
 
-    FlightUpdateResponseDTO update(FlightAddRequestDTO request);
+    FlightUpdateResponseDTO update(FlightDTO request);
 
     boolean delete(int id);
 

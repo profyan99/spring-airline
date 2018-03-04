@@ -1,5 +1,6 @@
 package net.thumbtack.airline.controller;
 
+import net.thumbtack.airline.dto.FlightDTO;
 import net.thumbtack.airline.dto.request.FlightAddRequestDTO;
 import net.thumbtack.airline.dto.request.FlightGetParamsRequestDTO;
 import net.thumbtack.airline.dto.request.FlightUpdateRequestDTO;

@@ -1,20 +1,35 @@
 package net.thumbtack.airline.dto.request;
 
-public class ClientUpdateRequestDTO {
-    private String firstName;
-    private String lastName;
-    private String patronymic;
+import net.thumbtack.airline.dto.UserDTO;
+import net.thumbtack.airline.dto.validator.annotation.PhoneValid;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+public class ClientUpdateRequestDTO extends UserDTO {
+
+    @Email
     private String email;
+
+    @PhoneValid(message = "Phone isn't valid")
     private String phone;
+
     private String oldPassword;
+
+    //TODO @max and @min from properties
+    @NotNull(message = "Password must be not null!")
+    @NotBlank(message = "Password must be not blank!")
+    @Max(value = 20, message = "Maximal length of password must be 6 characters!")
+    @Min(value = 6, message = "Minimal length of password must be 6 characters!")
     private String newPassword;
 
-    public ClientUpdateRequestDTO(String firstName, String lastName, String patronymic, String email, String phone,
-                                  String oldPassword, String newPassword) {
+    public ClientUpdateRequestDTO(String firstName, String lastName, String patronymic, String email,
+                                  String phone, String oldPassword, String newPassword) {
 
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.patronymic = patronymic;
+        super(firstName, lastName, patronymic);
         this.email = email;
         this.phone = phone;
         this.oldPassword = oldPassword;
@@ -23,30 +38,6 @@ public class ClientUpdateRequestDTO {
 
     public ClientUpdateRequestDTO() {
 
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getPatronymic() {
-        return patronymic;
-    }
-
-    public void setPatronymic(String patronymic) {
-        this.patronymic = patronymic;
     }
 
     public String getEmail() {
