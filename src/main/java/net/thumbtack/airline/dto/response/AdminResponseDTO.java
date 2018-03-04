@@ -1,24 +1,25 @@
 package net.thumbtack.airline.dto.response;
 
-public class AdminResponseDTO extends AdminUpdateResponseDTO {
+import net.thumbtack.airline.dto.BaseLoginDTO;
 
-    private int id;
+public class AdminResponseDTO extends BaseLoginDTO {
 
-    public AdminResponseDTO(String firstName, String lastName, String patronymic, String position, String userType, int id) {
-        super(firstName, lastName, patronymic, position, userType);
-        this.id = id;
+    private String position;
+
+    public AdminResponseDTO(String firstName, String lastName, String patronymic, int id, String userType, String position) {
+        super(firstName, lastName, patronymic, id, userType);
+        this.position = position;
     }
 
     public AdminResponseDTO() {
 
     }
 
-    public int getId() {
-        return id;
+    public String getPosition() {
+        return position;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setPosition(String position) {
+        this.position = position;
     }
-
 }

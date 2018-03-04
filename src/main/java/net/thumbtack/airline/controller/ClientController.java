@@ -7,18 +7,25 @@ import net.thumbtack.airline.dto.response.ClientUpdateResponseDTO;
 import net.thumbtack.airline.dto.response.ErrorDTO;
 import net.thumbtack.airline.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/api/client", consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/client", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 public class ClientController {
 
     private ClientService clientService;
+
+    @Value(value = "${cookie}")
+    private String COOKIE;
+
 
     @Autowired
     public void setClientService(ClientService clientService) {
@@ -26,7 +33,8 @@ public class ClientController {
     }
 
     @PostMapping
-    public ResponseEntity<?> registration(@RequestBody @Valid ClientRegistrationRequestDTO reg, BindingResult result) {
+    public ResponseEntity<?> registration(@RequestBody @Valid ClientRegistrationRequestDTO reg, BindingResult result,
+                                          HttpServletResponse response) {
         ResponseEntity resp;
         if(result.hasErrors()) {
             resp = ResponseEntity.badRequest().body(
@@ -41,6 +49,8 @@ public class ClientController {
             ClientResponseDTO clientResponse = clientService.register(reg);
             if (clientResponse != null) {
                 resp = ResponseEntity.ok(clientResponse);
+                Cookie cookie = new Cookie(COOKIE, ""+clientResponse.getId());
+                response.addCookie(cookie);
             } else {
                 resp = ResponseEntity.badRequest().body(
                         new ErrorDTO("ERROR_WITH_CLIENT_REGISTRATION", "Don't know", "Error")

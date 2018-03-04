@@ -1,5 +1,6 @@
 package net.thumbtack.airline.service.Implementation;
 
+import net.thumbtack.airline.dto.BaseLoginDTO;
 import net.thumbtack.airline.dto.UserDTO;
 import net.thumbtack.airline.dto.request.LoginRequestDTO;
 import net.thumbtack.airline.service.UserService;
@@ -9,17 +10,17 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     @Override
-    public UserDTO login(LoginRequestDTO loginRequestDTO) {
+    public BaseLoginDTO login(LoginRequestDTO loginRequestDTO) {
         return null;
     }
 
     @Override
-    public boolean logout() {
+    public boolean logout(int id) {
         return false;
     }
 
     @Override
-    public UserDTO get() {
+    public UserDTO get(int id) {
         return null;
     }
 }

@@ -1,6 +1,5 @@
 package net.thumbtack.airline.controller;
 
-import net.thumbtack.airline.dto.FlightDTO;
 import net.thumbtack.airline.dto.request.FlightAddRequestDTO;
 import net.thumbtack.airline.dto.request.FlightGetParamsRequestDTO;
 import net.thumbtack.airline.dto.request.FlightUpdateRequestDTO;
@@ -9,13 +8,14 @@ import net.thumbtack.airline.dto.response.FlightAddResponseDTO;
 import net.thumbtack.airline.dto.response.FlightUpdateResponseDTO;
 import net.thumbtack.airline.service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/flights")
+@RequestMapping(value = "/api/flights", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 public class FlightController {
 
     private FlightService flightService;

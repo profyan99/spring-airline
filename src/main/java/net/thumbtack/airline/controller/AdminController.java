@@ -11,6 +11,7 @@ import net.thumbtack.airline.service.AdminService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -22,14 +23,15 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api", consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminController {
 
     private AdminService adminService;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final String COOKIE = "JAVASESSIONID";
+    @Value(value = "${cookie}")
+    private String COOKIE;
 
     @Autowired
     public void setAdminService(AdminService adminService) {
