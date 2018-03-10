@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -36,38 +35,27 @@ public class AdminController {
     @Autowired
     public void setAdminService(AdminService adminService) {
         this.adminService = adminService;
+        logger.error("COOKIE: "+COOKIE);
     }
 
     @PostMapping("/admin")
-    public ResponseEntity<?> registration(@RequestBody @Valid AdminRegistrationRequestDTO reg, BindingResult result,
-                                          HttpServletResponse response) {
+    public ResponseEntity<?> registration(@RequestBody @Valid AdminRegistrationRequestDTO reg, HttpServletResponse response) {
         ResponseEntity resp;
-        if(result.hasErrors()) {
+        AdminResponseDTO adminResponse = adminService.register(reg);
+        if (adminResponse != null) {
+            resp = ResponseEntity.ok(adminResponse);
+            Cookie cookie = new Cookie(COOKIE, ""+adminResponse.getId());
+            response.addCookie(cookie);
+        } else {
             resp = ResponseEntity.badRequest().body(
-                    new ErrorDTO(
-                            "ERROR_WITH_ADMIN_REGISTRATION",
-                            result.getFieldError().getField(),
-                            result.getFieldError().toString()
-                    )
+                    new ErrorDTO("ERROR_WITH_ADMIN_REGISTRATION", "Don't know", "Error")
             );
-        }
-        else {
-            AdminResponseDTO adminResponse = adminService.register(reg);
-            if (adminResponse != null) {
-                resp = ResponseEntity.ok(adminResponse);
-                Cookie cookie = new Cookie(COOKIE, ""+adminResponse.getId());
-                response.addCookie(cookie);
-            } else {
-                resp = ResponseEntity.badRequest().body(
-                        new ErrorDTO("ERROR_WITH_ADMIN_REGISTRATION", "Don't know", "Error")
-                );
-            }
         }
         return resp;
     }
 
     @PutMapping("/admin")
-    public ResponseEntity<?> update(@RequestBody AdminUpdateRequestDTO request) {
+    public ResponseEntity<?> update(@RequestBody @Valid AdminUpdateRequestDTO request) {
         ResponseEntity resp;
         AdminUpdateResponseDTO adminResponse =  adminService.update(request);
         if(adminResponse != null) {
