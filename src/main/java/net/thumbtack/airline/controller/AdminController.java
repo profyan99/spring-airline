@@ -35,7 +35,6 @@ public class AdminController {
     @Autowired
     public void setAdminService(AdminService adminService) {
         this.adminService = adminService;
-        logger.error("COOKIE: "+COOKIE);
     }
 
     @PostMapping("/admin")

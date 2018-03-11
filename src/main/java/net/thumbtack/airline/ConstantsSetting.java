@@ -10,6 +10,9 @@ import org.springframework.context.annotation.PropertySource;
 public class ConstantsSetting {
     private String cookie;
 
+    public static final String ADMIN_ROLE = "ADMIN";
+    public static final String CLIENT_ROLE = "CLIENT";
+
     public String getCookie() {
         return cookie;
     }

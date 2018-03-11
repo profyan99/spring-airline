@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.thumbtack.airline.dao.mapper.UserMapper">
+
+    <insert id="register" parameterType="User" useGeneratedKeys="true">
+        INSERT INTO user(firstName, lastName, patronymic, userType, login, password)
+        VALUES (#{firstName}, #{lastName}, #{patronymic}, #{userType}, #{login}, #{password})
+    </insert>
+
+    <select id="exists" parameterType="string" resultType="_boolean">
+        SELECT EXISTS(SELECT 1 FROM user WHERE login = #{login})
+    </select>
+
+</mapper>

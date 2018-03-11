@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.thumbtack.airline.dao.mapper.UserMapper">
+
+    <resultMap type="Client" id="ClientResult">
+        <id 	property="id" column="id"/>
+        <result property="firstName" column="firstName"/>
+        <result property="lastName" column="lastName"/>
+        <result property="patronymic" column="patronymic"/>
+        <result property="login" column="login" />
+        <result property="password" column="password" />
+        <association property="email" column="email"/>
+        <association property="phone" column="phone"/>
+        <!--<result property="position" column="position"/>-->
+    </resultMap>
+
+
+    <select id="findClientById" resultMap="ClientResult" parameterType="_int">
+        SELECT user.id, firstName, lastName, patronymic, login, password, email, phone FROM user
+        JOIN client ON user.id = client.foreignKey WHERE user.id=#{id}
+    </select>
+
+</mapper>

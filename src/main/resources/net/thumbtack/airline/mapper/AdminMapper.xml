@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.thumbtack.airline.dao.mapper.AdminMapper">
+
+
+    <resultMap type="Admin" id="AdminResult">
+        <id 	property="id" column="id"/>
+        <result property="firstName" column="firstName"/>
+        <result property="lastName" column="lastName"/>
+        <result property="patronymic" column="patronymic"/>
+        <result property="login" column="login" />
+        <result property="password" column="password" />
+        <association property="position" column="position">
+            <!--<result property="position" column="position"/>-->
+        </association>
+    </resultMap>
+
+    <insert id="register" parameterType="Admin">
+        INSERT INTO admin(position) VALUES (#{position});
+    </insert>
+
+    <select id="findAdminById" resultMap="AdminResult" parameterType="_int">
+        SELECT user.id, firstName, lastName, patronymic, login, password, position FROM user
+        JOIN admin ON user.id = admin.foreignKey WHERE user.id=#{id}
+    </select>
+</mapper>

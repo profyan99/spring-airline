@@ -1,15 +1,17 @@
 package net.thumbtack.airline.model;
 
+import net.thumbtack.airline.ConstantsSetting;
+
 public class Client extends BaseUser {
     private String email;
-    private String mobileNumber;
+    private String phone;
 
     public Client(String firstName, String secondName, String patronymic, String login,
-                  String password, String email, String mobileNumber) {
+                  String password, String email, String phone) {
 
-        super(firstName, secondName, patronymic, login, password);
+        super(firstName, secondName, patronymic, login, password, ConstantsSetting.CLIENT_ROLE);
         this.email = email;
-        this.mobileNumber = mobileNumber;
+        this.phone = phone;
     }
 
     public Client() {
@@ -24,11 +26,11 @@ public class Client extends BaseUser {
         this.email = email;
     }
 
-    public String getMobileNumber() {
-        return mobileNumber;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setMobileNumber(String mobileNumber) {
-        this.mobileNumber = mobileNumber;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }
