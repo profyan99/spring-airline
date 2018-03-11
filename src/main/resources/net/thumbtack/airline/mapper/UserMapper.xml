@@ -5,7 +5,7 @@
 
 <mapper namespace="net.thumbtack.airline.dao.mapper.UserMapper">
 
-    <insert id="register" parameterType="User" useGeneratedKeys="true">
+    <insert id="register" parameterType="User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO user(firstName, lastName, patronymic, userType, login, password)
         VALUES (#{firstName}, #{lastName}, #{patronymic}, #{userType}, #{login}, #{password})
     </insert>

@@ -1,8 +1,10 @@
 package net.thumbtack.airline.dao.implementation;
 
+import net.thumbtack.airline.ConstantsSetting;
 import net.thumbtack.airline.dao.AdminDAO;
 import net.thumbtack.airline.dao.mapper.AdminMapper;
 import net.thumbtack.airline.dao.mapper.UserMapper;
+import net.thumbtack.airline.exception.SimpleException;
 import net.thumbtack.airline.model.Admin;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -39,7 +41,7 @@ public class AdminDAOImpl implements AdminDAO {
         } catch (RuntimeException e) {
             logger.error("Couldn't create admin: " + e.toString());
             session.rollback();
-            return admin;
+            throw new SimpleException(ConstantsSetting.REGISTRATION_ERROR, this.getClass().getName(), "");
         } finally {
             session.close();
         }

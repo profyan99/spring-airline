@@ -1,5 +1,6 @@
 package net.thumbtack.airline.service.Implementation;
 
+import net.thumbtack.airline.ConstantsSetting;
 import net.thumbtack.airline.dao.AdminDAO;
 import net.thumbtack.airline.dao.UserDAO;
 import net.thumbtack.airline.dto.request.AdminRegistrationRequestDTO;
@@ -7,6 +8,7 @@ import net.thumbtack.airline.dto.request.AdminUpdateRequestDTO;
 import net.thumbtack.airline.dto.response.AdminResponseDTO;
 import net.thumbtack.airline.dto.response.AdminUpdateResponseDTO;
 import net.thumbtack.airline.dto.response.ClientResponseDTO;
+import net.thumbtack.airline.exception.SimpleException;
 import net.thumbtack.airline.model.Admin;
 import net.thumbtack.airline.model.Plane;
 import net.thumbtack.airline.service.AdminService;
@@ -38,7 +40,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public AdminResponseDTO register(AdminRegistrationRequestDTO request) {
-        AdminResponseDTO responseDTO = null;
+        AdminResponseDTO responseDTO;
         if(!userDAO.exists(request.getLogin())) {
             Admin admin = new Admin(
                     request.getFirstName(),
@@ -59,7 +61,7 @@ public class AdminServiceImpl implements AdminService {
             );
         }
         else {
-            logger.error("Exists");
+            throw new SimpleException(ConstantsSetting.ACCOUNT_EXIST_ERROR, this.getClass().getName(), "");
         }
         return responseDTO;
     }

@@ -13,13 +13,11 @@
         <result property="patronymic" column="patronymic"/>
         <result property="login" column="login" />
         <result property="password" column="password" />
-        <association property="position" column="position">
-            <!--<result property="position" column="position"/>-->
-        </association>
+        <association property="position" column="position"/>
     </resultMap>
 
     <insert id="register" parameterType="Admin">
-        INSERT INTO admin(position) VALUES (#{position});
+        INSERT INTO admin(position, foreignKey) VALUES (#{position}, #{id});
     </insert>
 
     <select id="findAdminById" resultMap="AdminResult" parameterType="_int">

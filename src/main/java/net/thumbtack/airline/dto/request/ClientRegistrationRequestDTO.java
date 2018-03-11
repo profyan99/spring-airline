@@ -2,17 +2,13 @@ package net.thumbtack.airline.dto.request;
 
 import net.thumbtack.airline.dto.UserDTO;
 import net.thumbtack.airline.dto.validator.annotation.LoginValid;
+import net.thumbtack.airline.dto.validator.annotation.PasswordValid;
 import net.thumbtack.airline.dto.validator.annotation.PhoneValid;
 import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotBlank;
-
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 
 public class ClientRegistrationRequestDTO extends UserDTO {
 
-    @Email
+    @Email(message = "Email address isn't valid")
     private String email;
 
     @PhoneValid(message = "Phone isn't valid")
@@ -21,11 +17,7 @@ public class ClientRegistrationRequestDTO extends UserDTO {
     @LoginValid(message = "Login isn't valid")
     private String login;
 
-    //TODO @max and @min from properties
-    @NotNull(message = "Password must be not null!")
-    @NotBlank(message = "Password must be not blank!")
-    @Max(value = 20, message = "Maximal length of password must be 6 characters!")
-    @Min(value = 6, message = "Minimal length of password must be 6 characters!")
+    @PasswordValid(message = "Password isn't valid")
     private String password;
 
     public ClientRegistrationRequestDTO(String firstName, String lastName, String patronymic, String email,

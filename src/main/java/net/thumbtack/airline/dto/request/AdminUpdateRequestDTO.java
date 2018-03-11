@@ -1,11 +1,7 @@
 package net.thumbtack.airline.dto.request;
 
 import net.thumbtack.airline.dto.UserDTO;
-import org.hibernate.validator.constraints.NotBlank;
-
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import net.thumbtack.airline.dto.validator.annotation.PasswordValid;
 
 public class AdminUpdateRequestDTO extends UserDTO {
 
@@ -13,11 +9,7 @@ public class AdminUpdateRequestDTO extends UserDTO {
 
     private String oldPassword;
 
-    //TODO @max and @min from properties
-    @NotNull(message = "Password must be not null!")
-    @NotBlank(message = "Password must be not blank!")
-    @Max(value = 20, message = "Maximal length of password must be 6 characters!")
-    @Min(value = 6, message = "Minimal length of password must be 6 characters!")
+    @PasswordValid(message = "Password isn't valid")
     private String newPassword;
 
     public AdminUpdateRequestDTO(String firstName, String lastName, String patronymic,

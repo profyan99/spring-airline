@@ -1,16 +1,16 @@
 package net.thumbtack.airline.dto.validator.annotation;
 
-import net.thumbtack.airline.dto.validator.LoginValidator;
+import net.thumbtack.airline.dto.validator.NameValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = LoginValidator.class)
+@Constraint(validatedBy = NameValidator.class)
 @Target( { ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface LoginValid {
+public @interface PasswordValid {
 
     String message() default "";
 
@@ -18,3 +18,4 @@ public @interface LoginValid {
 
     Class<? extends Payload>[] payload() default {};
 }
+

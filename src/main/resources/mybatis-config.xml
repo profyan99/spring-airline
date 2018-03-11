@@ -31,6 +31,8 @@
 
 	<mappers>
 		<mapper resource="net/thumbtack/airline/mapper/AdminMapper.xml"/>
+		<mapper resource="net/thumbtack/airline/mapper/UserMapper.xml"/>
+		<mapper resource="net/thumbtack/airline/mapper/ClientMapper.xml"/>
 	</mappers>
 
 

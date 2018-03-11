@@ -1,8 +1,10 @@
 package net.thumbtack.airline.dao.implementation;
 
+import net.thumbtack.airline.ConstantsSetting;
 import net.thumbtack.airline.dao.ClientDAO;
 import net.thumbtack.airline.dao.mapper.ClientMapper;
 import net.thumbtack.airline.dao.mapper.UserMapper;
+import net.thumbtack.airline.exception.SimpleException;
 import net.thumbtack.airline.model.Client;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -39,7 +41,7 @@ public class ClientDAOImpl implements ClientDAO {
         } catch (RuntimeException e) {
             logger.error("Couldn't create client: "+e.toString());
             session.rollback();
-            return client;
+            throw new SimpleException(ConstantsSetting.REGISTRATION_ERROR, this.getClass().getName(), "");
         } finally {
             session.close();
         }

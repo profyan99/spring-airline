@@ -3,7 +3,6 @@ package net.thumbtack.airline.controller;
 import net.thumbtack.airline.dto.BaseLoginDTO;
 import net.thumbtack.airline.dto.UserDTO;
 import net.thumbtack.airline.dto.request.LoginRequestDTO;
-import net.thumbtack.airline.dto.response.ErrorDTO;
 import net.thumbtack.airline.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,47 +29,21 @@ public class UserController {
 
     @PostMapping("/session")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequestDTO, HttpServletResponse response) {
-        ResponseEntity resp;
         BaseLoginDTO userResponse = userService.login(loginRequestDTO);
-       if(userResponse != null) {
-            resp = ResponseEntity.ok(userResponse);
-            Cookie cookie = new Cookie(COOKIE, ""+userResponse.getId());
-            response.addCookie(cookie);
-        }
-        else {
-            resp = ResponseEntity.badRequest().body(
-                    new ErrorDTO("ERROR_WITH_LOGIN", "Don't know", "Error")
-            );
-        }
-        return resp;
+        Cookie cookie = new Cookie(COOKIE, ""+userResponse.getId());
+        response.addCookie(cookie);
+        return ResponseEntity.ok(userResponse);
     }
 
     @DeleteMapping("/session")
     public ResponseEntity<?> logout(@CookieValue(value = "${cookie}", defaultValue = "0") int id) {
-        ResponseEntity resp;
-        if(userService.logout(id)) {
-            resp = ResponseEntity.ok().build();
-        }
-        else {
-            resp = ResponseEntity.badRequest().body(
-                    new ErrorDTO("ERROR_WITH_LOGOUT", "Don't know", "Error")
-            );
-        }
-        return resp;
+        userService.logout(id);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/account")
     public ResponseEntity<?> get(@CookieValue(value = "${cookie}", defaultValue = "0") int id) {
-        ResponseEntity resp;
         UserDTO userResponse =  userService.get(id);
-        if(userResponse != null) {
-            resp = ResponseEntity.ok(userResponse);
-        }
-        else {
-            resp = ResponseEntity.badRequest().body(
-                    new ErrorDTO("ERROR_WITH_INFORMATION", "Don't know", "Error")
-            );
-        }
-        return resp;
+        return ResponseEntity.ok(userResponse);
     }
 }

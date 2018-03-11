@@ -5,7 +5,6 @@ import net.thumbtack.airline.dto.request.AdminUpdateRequestDTO;
 import net.thumbtack.airline.dto.response.AdminResponseDTO;
 import net.thumbtack.airline.dto.response.AdminUpdateResponseDTO;
 import net.thumbtack.airline.dto.response.ClientResponseDTO;
-import net.thumbtack.airline.dto.response.ErrorDTO;
 import net.thumbtack.airline.model.Plane;
 import net.thumbtack.airline.service.AdminService;
 import org.slf4j.Logger;
@@ -39,62 +38,29 @@ public class AdminController {
 
     @PostMapping("/admin")
     public ResponseEntity<?> registration(@RequestBody @Valid AdminRegistrationRequestDTO reg, HttpServletResponse response) {
-        ResponseEntity resp;
         AdminResponseDTO adminResponse = adminService.register(reg);
-        if (adminResponse != null) {
-            resp = ResponseEntity.ok(adminResponse);
-            Cookie cookie = new Cookie(COOKIE, ""+adminResponse.getId());
-            response.addCookie(cookie);
-        } else {
-            resp = ResponseEntity.badRequest().body(
-                    new ErrorDTO("ERROR_WITH_ADMIN_REGISTRATION", "Don't know", "Error")
-            );
-        }
+        ResponseEntity resp = ResponseEntity.ok(adminResponse);
+        Cookie cookie = new Cookie(COOKIE, ""+adminResponse.getId());
+        response.addCookie(cookie);
         return resp;
     }
 
     @PutMapping("/admin")
     public ResponseEntity<?> update(@RequestBody @Valid AdminUpdateRequestDTO request) {
-        ResponseEntity resp;
         AdminUpdateResponseDTO adminResponse =  adminService.update(request);
-        if(adminResponse != null) {
-            resp = ResponseEntity.ok(adminResponse);
-        }
-        else {
-            resp = ResponseEntity.badRequest().body(
-                    new ErrorDTO("ERROR_WITH_UPDATING_ADMIN_PROFILE", "Don't know", "Error")
-            );
-        }
-        return resp;
+        return ResponseEntity.ok(adminResponse);
     }
 
     @GetMapping("/clients")
     public ResponseEntity<?> clients() {
-        ResponseEntity resp;
         List<ClientResponseDTO> adminResponse =  adminService.getClients();
-        if(!adminResponse.isEmpty()) {
-            resp = ResponseEntity.ok(adminResponse);
-        }
-        else {
-            resp = ResponseEntity.badRequest().body(
-                    new ErrorDTO("ERROR_WITH_GETTING_CLIENTS", "Don't know", "Error")
-            );
-        }
-        return resp;
+        return ResponseEntity.ok(adminResponse);
     }
 
     @GetMapping("/planes")
     public ResponseEntity<?> planes() {
-        ResponseEntity resp;
         List<Plane> adminResponse =  adminService.getPlanes();
-        if(!adminResponse.isEmpty()) {
-            resp = ResponseEntity.ok(adminResponse);
-        }
-        else {
-            resp = ResponseEntity.badRequest().body(
-                    new ErrorDTO("NO_PLANES_IN_DATABASE", "Empty list", "Warning")
-            );
-        }
-        return resp;
+        return ResponseEntity.ok(adminResponse);
+
     }
 }

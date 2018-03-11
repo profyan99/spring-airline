@@ -1,16 +1,13 @@
 package net.thumbtack.airline.dto.validator;
 
 import net.thumbtack.airline.ConstantsSetting;
-import net.thumbtack.airline.dto.validator.annotation.NameValid;
+import net.thumbtack.airline.dto.validator.annotation.PasswordValid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-@Component
-public class NameValidator implements ConstraintValidator<NameValid, String> {
-
+public class PasswordValidator implements ConstraintValidator<PasswordValid, String>{
     private ConstantsSetting constantsSetting;
 
     @Autowired
@@ -19,12 +16,13 @@ public class NameValidator implements ConstraintValidator<NameValid, String> {
     }
 
     @Override
-    public void initialize(NameValid nameValid) {
+    public void initialize(PasswordValid passwordValid) {
 
     }
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        return s != null && !s.isEmpty() && s.matches("^[а-яА-ЯёЁ\\s\\-]+$") && s.length() < constantsSetting.getMaxNameLength();
+        return s != null && !s.isEmpty() && s.length() >= constantsSetting.getMinPasswordLength();
     }
 }
+
