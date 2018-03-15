@@ -26,4 +26,8 @@
         JOIN client ON user.id = client.foreignKey WHERE user.id=#{id}
     </select>
 
+    <select id="login" resultType="Client" parameterType="_int">
+        SELECT email, phone FROM client WHERE foreignKey=#{id}
+    </select>
+
 </mapper>

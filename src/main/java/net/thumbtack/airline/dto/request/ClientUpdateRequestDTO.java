@@ -1,5 +1,6 @@
 package net.thumbtack.airline.dto.request;
 
+import net.thumbtack.airline.ConstantsSetting;
 import net.thumbtack.airline.dto.UserDTO;
 import net.thumbtack.airline.dto.validator.annotation.PasswordValid;
 import net.thumbtack.airline.dto.validator.annotation.PhoneValid;
@@ -7,7 +8,8 @@ import org.hibernate.validator.constraints.Email;
 
 public class ClientUpdateRequestDTO extends UserDTO {
 
-    @Email(message = "Email address isn't valid")
+    @Email(message = "Email address isn't valid",
+    regexp = ConstantsSetting.EMAIL_REGEX)
     private String email;
 
     @PhoneValid(message = "Phone isn't valid")

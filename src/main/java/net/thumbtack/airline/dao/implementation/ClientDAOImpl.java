@@ -48,6 +48,20 @@ public class ClientDAOImpl implements ClientDAO {
     }
 
     @Override
+    public Client login(int id) {
+        Client client = null;
+        try (SqlSession session = sessionFactory.openSession()) {
+            client = session
+                    .getMapper(ClientMapper.class)
+                    .login(id)
+            ;
+        } catch (RuntimeException e) {
+            logger.error("Couldn't login client: " + e.toString());
+        }
+        return client;
+    }
+
+    @Override
     public Client findClientById(int id) {
         Client client = null;
         try (SqlSession session = sessionFactory.openSession()) {

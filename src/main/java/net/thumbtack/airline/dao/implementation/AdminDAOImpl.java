@@ -48,6 +48,20 @@ public class AdminDAOImpl implements AdminDAO {
     }
 
     @Override
+    public Admin login(int id) {
+        Admin admin = null;
+        try (SqlSession session = sessionFactory.openSession()) {
+            admin = session
+                    .getMapper(AdminMapper.class)
+                    .login(id)
+            ;
+        } catch (RuntimeException e) {
+            logger.error("Couldn't login admin: " + e.toString());
+        }
+        return admin;
+    }
+
+    @Override
     public Admin findAdminById(int id) {
         Admin admin = null;
         try (SqlSession session = sessionFactory.openSession()) {

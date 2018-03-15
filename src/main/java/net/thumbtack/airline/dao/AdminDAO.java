@@ -8,4 +8,6 @@ public interface AdminDAO {
     Admin register(Admin admin);
 
     Admin findAdminById(int id);
+
+    Admin login(int id);
 }

@@ -25,6 +25,8 @@ public class ConstantsSetting {
     public static final String REGISTRATION_ERROR = "Error with registration";
     public static final String ACCOUNT_EXIST_ERROR = "Account has already registered";
 
+    public static final String EMAIL_REGEX = "^([a-z0-9_-]+\\.)*[a-z0-9_-]+@[a-z0-9_-]+(\\.[a-z0-9_-]+)*\\.[a-z]{2,6}$";
+
     public String getCookie() {
         return cookie;
     }

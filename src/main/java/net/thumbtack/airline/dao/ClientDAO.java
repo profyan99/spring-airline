@@ -6,4 +6,6 @@ public interface ClientDAO {
     Client register(Client client);
 
     Client findClientById(int id);
+
+    Client login(int id);
 }

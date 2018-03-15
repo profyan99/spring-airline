@@ -43,7 +43,7 @@ public class ClientServiceImpl implements ClientService {
                     request.getLastName(),
                     request.getPatronymic(),
                     request.getLogin(),
-                    request.getPassword(),
+                    request.getPassword().replace("-",""),
                     request.getEmail(),
                     request.getPhone()
             );
