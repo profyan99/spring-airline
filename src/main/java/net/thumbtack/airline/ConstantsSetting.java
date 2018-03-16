@@ -24,8 +24,12 @@ public class ConstantsSetting {
     public static final String CLIENT_ROLE = "CLIENT";
     public static final String REGISTRATION_ERROR = "Error with registration";
     public static final String ACCOUNT_EXIST_ERROR = "Account has already registered";
+    public static final String ACCOUNT_NOT_FOUND = "Account not found";
+    public static final String INVALID_PASSWORD = "Invalid password";
+    public static final String SIMPLE_ERROR = "Error with ";
 
     public static final String EMAIL_REGEX = "^([a-z0-9_-]+\\.)*[a-z0-9_-]+@[a-z0-9_-]+(\\.[a-z0-9_-]+)*\\.[a-z]{2,6}$";
+    public static final String NAME_REGEX = "^[а-яА-ЯёЁ\\s\\-]+$";
 
     public String getCookie() {
         return cookie;

@@ -48,22 +48,23 @@ public class ClientDAOImpl implements ClientDAO {
     }
 
     @Override
-    public Client login(int id) {
-        Client client = null;
+    public Client getClient(int id) {
+        Client client;
         try (SqlSession session = sessionFactory.openSession()) {
             client = session
                     .getMapper(ClientMapper.class)
-                    .login(id)
+                    .getClient(id)
             ;
         } catch (RuntimeException e) {
-            logger.error("Couldn't login client: " + e.toString());
+            logger.error("Couldn't get client: " + e.toString());
+            throw new SimpleException(ConstantsSetting.SIMPLE_ERROR+" get client", this.getClass().getName(), "");
         }
         return client;
     }
 
     @Override
     public Client findClientById(int id) {
-        Client client = null;
+        Client client;
         try (SqlSession session = sessionFactory.openSession()) {
             client = session
                     .getMapper(ClientMapper.class)
@@ -71,6 +72,7 @@ public class ClientDAOImpl implements ClientDAO {
             ;
         } catch (RuntimeException e) {
             logger.error("Couldn't find by id client: " + e.toString());
+            throw new SimpleException(ConstantsSetting.SIMPLE_ERROR+" find client by id", this.getClass().getName(), "");
         }
         return client;
     }

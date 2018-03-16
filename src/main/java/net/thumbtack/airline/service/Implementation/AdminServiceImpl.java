@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -41,7 +42,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public AdminResponseDTO register(AdminRegistrationRequestDTO request) {
         AdminResponseDTO responseDTO;
-        if(!userDAO.exists(request.getLogin())) {
+        if (!userDAO.exists(request.getLogin())) {
             Admin admin = new Admin(
                     request.getFirstName(),
                     request.getLastName(),
@@ -59,8 +60,7 @@ public class AdminServiceImpl implements AdminService {
                     admin.getUserType(),
                     admin.getPosition()
             );
-        }
-        else {
+        } else {
             throw new SimpleException(ConstantsSetting.ACCOUNT_EXIST_ERROR, this.getClass().getName(), "");
         }
         return responseDTO;
@@ -68,7 +68,18 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<ClientResponseDTO> getClients() {
-        return null;
+        List<ClientResponseDTO> responseDTOS = new ArrayList<>();
+        adminDAO.getClients().forEach((e) ->
+                responseDTOS.add(new ClientResponseDTO(
+                        e.getFirstName(),
+                        e.getLastName(),
+                        e.getPatronymic(),
+                        e.getId(),
+                        e.getUserType(),
+                        e.getPhone(),
+                        e.getEmail()
+                )));
+        return responseDTOS;
     }
 
     @Override

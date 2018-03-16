@@ -8,4 +8,6 @@ public interface UserMapper {
     BaseUser login(String login);
 
     boolean exists(String login);
+
+    BaseUser get(int id);
 }

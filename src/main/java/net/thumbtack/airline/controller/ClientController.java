@@ -33,7 +33,7 @@ public class ClientController {
     @PostMapping
     public ResponseEntity<?> registration(@RequestBody @Valid ClientRegistrationRequestDTO reg, HttpServletResponse response) {
         ClientResponseDTO clientResponse = clientService.register(reg);
-        ResponseEntity resp = ResponseEntity.ok(clientResponse);
+        ResponseEntity<?> resp = ResponseEntity.ok(clientResponse);
         Cookie cookie = new Cookie(COOKIE, ""+clientResponse.getId());
         response.addCookie(cookie);
         return resp;

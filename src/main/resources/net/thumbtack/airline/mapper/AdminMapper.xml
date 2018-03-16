@@ -25,7 +25,7 @@
         JOIN admin ON user.id = admin.foreignKey WHERE user.id=#{id}
     </select>
 
-    <select id="login" resultType="Admin" parameterType="_int">
+    <select id="getAdmin" resultType="Admin" parameterType="_int">
         SELECT position FROM admin WHERE foreignKey=#{id}
     </select>
 </mapper>

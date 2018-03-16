@@ -39,7 +39,7 @@ public class AdminController {
     @PostMapping("/admin")
     public ResponseEntity<?> registration(@RequestBody @Valid AdminRegistrationRequestDTO reg, HttpServletResponse response) {
         AdminResponseDTO adminResponse = adminService.register(reg);
-        ResponseEntity resp = ResponseEntity.ok(adminResponse);
+        ResponseEntity<?> resp = ResponseEntity.ok(adminResponse);
         Cookie cookie = new Cookie(COOKIE, ""+adminResponse.getId());
         response.addCookie(cookie);
         return resp;

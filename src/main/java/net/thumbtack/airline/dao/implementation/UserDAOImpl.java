@@ -1,7 +1,9 @@
 package net.thumbtack.airline.dao.implementation;
 
+import net.thumbtack.airline.ConstantsSetting;
 import net.thumbtack.airline.dao.UserDAO;
 import net.thumbtack.airline.dao.mapper.UserMapper;
+import net.thumbtack.airline.exception.SimpleException;
 import net.thumbtack.airline.model.BaseUser;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -35,12 +37,24 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public BaseUser login(String login) {
-        BaseUser user = null;
+        BaseUser user;
         try(SqlSession session = sessionFactory.openSession()) {
             user =  session.getMapper(UserMapper.class).login(login);
         } catch (RuntimeException e) {
-            logger.error("Couldn't find user by login: "+e.toString());
+            logger.error("Couldn't getAdmin user by getAdmin: "+e.toString());
+            throw new SimpleException(ConstantsSetting.SIMPLE_ERROR+"getAdmin", this.getClass().getName(), "");
+        }
+        return user;
+    }
 
+    @Override
+    public BaseUser get(int id) {
+        BaseUser user;
+        try(SqlSession session = sessionFactory.openSession()) {
+            user =  session.getMapper(UserMapper.class).get(id);
+        } catch (RuntimeException e) {
+            logger.error("Couldn't get user by id: "+e.toString());
+            throw new SimpleException(ConstantsSetting.SIMPLE_ERROR+"get user", this.getClass().getName(), "");
         }
         return user;
     }

@@ -1,6 +1,7 @@
 package net.thumbtack.airline.dto;
 
 import net.thumbtack.airline.dto.validator.annotation.NameValid;
+import net.thumbtack.airline.dto.validator.annotation.PatronymicValid;
 
 public class UserDTO {
 
@@ -10,7 +11,7 @@ public class UserDTO {
     @NameValid(message = "Bad lastName")
     private String lastName;
 
-    @NameValid(message = "Bad patronymic")
+    @PatronymicValid(message = "Bad patronymic")
     private String patronymic;
 
     public UserDTO(String firstName, String lastName, String patronymic) {

@@ -9,6 +9,7 @@ import net.thumbtack.airline.dto.UserDTO;
 import net.thumbtack.airline.dto.request.LoginRequestDTO;
 import net.thumbtack.airline.dto.response.AdminResponseDTO;
 import net.thumbtack.airline.dto.response.ClientResponseDTO;
+import net.thumbtack.airline.exception.SimpleException;
 import net.thumbtack.airline.model.BaseUser;
 import net.thumbtack.airline.model.Client;
 import net.thumbtack.airline.service.UserService;
@@ -39,8 +40,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public BaseLoginDTO login(LoginRequestDTO loginRequestDTO) {
-        BaseLoginDTO baseLoginDTO = null;
-        BaseUser user = userDAO.login(loginRequestDTO.getLogin().toLowerCase());
+        BaseLoginDTO baseLoginDTO;
+        BaseUser user = userDAO.login(loginRequestDTO.getLogin());
+        if(user == null) {
+            throw new SimpleException(ConstantsSetting.ACCOUNT_NOT_FOUND, this.getClass().getName(), "");
+        }
         if(user.getPassword().equals(loginRequestDTO.getPassword())) {
             if (user.getUserType().equals(ConstantsSetting.ADMIN_ROLE)) {
                 baseLoginDTO = new AdminResponseDTO(
@@ -49,10 +53,10 @@ public class UserServiceImpl implements UserService {
                         user.getPatronymic(),
                         user.getId(),
                         user.getUserType(),
-                        adminDAO.login(user.getId()).getPosition()
+                        adminDAO.getAdmin(user.getId()).getPosition()
                 );
             } else {
-                Client client = clientDAO.login(user.getId());
+                Client client = clientDAO.getClient(user.getId());
                 baseLoginDTO = new ClientResponseDTO(
                         user.getFirstName(),
                         user.getLastName(),
@@ -64,16 +68,46 @@ public class UserServiceImpl implements UserService {
                 );
             }
         }
+        else {
+            throw new SimpleException(ConstantsSetting.INVALID_PASSWORD, this.getClass().getName(), "");
+        }
         return baseLoginDTO;
     }
 
     @Override
     public boolean logout(int id) {
+        //TODO delete row from cookie table, if id correct and exists
         return false;
     }
 
     @Override
     public UserDTO get(int id) {
-        return null;
+        UserDTO userDTO;
+        BaseUser user = userDAO.get(id);
+        if(user == null) {
+            throw new SimpleException(ConstantsSetting.ACCOUNT_NOT_FOUND, this.getClass().getName(), "");
+        }
+        if (user.getUserType().equals(ConstantsSetting.ADMIN_ROLE)) {
+            userDTO = new AdminResponseDTO(
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getPatronymic(),
+                    user.getId(),
+                    user.getUserType(),
+                    adminDAO.getAdmin(user.getId()).getPosition()
+            );
+        } else {
+            Client client = clientDAO.getClient(user.getId());
+            userDTO = new ClientResponseDTO(
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getPatronymic(),
+                    user.getId(),
+                    user.getUserType(),
+                    client.getPhone(),
+                    client.getEmail()
+            );
+        }
+        return userDTO;
     }
 }

@@ -14,7 +14,6 @@
         <result property="password" column="password" />
         <association property="email" column="email"/>
         <association property="phone" column="phone"/>
-        <!--<result property="position" column="position"/>-->
     </resultMap>
 
     <insert id="register" parameterType="Client">
@@ -26,8 +25,13 @@
         JOIN client ON user.id = client.foreignKey WHERE user.id=#{id}
     </select>
 
-    <select id="login" resultType="Client" parameterType="_int">
+    <select id="getClient" resultType="Client" parameterType="_int">
         SELECT email, phone FROM client WHERE foreignKey=#{id}
+    </select>
+
+    <select id="getAll" resultMap="ClientResult">
+        SELECT user.id, firstName, lastName, patronymic, login, password, email, phone FROM user
+        JOIN client ON user.id = client.foreignKey
     </select>
 
 </mapper>

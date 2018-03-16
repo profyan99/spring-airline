@@ -7,7 +7,7 @@ public interface AdminMapper {
 
     Admin findAdminById(int id);
 
-    Admin login(int id);
+    Admin getAdmin(int id);
 
     Admin update(Admin admin);
 }
