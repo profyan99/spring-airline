@@ -41,7 +41,7 @@ public class ClientDAOImpl implements ClientDAO {
         } catch (RuntimeException e) {
             logger.error("Couldn't create client: "+e.toString());
             session.rollback();
-            throw new SimpleException(ConstantsSetting.REGISTRATION_ERROR, this.getClass().getName(), "");
+            throw new SimpleException(ConstantsSetting.ErrorsConstants.REGISTRATION_ERROR.toString(), this.getClass().getName(), "");
         } finally {
             session.close();
         }
@@ -57,7 +57,7 @@ public class ClientDAOImpl implements ClientDAO {
             ;
         } catch (RuntimeException e) {
             logger.error("Couldn't get client: " + e.toString());
-            throw new SimpleException(ConstantsSetting.SIMPLE_ERROR+" get client", this.getClass().getName(), "");
+            throw new SimpleException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString()+" get client", this.getClass().getName(), "");
         }
         return client;
     }
@@ -72,7 +72,7 @@ public class ClientDAOImpl implements ClientDAO {
             ;
         } catch (RuntimeException e) {
             logger.error("Couldn't find by id client: " + e.toString());
-            throw new SimpleException(ConstantsSetting.SIMPLE_ERROR+" find client by id", this.getClass().getName(), "");
+            throw new SimpleException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString()+" find client by id", this.getClass().getName(), "");
         }
         return client;
     }

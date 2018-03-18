@@ -13,6 +13,8 @@ import net.thumbtack.airline.exception.SimpleException;
 import net.thumbtack.airline.model.BaseUser;
 import net.thumbtack.airline.model.Client;
 import net.thumbtack.airline.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,8 @@ public class UserServiceImpl implements UserService {
     private UserDAO userDAO;
     private AdminDAO adminDAO;
     private ClientDAO clientDAO;
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public void setAdminDAO(AdminDAO adminDAO) {
@@ -43,10 +47,10 @@ public class UserServiceImpl implements UserService {
         BaseLoginDTO baseLoginDTO;
         BaseUser user = userDAO.login(loginRequestDTO.getLogin());
         if(user == null) {
-            throw new SimpleException(ConstantsSetting.ACCOUNT_NOT_FOUND, this.getClass().getName(), "");
+            throw new SimpleException(ConstantsSetting.ErrorsConstants.ACCOUNT_NOT_FOUND.toString(), this.getClass().getName(), "");
         }
         if(user.getPassword().equals(loginRequestDTO.getPassword())) {
-            if (user.getUserType().equals(ConstantsSetting.ADMIN_ROLE)) {
+            if (user.getUserType().equals(ConstantsSetting.UserRoles.ADMIN_ROLE.toString())) {
                 baseLoginDTO = new AdminResponseDTO(
                         user.getFirstName(),
                         user.getLastName(),
@@ -69,15 +73,9 @@ public class UserServiceImpl implements UserService {
             }
         }
         else {
-            throw new SimpleException(ConstantsSetting.INVALID_PASSWORD, this.getClass().getName(), "");
+            throw new SimpleException(ConstantsSetting.ErrorsConstants.INVALID_PASSWORD.toString(), this.getClass().getName(), "");
         }
         return baseLoginDTO;
-    }
-
-    @Override
-    public boolean logout(int id) {
-        //TODO delete row from cookie table, if id correct and exists
-        return false;
     }
 
     @Override
@@ -85,9 +83,9 @@ public class UserServiceImpl implements UserService {
         UserDTO userDTO;
         BaseUser user = userDAO.get(id);
         if(user == null) {
-            throw new SimpleException(ConstantsSetting.ACCOUNT_NOT_FOUND, this.getClass().getName(), "");
+            throw new SimpleException(ConstantsSetting.ErrorsConstants.ACCOUNT_NOT_FOUND.toString(), this.getClass().getName(), "");
         }
-        if (user.getUserType().equals(ConstantsSetting.ADMIN_ROLE)) {
+        if (user.getUserType().equals(ConstantsSetting.UserRoles.ADMIN_ROLE.toString())) {
             userDTO = new AdminResponseDTO(
                     user.getFirstName(),
                     user.getLastName(),

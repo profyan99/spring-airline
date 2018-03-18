@@ -1,5 +1,6 @@
 package net.thumbtack.airline.dto.request;
 
+import net.thumbtack.airline.ConstantsSetting;
 import net.thumbtack.airline.dto.UserDTO;
 import net.thumbtack.airline.dto.validator.annotation.PasswordValid;
 
@@ -9,7 +10,7 @@ public class AdminUpdateRequestDTO extends UserDTO {
 
     private String oldPassword;
 
-    @PasswordValid(message = "Password isn't valid")
+    @PasswordValid(message = ConstantsSetting.BAD_PASSWORD)
     private String newPassword;
 
     public AdminUpdateRequestDTO(String firstName, String lastName, String patronymic,

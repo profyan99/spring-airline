@@ -61,7 +61,7 @@ public class AdminServiceImpl implements AdminService {
                     admin.getPosition()
             );
         } else {
-            throw new SimpleException(ConstantsSetting.ACCOUNT_EXIST_ERROR, this.getClass().getName(), "");
+            throw new SimpleException(ConstantsSetting.ErrorsConstants.ACCOUNT_EXIST_ERROR.toString(), this.getClass().getName(), "");
         }
         return responseDTO;
     }

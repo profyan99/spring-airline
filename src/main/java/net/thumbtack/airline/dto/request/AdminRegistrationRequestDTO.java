@@ -1,5 +1,6 @@
 package net.thumbtack.airline.dto.request;
 
+import net.thumbtack.airline.ConstantsSetting;
 import net.thumbtack.airline.dto.UserDTO;
 import net.thumbtack.airline.dto.validator.annotation.LoginValid;
 import net.thumbtack.airline.dto.validator.annotation.PasswordValid;
@@ -8,10 +9,10 @@ public class AdminRegistrationRequestDTO extends UserDTO {
 
     private String position;
 
-    @LoginValid(message = "Login isn't valid")
+    @LoginValid(message = ConstantsSetting.BAD_LOGIN)
     private String login;
 
-    @PasswordValid(message = "Password isn't valid")
+    @PasswordValid(message = ConstantsSetting.BAD_PASSWORD)
     private String password;
 
     public AdminRegistrationRequestDTO(String firstName, String lastName, String patronymic,

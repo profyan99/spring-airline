@@ -9,17 +9,17 @@ import org.hibernate.validator.constraints.Email;
 
 public class ClientRegistrationRequestDTO extends UserDTO {
 
-    @Email(message = "Email address isn't valid",
+    @Email(message = ConstantsSetting.BAD_EMAIL,
     regexp = ConstantsSetting.EMAIL_REGEX)
     private String email;
 
-    @PhoneValid(message = "Phone isn't valid")
+    @PhoneValid(message = ConstantsSetting.BAD_PHONE)
     private String phone;
 
-    @LoginValid(message = "Login isn't valid")
+    @LoginValid(message = ConstantsSetting.BAD_LOGIN)
     private String login;
 
-    @PasswordValid(message = "Password isn't valid")
+    @PasswordValid(message = ConstantsSetting.BAD_PASSWORD)
     private String password;
 
     public ClientRegistrationRequestDTO(String firstName, String lastName, String patronymic, String email,

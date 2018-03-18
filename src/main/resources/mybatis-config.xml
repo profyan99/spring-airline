@@ -10,6 +10,7 @@
 		<typeAlias type="net.thumbtack.airline.model.BaseUser" alias="User"/>
 		<typeAlias type="net.thumbtack.airline.model.Admin" alias="Admin"/>
 		<typeAlias type="net.thumbtack.airline.model.Client" alias="Client"/>
+		<typeAlias type="net.thumbtack.airline.model.UserCookie" alias="Cookie"/>
 		<typeAlias type="net.thumbtack.airline.model.Plane" alias="Plane"/>
 	</typeAliases>
 
@@ -33,6 +34,7 @@
 		<mapper resource="net/thumbtack/airline/mapper/AdminMapper.xml"/>
 		<mapper resource="net/thumbtack/airline/mapper/UserMapper.xml"/>
 		<mapper resource="net/thumbtack/airline/mapper/ClientMapper.xml"/>
+		<mapper resource="net/thumbtack/airline/mapper/UserCookie.xml"/>
 	</mappers>
 
 

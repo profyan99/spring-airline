@@ -5,7 +5,7 @@ import net.thumbtack.airline.model.Client;
 import java.util.List;
 
 public interface ClientMapper {
-    Client register(Client client);
+    int register(Client client);
 
     Client getClient(int id);
 

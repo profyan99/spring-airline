@@ -1,13 +1,15 @@
 package net.thumbtack.airline.dto.validator;
 
 import net.thumbtack.airline.ConstantsSetting;
-import net.thumbtack.airline.dto.validator.annotation.PasswordValid;
+import net.thumbtack.airline.dto.validator.annotation.PatronymicValid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class PatronymicValidator implements ConstraintValidator<PasswordValid, String> {
+@Component
+public class PatronymicValidator implements ConstraintValidator<PatronymicValid, String> {
     private ConstantsSetting constantsSetting;
 
     @Autowired
@@ -16,7 +18,7 @@ public class PatronymicValidator implements ConstraintValidator<PasswordValid, S
     }
 
     @Override
-    public void initialize(PasswordValid passwordValid) {
+    public void initialize(PatronymicValid patronymicValid) {
 
     }
 

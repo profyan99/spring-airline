@@ -1,10 +1,14 @@
 package net.thumbtack.airline.controller;
 
+import net.thumbtack.airline.ConstantsSetting;
+import net.thumbtack.airline.dto.UserCookieDTO;
 import net.thumbtack.airline.dto.request.ClientRegistrationRequestDTO;
 import net.thumbtack.airline.dto.request.ClientUpdateRequestDTO;
 import net.thumbtack.airline.dto.response.ClientResponseDTO;
 import net.thumbtack.airline.dto.response.ClientUpdateResponseDTO;
+import net.thumbtack.airline.exception.SimpleException;
 import net.thumbtack.airline.service.ClientService;
+import net.thumbtack.airline.service.CookieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -21,26 +25,35 @@ public class ClientController {
 
     private ClientService clientService;
 
+    private CookieService cookieService;
+
     @Value(value = "${cookie}")
     private String COOKIE;
-
 
     @Autowired
     public void setClientService(ClientService clientService) {
         this.clientService = clientService;
     }
 
+    @Autowired
+    public void setCookieService(CookieService cookieService) {
+        this.cookieService = cookieService;
+    }
+
     @PostMapping
     public ResponseEntity<?> registration(@RequestBody @Valid ClientRegistrationRequestDTO reg, HttpServletResponse response) {
         ClientResponseDTO clientResponse = clientService.register(reg);
-        ResponseEntity<?> resp = ResponseEntity.ok(clientResponse);
-        Cookie cookie = new Cookie(COOKIE, ""+clientResponse.getId());
-        response.addCookie(cookie);
-        return resp;
+        String cookieValue = cookieService.setUserCookie(new UserCookieDTO(clientResponse.getId(), clientResponse.getUserType()));
+        response.addCookie(new Cookie(COOKIE, cookieValue));
+        return ResponseEntity.ok(clientResponse);
     }
 
     @PutMapping
-    public ResponseEntity<?> update(@RequestBody @Valid ClientUpdateRequestDTO request) {
+    public ResponseEntity<?> update(@RequestBody @Valid ClientUpdateRequestDTO request,
+                                    @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
+        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(ConstantsSetting.UserRoles.CLIENT_ROLE.toString())) {
+            throw new SimpleException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "", "");
+        }
         ClientUpdateResponseDTO clientResponse =  clientService.update(request);
         return ResponseEntity.ok(clientResponse);
     }

@@ -43,9 +43,9 @@ public class ClientServiceImpl implements ClientService {
                     request.getLastName(),
                     request.getPatronymic(),
                     request.getLogin(),
-                    request.getPassword().replace("-",""),
+                    request.getPassword(),
                     request.getEmail(),
-                    request.getPhone()
+                    request.getPhone().replace("-","")
             );
             clientDAO.register(client);
             responseDTO = new ClientResponseDTO(
@@ -59,7 +59,7 @@ public class ClientServiceImpl implements ClientService {
             );
         }
         else {
-            throw new SimpleException(ConstantsSetting.ACCOUNT_EXIST_ERROR, this.getClass().getName(), "");
+            throw new SimpleException(ConstantsSetting.ErrorsConstants.ACCOUNT_EXIST_ERROR.toString(), this.getClass().getName(), "");
         }
         return responseDTO;
     }

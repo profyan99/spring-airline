@@ -45,7 +45,7 @@ public class AdminDAOImpl implements AdminDAO {
         } catch (RuntimeException e) {
             logger.error("Couldn't create admin: " + e.toString());
             session.rollback();
-            throw new SimpleException(ConstantsSetting.REGISTRATION_ERROR, this.getClass().getName(), "");
+            throw new SimpleException(ConstantsSetting.ErrorsConstants.REGISTRATION_ERROR.toString(), this.getClass().getName(), "");
         } finally {
             session.close();
         }
@@ -53,7 +53,7 @@ public class AdminDAOImpl implements AdminDAO {
 
     @Override
     public Admin getAdmin(int id) {
-        Admin admin = null;
+        Admin admin;
         try (SqlSession session = sessionFactory.openSession()) {
             admin = session
                     .getMapper(AdminMapper.class)
@@ -61,14 +61,14 @@ public class AdminDAOImpl implements AdminDAO {
             ;
         } catch (RuntimeException e) {
             logger.error("Couldn't getAdmin admin: " + e.toString());
-            throw new SimpleException(ConstantsSetting.SIMPLE_ERROR+" get admin", this.getClass().getName(), "");
+            throw new SimpleException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString()+" get admin", this.getClass().getName(), "");
         }
         return admin;
     }
 
     @Override
     public Admin findAdminById(int id) {
-        Admin admin = null;
+        Admin admin;
         try (SqlSession session = sessionFactory.openSession()) {
             admin = session
                             .getMapper(AdminMapper.class)
@@ -76,7 +76,7 @@ public class AdminDAOImpl implements AdminDAO {
             ;
         } catch (RuntimeException e) {
             logger.error("Couldn't find by id admin: " + e.toString());
-            throw new SimpleException(ConstantsSetting.SIMPLE_ERROR+" find admin by id", this.getClass().getName(), "");
+            throw new SimpleException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString()+" find admin by id", this.getClass().getName(), "");
         }
         return admin;
     }
@@ -85,13 +85,12 @@ public class AdminDAOImpl implements AdminDAO {
     public List<Client> getClients() {
         List<Client> clients;
         try (SqlSession session = sessionFactory.openSession()) {
-            clients = session
+           clients = session
                     .getMapper(ClientMapper.class)
                     .getAll();
-            ;
         } catch (RuntimeException e) {
             logger.error("Couldn't find all clients: " + e.toString());
-            throw new SimpleException(ConstantsSetting.SIMPLE_ERROR+" get clients", this.getClass().getName(), "");
+            throw new SimpleException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString()+" get clients", this.getClass().getName(), "");
         }
         return clients;
     }

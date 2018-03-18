@@ -1,23 +1,25 @@
 package net.thumbtack.airline.dto;
 
+import net.thumbtack.airline.ConstantsSetting;
 import net.thumbtack.airline.dto.validator.annotation.NameValid;
 import net.thumbtack.airline.dto.validator.annotation.PatronymicValid;
 
 public class UserDTO {
 
-    @NameValid(message = "Bad firstName")
+    @NameValid(message = ConstantsSetting.BAD_FIRSTNAME)
     private String firstName;
 
-    @NameValid(message = "Bad lastName")
+    @NameValid(message = ConstantsSetting.BAD_LASTNAME)
     private String lastName;
 
-    @PatronymicValid(message = "Bad patronymic")
+    @PatronymicValid(message = ConstantsSetting.BAD_PATRONYMIC)
     private String patronymic;
 
     public UserDTO(String firstName, String lastName, String patronymic) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.patronymic = patronymic;
+
     }
 
     public UserDTO() {

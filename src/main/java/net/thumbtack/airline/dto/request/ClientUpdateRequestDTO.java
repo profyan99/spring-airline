@@ -8,16 +8,16 @@ import org.hibernate.validator.constraints.Email;
 
 public class ClientUpdateRequestDTO extends UserDTO {
 
-    @Email(message = "Email address isn't valid",
+    @Email(message = ConstantsSetting.BAD_EMAIL,
     regexp = ConstantsSetting.EMAIL_REGEX)
     private String email;
 
-    @PhoneValid(message = "Phone isn't valid")
+    @PhoneValid(message = ConstantsSetting.BAD_PHONE)
     private String phone;
 
     private String oldPassword;
 
-    @PasswordValid(message = "Password isn't valid")
+    @PasswordValid(message = ConstantsSetting.BAD_PASSWORD)
     private String newPassword;
 
     public ClientUpdateRequestDTO(String firstName, String lastName, String patronymic, String email,

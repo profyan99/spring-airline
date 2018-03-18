@@ -12,8 +12,8 @@
         <result property="patronymic" column="patronymic"/>
         <result property="login" column="login" />
         <result property="password" column="password" />
-        <association property="email" column="email"/>
-        <association property="phone" column="phone"/>
+        <result property="email" column="email" />
+        <result property="phone" column="phone" />
     </resultMap>
 
     <insert id="register" parameterType="Client">
@@ -21,8 +21,8 @@
     </insert>
 
     <select id="findClientById" resultMap="ClientResult" parameterType="_int">
-        SELECT user.id, firstName, lastName, patronymic, login, password, email, phone FROM user
-        JOIN client ON user.id = client.foreignKey WHERE user.id=#{id}
+        SELECT u.id, u.firstName, u.lastName, u.patronymic, u.login, u.password, c.email, c.phone FROM user u
+        RIGHT JOIN client c ON u.id = c.foreignKey WHERE u.id=#{id}
     </select>
 
     <select id="getClient" resultType="Client" parameterType="_int">
@@ -30,8 +30,8 @@
     </select>
 
     <select id="getAll" resultMap="ClientResult">
-        SELECT user.id, firstName, lastName, patronymic, login, password, email, phone FROM user
-        JOIN client ON user.id = client.foreignKey
+        SELECT u.id, u.firstName, u.lastName, u.patronymic, u.login, u.password, c.email, c.phone FROM user u
+        RIGHT JOIN client c ON u.id = c.foreignKey
     </select>
 
 </mapper>

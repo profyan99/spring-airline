@@ -42,7 +42,7 @@ public class UserDAOImpl implements UserDAO {
             user =  session.getMapper(UserMapper.class).login(login);
         } catch (RuntimeException e) {
             logger.error("Couldn't getAdmin user by getAdmin: "+e.toString());
-            throw new SimpleException(ConstantsSetting.SIMPLE_ERROR+"getAdmin", this.getClass().getName(), "");
+            throw new SimpleException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString()+"getAdmin", this.getClass().getName(), "");
         }
         return user;
     }
@@ -54,7 +54,7 @@ public class UserDAOImpl implements UserDAO {
             user =  session.getMapper(UserMapper.class).get(id);
         } catch (RuntimeException e) {
             logger.error("Couldn't get user by id: "+e.toString());
-            throw new SimpleException(ConstantsSetting.SIMPLE_ERROR+"get user", this.getClass().getName(), "");
+            throw new SimpleException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString()+"get user", this.getClass().getName(), "");
         }
         return user;
     }
