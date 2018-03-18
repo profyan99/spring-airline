@@ -7,6 +7,8 @@ public interface UserMapper {
 
     BaseUser login(String login);
 
+    BaseUser update(BaseUser user);
+
     boolean exists(String login);
 
     BaseUser get(int id);

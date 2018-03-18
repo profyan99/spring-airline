@@ -13,7 +13,7 @@
         <result property="patronymic" column="patronymic"/>
         <result property="login" column="login" />
         <result property="password" column="password" />
-        <association property="position" column="position"/>
+        <result property="position" column="position"/>
     </resultMap>
 
     <insert id="register" parameterType="Admin">
@@ -28,4 +28,8 @@
     <select id="getAdmin" resultType="Admin" parameterType="_int">
         SELECT position FROM admin WHERE foreignKey=#{id}
     </select>
+
+    <update id="updateAdmin" parameterType="Admin">
+        UPDATE admin SET position=#{position} WHERE foreignKey=#{id}
+    </update>
 </mapper>

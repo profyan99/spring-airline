@@ -57,9 +57,30 @@ public class ClientDAOImpl implements ClientDAO {
             ;
         } catch (RuntimeException e) {
             logger.error("Couldn't get client: " + e.toString());
-            throw new SimpleException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString()+" get client", this.getClass().getName(), "");
+            throw new SimpleException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString()+"get client", this.getClass().getName(), "");
         }
         return client;
+    }
+
+    @Override
+    public void updateClient(Client client) {
+        SqlSession session = sessionFactory.openSession();
+        try {
+            session
+                    .getMapper(UserMapper.class)
+                    .update(client);
+            session
+                    .getMapper(ClientMapper.class)
+                    .updateClient(client);
+            session.commit();
+        } catch (RuntimeException e) {
+            logger.error("Couldn't update client: " + e.toString());
+            session.rollback();
+            throw new SimpleException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + "updating client",
+                    this.getClass().getName(), "");
+        } finally {
+            session.close();
+        }
     }
 
     @Override

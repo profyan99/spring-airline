@@ -64,8 +64,29 @@ public class ClientServiceImpl implements ClientService {
         return responseDTO;
     }
 
+
     @Override
     public ClientUpdateResponseDTO update(ClientUpdateRequestDTO request) {
-        return null;
+        ClientUpdateResponseDTO response;
+        Client client = clientDAO.findClientById(request.getId());
+        if(!client.getPassword().equals(request.getOldPassword())) {
+            throw new SimpleException(ConstantsSetting.ErrorsConstants.INVALID_PASSWORD.toString(), this.getClass().getName(), "");
+        }
+        client.setFirstName(request.getFirstName());
+        client.setLastName(request.getLastName());
+        client.setPatronymic(request.getPatronymic());
+        client.setPassword(request.getNewPassword());
+        client.setEmail(request.getEmail());
+        client.setPhone(request.getPhone());
+        clientDAO.updateClient(client);
+        response = new ClientUpdateResponseDTO(
+                client.getFirstName(),
+                client.getLastName(),
+                client.getPatronymic(),
+                client.getUserType(),
+                client.getPhone(),
+                client.getEmail()
+        );
+        return response;
     }
 }

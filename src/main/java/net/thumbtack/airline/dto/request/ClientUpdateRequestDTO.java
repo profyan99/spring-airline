@@ -8,6 +8,8 @@ import org.hibernate.validator.constraints.Email;
 
 public class ClientUpdateRequestDTO extends UserDTO {
 
+    private int id;
+
     @Email(message = ConstantsSetting.BAD_EMAIL,
     regexp = ConstantsSetting.EMAIL_REGEX)
     private String email;
@@ -32,6 +34,14 @@ public class ClientUpdateRequestDTO extends UserDTO {
 
     public ClientUpdateRequestDTO() {
 
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getEmail() {

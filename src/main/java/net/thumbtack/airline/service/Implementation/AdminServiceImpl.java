@@ -84,7 +84,25 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public AdminUpdateResponseDTO update(AdminUpdateRequestDTO request) {
-        return null;
+        AdminUpdateResponseDTO response;
+        Admin admin = adminDAO.findAdminById(request.getId());
+        if(!admin.getPassword().equals(request.getOldPassword())) {
+            throw new SimpleException(ConstantsSetting.ErrorsConstants.INVALID_PASSWORD.toString(), this.getClass().getName(), "");
+        }
+        admin.setFirstName(request.getFirstName());
+        admin.setLastName(request.getLastName());
+        admin.setPatronymic(request.getPatronymic());
+        admin.setPassword(request.getNewPassword());
+        admin.setPosition(request.getPosition());
+        adminDAO.updateAdmin(admin);
+        response = new AdminUpdateResponseDTO(
+                admin.getFirstName(),
+                admin.getLastName(),
+                admin.getPatronymic(),
+                admin.getPosition(),
+                admin.getUserType()
+        );
+        return response;
     }
 
     @Override

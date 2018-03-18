@@ -7,5 +7,6 @@ import net.thumbtack.airline.dto.response.ClientUpdateResponseDTO;
 
 public interface ClientService {
     ClientResponseDTO register(ClientRegistrationRequestDTO request);
+
     ClientUpdateResponseDTO update(ClientUpdateRequestDTO request);
 }

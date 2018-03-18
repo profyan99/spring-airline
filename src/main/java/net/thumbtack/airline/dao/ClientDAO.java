@@ -19,6 +19,12 @@ public interface ClientDAO {
     Client findClientById(int id);
 
     /**
+     * Update {@link Client}
+     * @param client {@link Client}
+     */
+    void updateClient(Client client);
+
+    /**
      * Get only {@link Client} object without {@link net.thumbtack.airline.model.BaseUser}
      * @param id user id
      * @return {@link Client} filled only Client's fields

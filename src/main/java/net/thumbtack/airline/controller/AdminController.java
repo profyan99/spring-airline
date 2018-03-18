@@ -58,9 +58,11 @@ public class AdminController {
     @PutMapping("/admin")
     public ResponseEntity<?> update(@RequestBody @Valid AdminUpdateRequestDTO request,
                                     @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(ConstantsSetting.UserRoles.ADMIN_ROLE.toString())) {
+        UserCookieDTO userCookieDTO = cookieService.getUserCookie(uuid);
+        if(uuid.isEmpty() || !userCookieDTO.getUserType().equals(ConstantsSetting.UserRoles.ADMIN_ROLE.toString())) {
             throw new SimpleException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "", "");
         }
+        request.setId(userCookieDTO.getId());
         AdminUpdateResponseDTO adminResponse =  adminService.update(request);
         return ResponseEntity.ok(adminResponse);
     }

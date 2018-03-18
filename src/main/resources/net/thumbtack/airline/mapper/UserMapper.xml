@@ -22,4 +22,8 @@
         SELECT * FROM user WHERE id=#{id}
     </select>
 
+    <update id="update" parameterType="User">
+        UPDATE user SET firstName=#{firstName}, lastName=#{lastName}, patronymic=#{patronymic}, password=#{password}
+    </update>
+
 </mapper>

@@ -82,6 +82,27 @@ public class AdminDAOImpl implements AdminDAO {
     }
 
     @Override
+    public void updateAdmin(Admin admin) {
+        SqlSession session = sessionFactory.openSession();
+        try {
+            session
+                    .getMapper(UserMapper.class)
+                    .update(admin);
+            session
+                    .getMapper(AdminMapper.class)
+                    .updateAdmin(admin);
+            session.commit();
+        } catch (RuntimeException e) {
+            logger.error("Couldn't update admin: " + e.toString());
+            session.rollback();
+            throw new SimpleException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + "updating admin",
+                    this.getClass().getName(), "");
+        } finally {
+            session.close();
+        }
+    }
+
+    @Override
     public List<Client> getClients() {
         List<Client> clients;
         try (SqlSession session = sessionFactory.openSession()) {

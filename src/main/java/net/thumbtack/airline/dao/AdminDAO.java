@@ -31,6 +31,12 @@ public interface AdminDAO {
     Admin getAdmin(int id);
 
     /**
+     * Update {@link Admin}
+     * @param admin {@link Admin}
+     */
+    void updateAdmin(Admin admin);
+
+    /**
      * Get all users with user type "Client"
      * @return {@link List<Client>}
      *

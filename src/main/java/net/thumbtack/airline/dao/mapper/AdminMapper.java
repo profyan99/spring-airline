@@ -9,5 +9,5 @@ public interface AdminMapper {
 
     Admin getAdmin(int id);
 
-    Admin update(Admin admin);
+    void updateAdmin(Admin admin);
 }

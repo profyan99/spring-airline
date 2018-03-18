@@ -11,5 +11,7 @@ public interface ClientMapper {
 
     Client findClientById(int id);
 
+    void updateClient(Client client);
+
     List<Client> getAll();
 }

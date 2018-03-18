@@ -6,6 +6,8 @@ import net.thumbtack.airline.dto.validator.annotation.PasswordValid;
 
 public class AdminUpdateRequestDTO extends UserDTO {
 
+    private int id;
+
     private String position;
 
     private String oldPassword;
@@ -24,6 +26,14 @@ public class AdminUpdateRequestDTO extends UserDTO {
 
     public AdminUpdateRequestDTO() {
 
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getPosition() {

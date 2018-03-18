@@ -3,6 +3,7 @@ package net.thumbtack.airline.dto.response;
 import net.thumbtack.airline.dto.UserDTO;
 
 public class AdminUpdateResponseDTO extends UserDTO {
+
     private String position;
 
     private String userType;
