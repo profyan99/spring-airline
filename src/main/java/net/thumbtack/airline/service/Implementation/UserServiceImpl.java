@@ -4,14 +4,15 @@ import net.thumbtack.airline.ConstantsSetting;
 import net.thumbtack.airline.dao.AdminDAO;
 import net.thumbtack.airline.dao.ClientDAO;
 import net.thumbtack.airline.dao.UserDAO;
-import net.thumbtack.airline.dto.BaseLoginDTO;
 import net.thumbtack.airline.dto.UserDTO;
 import net.thumbtack.airline.dto.request.LoginRequestDTO;
 import net.thumbtack.airline.dto.response.AdminResponseDTO;
+import net.thumbtack.airline.dto.response.BaseLoginDto;
 import net.thumbtack.airline.dto.response.ClientResponseDTO;
-import net.thumbtack.airline.exception.SimpleException;
+import net.thumbtack.airline.exception.BaseException;
 import net.thumbtack.airline.model.BaseUser;
 import net.thumbtack.airline.model.Client;
+import net.thumbtack.airline.model.UserRole;
 import net.thumbtack.airline.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,37 +44,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public BaseLoginDTO login(LoginRequestDTO loginRequestDTO) {
-        BaseLoginDTO baseLoginDTO;
+    public BaseLoginDto login(LoginRequestDTO loginRequestDTO) {
+        BaseLoginDto baseLoginDTO;
         BaseUser user = userDAO.login(loginRequestDTO.getLogin());
-        if(user == null) {
-            throw new SimpleException(ConstantsSetting.ErrorsConstants.ACCOUNT_NOT_FOUND.toString(), this.getClass().getName(), "");
+        checkUser(user);
+        if (!user.getPassword().equals(loginRequestDTO.getPassword())) {
+            throw new BaseException(ConstantsSetting.ErrorsConstants.INVALID_PASSWORD.toString(), this.getClass().getName(), "");
         }
-        if(user.getPassword().equals(loginRequestDTO.getPassword())) {
-            if (user.getUserType().equals(ConstantsSetting.UserRoles.ADMIN_ROLE.toString())) {
-                baseLoginDTO = new AdminResponseDTO(
-                        user.getFirstName(),
-                        user.getLastName(),
-                        user.getPatronymic(),
-                        user.getId(),
-                        user.getUserType(),
-                        adminDAO.getAdmin(user.getId()).getPosition()
-                );
-            } else {
-                Client client = clientDAO.getClient(user.getId());
-                baseLoginDTO = new ClientResponseDTO(
-                        user.getFirstName(),
-                        user.getLastName(),
-                        user.getPatronymic(),
-                        user.getId(),
-                        user.getUserType(),
-                        client.getPhone(),
-                        client.getEmail()
-                );
-            }
-        }
-        else {
-            throw new SimpleException(ConstantsSetting.ErrorsConstants.INVALID_PASSWORD.toString(), this.getClass().getName(), "");
+        if (user.getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
+            baseLoginDTO = new AdminResponseDTO(
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getPatronymic(),
+                    user.getId(),
+                    user.getUserType(),
+                    adminDAO.getAdmin(user.getId()).getPosition()
+            );
+        } else {
+            Client client = clientDAO.getClient(user.getId());
+            baseLoginDTO = new ClientResponseDTO(
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getPatronymic(),
+                    user.getId(),
+                    user.getUserType(),
+                    client.getPhone(),
+                    client.getEmail()
+            );
         }
         return baseLoginDTO;
     }
@@ -82,10 +79,8 @@ public class UserServiceImpl implements UserService {
     public UserDTO get(int id) {
         UserDTO userDTO;
         BaseUser user = userDAO.get(id);
-        if(user == null) {
-            throw new SimpleException(ConstantsSetting.ErrorsConstants.ACCOUNT_NOT_FOUND.toString(), this.getClass().getName(), "");
-        }
-        if (user.getUserType().equals(ConstantsSetting.UserRoles.ADMIN_ROLE.toString())) {
+        checkUser(user);
+        if (user.getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
             userDTO = new AdminResponseDTO(
                     user.getFirstName(),
                     user.getLastName(),
@@ -107,5 +102,11 @@ public class UserServiceImpl implements UserService {
             );
         }
         return userDTO;
+    }
+
+    private void checkUser(BaseUser user) {
+        if (user == null) {
+            throw new BaseException(ConstantsSetting.ErrorsConstants.ACCOUNT_NOT_FOUND.toString(), this.getClass().getName(), "");
+        }
     }
 }

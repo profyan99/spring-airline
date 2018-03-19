@@ -1,12 +1,10 @@
 package net.thumbtack.airline.model;
 
-import net.thumbtack.airline.ConstantsSetting;
-
 public class Admin extends BaseUser {
     private String position;
 
     public Admin(String firstName, String secondName, String patronymic, String login, String password, String position) {
-        super(firstName, secondName, patronymic, login, password, ConstantsSetting.UserRoles.ADMIN_ROLE.toString());
+        super(firstName, secondName, patronymic, login, password, UserRole.ADMIN_ROLE.toString());
         this.position = position;
     }
 

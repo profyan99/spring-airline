@@ -8,7 +8,7 @@ import net.thumbtack.airline.dto.request.AdminUpdateRequestDTO;
 import net.thumbtack.airline.dto.response.AdminResponseDTO;
 import net.thumbtack.airline.dto.response.AdminUpdateResponseDTO;
 import net.thumbtack.airline.dto.response.ClientResponseDTO;
-import net.thumbtack.airline.exception.SimpleException;
+import net.thumbtack.airline.exception.BaseException;
 import net.thumbtack.airline.model.Admin;
 import net.thumbtack.airline.model.Plane;
 import net.thumbtack.airline.service.AdminService;
@@ -42,27 +42,26 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public AdminResponseDTO register(AdminRegistrationRequestDTO request) {
         AdminResponseDTO responseDTO;
-        if (!userDAO.exists(request.getLogin())) {
-            Admin admin = new Admin(
-                    request.getFirstName(),
-                    request.getLastName(),
-                    request.getPatronymic(),
-                    request.getLogin(),
-                    request.getPassword(),
-                    request.getPosition()
-            );
-            adminDAO.register(admin);
-            responseDTO = new AdminResponseDTO(
-                    admin.getFirstName(),
-                    admin.getLastName(),
-                    admin.getPatronymic(),
-                    admin.getId(),
-                    admin.getUserType(),
-                    admin.getPosition()
-            );
-        } else {
-            throw new SimpleException(ConstantsSetting.ErrorsConstants.ACCOUNT_EXIST_ERROR.toString(), this.getClass().getName(), "");
+        if (userDAO.exists(request.getLogin())) {
+            throw new BaseException(ConstantsSetting.ErrorsConstants.ACCOUNT_EXIST_ERROR.toString(), this.getClass().getName(), "");
         }
+        Admin admin = new Admin(
+                request.getFirstName(),
+                request.getLastName(),
+                request.getPatronymic(),
+                request.getLogin(),
+                request.getPassword(),
+                request.getPosition()
+        );
+        adminDAO.register(admin);
+        responseDTO = new AdminResponseDTO(
+                admin.getFirstName(),
+                admin.getLastName(),
+                admin.getPatronymic(),
+                admin.getId(),
+                admin.getUserType(),
+                admin.getPosition()
+        );
         return responseDTO;
     }
 
@@ -86,8 +85,8 @@ public class AdminServiceImpl implements AdminService {
     public AdminUpdateResponseDTO update(AdminUpdateRequestDTO request) {
         AdminUpdateResponseDTO response;
         Admin admin = adminDAO.findAdminById(request.getId());
-        if(!admin.getPassword().equals(request.getOldPassword())) {
-            throw new SimpleException(ConstantsSetting.ErrorsConstants.INVALID_PASSWORD.toString(), this.getClass().getName(), "");
+        if (!admin.getPassword().equals(request.getOldPassword())) {
+            throw new BaseException(ConstantsSetting.ErrorsConstants.INVALID_PASSWORD.toString(), this.getClass().getName(), "");
         }
         admin.setFirstName(request.getFirstName());
         admin.setLastName(request.getLastName());

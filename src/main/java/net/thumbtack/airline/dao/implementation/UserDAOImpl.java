@@ -2,8 +2,7 @@ package net.thumbtack.airline.dao.implementation;
 
 import net.thumbtack.airline.ConstantsSetting;
 import net.thumbtack.airline.dao.UserDAO;
-import net.thumbtack.airline.dao.mapper.UserMapper;
-import net.thumbtack.airline.exception.SimpleException;
+import net.thumbtack.airline.exception.BaseException;
 import net.thumbtack.airline.model.BaseUser;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -14,7 +13,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class UserDAOImpl implements UserDAO {
+public class UserDAOImpl extends  BaseDAOImpl implements UserDAO {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -28,7 +27,7 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public boolean exists(String login) {
         try(SqlSession session = sessionFactory.openSession()) {
-            return session.getMapper(UserMapper.class).exists(login);
+            return getUserMapper(session).exists(login);
         } catch (RuntimeException e) {
             logger.error("Couldn't check for exist user: "+e.toString());
             return false;
@@ -39,10 +38,10 @@ public class UserDAOImpl implements UserDAO {
     public BaseUser login(String login) {
         BaseUser user;
         try(SqlSession session = sessionFactory.openSession()) {
-            user =  session.getMapper(UserMapper.class).login(login);
+            user =  getUserMapper(session).login(login);
         } catch (RuntimeException e) {
             logger.error("Couldn't getAdmin user by getAdmin: "+e.toString());
-            throw new SimpleException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString()+"getAdmin", this.getClass().getName(), "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString()+"getAdmin", this.getClass().getName(), "");
         }
         return user;
     }
@@ -51,10 +50,10 @@ public class UserDAOImpl implements UserDAO {
     public BaseUser get(int id) {
         BaseUser user;
         try(SqlSession session = sessionFactory.openSession()) {
-            user =  session.getMapper(UserMapper.class).get(id);
+            user =  getUserMapper(session).get(id);
         } catch (RuntimeException e) {
             logger.error("Couldn't get user by id: "+e.toString());
-            throw new SimpleException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString()+"get user", this.getClass().getName(), "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString()+"get user", this.getClass().getName(), "");
         }
         return user;
     }

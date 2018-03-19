@@ -1,7 +1,7 @@
 package net.thumbtack.airline;
 
-import net.thumbtack.airline.dto.response.ErrorDTO;
-import net.thumbtack.airline.exception.SimpleException;
+import net.thumbtack.airline.dto.response.ErrorDto;
+import net.thumbtack.airline.exception.BaseException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,17 +18,17 @@ import java.util.List;
 @ControllerAdvice
 public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(value = {SimpleException.class})
-    public ResponseEntity<?> handleSimpleException(SimpleException ex) {
-        return ResponseEntity.badRequest().body(new ErrorDTO(ex.getErrorCode(), ex.getField(), ex.getMessage()));
+    @ExceptionHandler(value = {BaseException.class})
+    public ResponseEntity<?> handleSimpleException(BaseException ex) {
+        return ResponseEntity.badRequest().body(new ErrorDto(ex.getErrorCode(), ex.getField(), ex.getMessage()));
     }
 
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
                                                                   HttpStatus status, WebRequest request) {
         BindingResult result = ex.getBindingResult();
-        List<ErrorDTO> errors = new ArrayList<>();
+        List<ErrorDto> errors = new ArrayList<>();
         result.getFieldErrors().forEach((e) ->
-                errors.add(new ErrorDTO(e.getCode() + ": " + e.getRejectedValue(), e.getField(), e.getDefaultMessage())));
+                errors.add(new ErrorDto(e.getCode() + ": " + e.getRejectedValue(), e.getField(), e.getDefaultMessage())));
         return ResponseEntity.badRequest().body(errors);
     }
 }

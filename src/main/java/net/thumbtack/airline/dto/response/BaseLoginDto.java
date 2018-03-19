@@ -1,16 +1,18 @@
-package net.thumbtack.airline.dto;
+package net.thumbtack.airline.dto.response;
 
-public class BaseLoginDTO extends UserDTO {
+import net.thumbtack.airline.dto.UserDTO;
+
+public class BaseLoginDto extends UserDTO {
     private int id;
     private String userType;
 
-    public BaseLoginDTO(String firstName, String lastName, String patronymic, int id, String userType) {
+    public BaseLoginDto(String firstName, String lastName, String patronymic, int id, String userType) {
         super(firstName, lastName, patronymic);
         this.id = id;
         this.userType = userType;
     }
 
-    public BaseLoginDTO() {
+    public BaseLoginDto() {
 
     }
 

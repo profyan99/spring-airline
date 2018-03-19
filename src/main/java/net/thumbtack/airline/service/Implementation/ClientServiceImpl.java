@@ -7,7 +7,7 @@ import net.thumbtack.airline.dto.request.ClientRegistrationRequestDTO;
 import net.thumbtack.airline.dto.request.ClientUpdateRequestDTO;
 import net.thumbtack.airline.dto.response.ClientResponseDTO;
 import net.thumbtack.airline.dto.response.ClientUpdateResponseDTO;
-import net.thumbtack.airline.exception.SimpleException;
+import net.thumbtack.airline.exception.BaseException;
 import net.thumbtack.airline.model.Client;
 import net.thumbtack.airline.service.ClientService;
 import org.slf4j.Logger;
@@ -37,30 +37,28 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public ClientResponseDTO register(ClientRegistrationRequestDTO request) {
         ClientResponseDTO responseDTO;
-        if(!userDAO.exists(request.getLogin())) {
-            Client client = new Client(
-                    request.getFirstName(),
-                    request.getLastName(),
-                    request.getPatronymic(),
-                    request.getLogin(),
-                    request.getPassword(),
-                    request.getEmail(),
-                    request.getPhone().replace("-","")
-            );
-            clientDAO.register(client);
-            responseDTO = new ClientResponseDTO(
-                    client.getFirstName(),
-                    client.getLastName(),
-                    client.getPatronymic(),
-                    client.getId(),
-                    client.getUserType(),
-                    client.getPhone(),
-                    client.getEmail()
-            );
+        if (!userDAO.exists(request.getLogin())) {
+            throw new BaseException(ConstantsSetting.ErrorsConstants.ACCOUNT_EXIST_ERROR.toString(), this.getClass().getName(), "");
         }
-        else {
-            throw new SimpleException(ConstantsSetting.ErrorsConstants.ACCOUNT_EXIST_ERROR.toString(), this.getClass().getName(), "");
-        }
+        Client client = new Client(
+                request.getFirstName(),
+                request.getLastName(),
+                request.getPatronymic(),
+                request.getLogin(),
+                request.getPassword(),
+                request.getEmail(),
+                request.getPhone().replace("-", "")
+        );
+        clientDAO.register(client);
+        responseDTO = new ClientResponseDTO(
+                client.getFirstName(),
+                client.getLastName(),
+                client.getPatronymic(),
+                client.getId(),
+                client.getUserType(),
+                client.getPhone(),
+                client.getEmail()
+        );
         return responseDTO;
     }
 
@@ -69,8 +67,8 @@ public class ClientServiceImpl implements ClientService {
     public ClientUpdateResponseDTO update(ClientUpdateRequestDTO request) {
         ClientUpdateResponseDTO response;
         Client client = clientDAO.findClientById(request.getId());
-        if(!client.getPassword().equals(request.getOldPassword())) {
-            throw new SimpleException(ConstantsSetting.ErrorsConstants.INVALID_PASSWORD.toString(), this.getClass().getName(), "");
+        if (!client.getPassword().equals(request.getOldPassword())) {
+            throw new BaseException(ConstantsSetting.ErrorsConstants.INVALID_PASSWORD.toString(), this.getClass().getName(), "");
         }
         client.setFirstName(request.getFirstName());
         client.setLastName(request.getLastName());

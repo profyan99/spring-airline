@@ -2,9 +2,7 @@ package net.thumbtack.airline.dao.implementation;
 
 import net.thumbtack.airline.ConstantsSetting;
 import net.thumbtack.airline.dao.ClientDAO;
-import net.thumbtack.airline.dao.mapper.ClientMapper;
-import net.thumbtack.airline.dao.mapper.UserMapper;
-import net.thumbtack.airline.exception.SimpleException;
+import net.thumbtack.airline.exception.BaseException;
 import net.thumbtack.airline.model.Client;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -15,7 +13,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class ClientDAOImpl implements ClientDAO {
+public class ClientDAOImpl extends BaseDAOImpl implements ClientDAO {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -28,22 +26,15 @@ public class ClientDAOImpl implements ClientDAO {
 
     @Override
     public Client register(Client client) {
-        SqlSession session = sessionFactory.openSession();
-        try {
-            session
-                    .getMapper(UserMapper.class)
-                    .register(client);
-            session
-                    .getMapper(ClientMapper.class)
-                    .register(client);
+        try (SqlSession session = sessionFactory.openSession()) {
+            getUserMapper(session).register(client);
+            getClientMapper(session).register(client);
+
             session.commit();
             return client;
         } catch (RuntimeException e) {
-            logger.error("Couldn't create client: "+e.toString());
-            session.rollback();
-            throw new SimpleException(ConstantsSetting.ErrorsConstants.REGISTRATION_ERROR.toString(), this.getClass().getName(), "");
-        } finally {
-            session.close();
+            logger.error("Couldn't create client: " + e.toString());
+            throw new BaseException(ConstantsSetting.ErrorsConstants.REGISTRATION_ERROR.toString(), this.getClass().getName(), "");
         }
     }
 
@@ -51,35 +42,25 @@ public class ClientDAOImpl implements ClientDAO {
     public Client getClient(int id) {
         Client client;
         try (SqlSession session = sessionFactory.openSession()) {
-            client = session
-                    .getMapper(ClientMapper.class)
-                    .getClient(id)
-            ;
+            client = getClientMapper(session).getClient(id);
         } catch (RuntimeException e) {
             logger.error("Couldn't get client: " + e.toString());
-            throw new SimpleException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString()+"get client", this.getClass().getName(), "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + "get client", this.getClass().getName(), "");
         }
         return client;
     }
 
     @Override
     public void updateClient(Client client) {
-        SqlSession session = sessionFactory.openSession();
-        try {
-            session
-                    .getMapper(UserMapper.class)
-                    .update(client);
-            session
-                    .getMapper(ClientMapper.class)
-                    .updateClient(client);
+        try (SqlSession session = sessionFactory.openSession()) {
+            getUserMapper(session).update(client);
+            getClientMapper(session).updateClient(client);
+
             session.commit();
         } catch (RuntimeException e) {
             logger.error("Couldn't update client: " + e.toString());
-            session.rollback();
-            throw new SimpleException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + "updating client",
+            throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + "updating client",
                     this.getClass().getName(), "");
-        } finally {
-            session.close();
         }
     }
 
@@ -87,13 +68,10 @@ public class ClientDAOImpl implements ClientDAO {
     public Client findClientById(int id) {
         Client client;
         try (SqlSession session = sessionFactory.openSession()) {
-            client = session
-                    .getMapper(ClientMapper.class)
-                    .findClientById(id)
-            ;
+            client = getClientMapper(session).findClientById(id);
         } catch (RuntimeException e) {
             logger.error("Couldn't find by id client: " + e.toString());
-            throw new SimpleException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString()+" find client by id", this.getClass().getName(), "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + " find client by id", this.getClass().getName(), "");
         }
         return client;
     }

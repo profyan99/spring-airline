@@ -4,11 +4,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-public class SimpleException extends RuntimeException {
+public class BaseException extends RuntimeException {
     private String field;
+    //TODO make enum with code errors
     private String errorCode;
 
-    public SimpleException(String message, String field, String errorCode) {
+    public BaseException(String message, String field, String errorCode) {
         super(message);
         this.field = field;
         this.errorCode = errorCode;

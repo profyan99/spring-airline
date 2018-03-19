@@ -2,10 +2,7 @@ package net.thumbtack.airline.dao.implementation;
 
 import net.thumbtack.airline.ConstantsSetting;
 import net.thumbtack.airline.dao.AdminDAO;
-import net.thumbtack.airline.dao.mapper.AdminMapper;
-import net.thumbtack.airline.dao.mapper.ClientMapper;
-import net.thumbtack.airline.dao.mapper.UserMapper;
-import net.thumbtack.airline.exception.SimpleException;
+import net.thumbtack.airline.exception.BaseException;
 import net.thumbtack.airline.model.Admin;
 import net.thumbtack.airline.model.Client;
 import org.apache.ibatis.session.SqlSession;
@@ -19,7 +16,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class AdminDAOImpl implements AdminDAO {
+public class AdminDAOImpl extends BaseDAOImpl implements AdminDAO {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -32,22 +29,15 @@ public class AdminDAOImpl implements AdminDAO {
 
     @Override
     public Admin register(Admin admin) {
-        SqlSession session = sessionFactory.openSession();
-        try {
-            session
-                    .getMapper(UserMapper.class)
-                    .register(admin);
-            session
-                    .getMapper(AdminMapper.class)
-                    .register(admin);
+        try (SqlSession session = sessionFactory.openSession()) {
+            getUserMapper(session).register(admin);
+            getAdminMapper(session).register(admin);
+
             session.commit();
             return admin;
         } catch (RuntimeException e) {
             logger.error("Couldn't create admin: " + e.toString());
-            session.rollback();
-            throw new SimpleException(ConstantsSetting.ErrorsConstants.REGISTRATION_ERROR.toString(), this.getClass().getName(), "");
-        } finally {
-            session.close();
+            throw new BaseException(ConstantsSetting.ErrorsConstants.REGISTRATION_ERROR.toString(), this.getClass().getName(), "");
         }
     }
 
@@ -55,13 +45,10 @@ public class AdminDAOImpl implements AdminDAO {
     public Admin getAdmin(int id) {
         Admin admin;
         try (SqlSession session = sessionFactory.openSession()) {
-            admin = session
-                    .getMapper(AdminMapper.class)
-                    .getAdmin(id)
-            ;
+            admin = getAdminMapper(session).getAdmin(id);
         } catch (RuntimeException e) {
             logger.error("Couldn't getAdmin admin: " + e.toString());
-            throw new SimpleException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString()+" get admin", this.getClass().getName(), "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + " get admin", this.getClass().getName(), "");
         }
         return admin;
     }
@@ -70,35 +57,25 @@ public class AdminDAOImpl implements AdminDAO {
     public Admin findAdminById(int id) {
         Admin admin;
         try (SqlSession session = sessionFactory.openSession()) {
-            admin = session
-                            .getMapper(AdminMapper.class)
-                            .findAdminById(id)
-            ;
+            admin = getAdminMapper(session).findAdminById(id);
         } catch (RuntimeException e) {
             logger.error("Couldn't find by id admin: " + e.toString());
-            throw new SimpleException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString()+" find admin by id", this.getClass().getName(), "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + " find admin by id", this.getClass().getName(), "");
         }
         return admin;
     }
 
     @Override
     public void updateAdmin(Admin admin) {
-        SqlSession session = sessionFactory.openSession();
-        try {
-            session
-                    .getMapper(UserMapper.class)
-                    .update(admin);
-            session
-                    .getMapper(AdminMapper.class)
-                    .updateAdmin(admin);
+        try (SqlSession session = sessionFactory.openSession()) {
+            getUserMapper(session).update(admin);
+            getAdminMapper(session).updateAdmin(admin);
+
             session.commit();
         } catch (RuntimeException e) {
             logger.error("Couldn't update admin: " + e.toString());
-            session.rollback();
-            throw new SimpleException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + "updating admin",
+            throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + "updating admin",
                     this.getClass().getName(), "");
-        } finally {
-            session.close();
         }
     }
 
@@ -106,12 +83,10 @@ public class AdminDAOImpl implements AdminDAO {
     public List<Client> getClients() {
         List<Client> clients;
         try (SqlSession session = sessionFactory.openSession()) {
-           clients = session
-                    .getMapper(ClientMapper.class)
-                    .getAll();
+            clients = getClientMapper(session).getAll();
         } catch (RuntimeException e) {
             logger.error("Couldn't find all clients: " + e.toString());
-            throw new SimpleException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString()+" get clients", this.getClass().getName(), "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + " get clients", this.getClass().getName(), "");
         }
         return clients;
     }

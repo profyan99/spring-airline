@@ -1,8 +1,6 @@
 package net.thumbtack.airline.dto.response;
 
-import net.thumbtack.airline.dto.BaseLoginDTO;
-
-public class AdminResponseDTO extends BaseLoginDTO {
+public class AdminResponseDTO extends BaseLoginDto {
 
     private String position;
 
