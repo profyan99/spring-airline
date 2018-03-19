@@ -20,7 +20,6 @@ public class LoginValidator implements ConstraintValidator<LoginValid, String> {
 
     @Override
     public void initialize(LoginValid loginValid) {
-
     }
 
     @Override

@@ -28,7 +28,8 @@ public class ClientDAOImpl implements ClientDAO {
 
     @Override
     public Client register(Client client) {
-        SqlSession session = sessionFactory.openSession();
+    	// REVU use try-with-resource
+       SqlSession session = sessionFactory.openSession();
         try {
             session
                     .getMapper(UserMapper.class)
@@ -64,6 +65,7 @@ public class ClientDAOImpl implements ClientDAO {
 
     @Override
     public void updateClient(Client client) {
+    	// REVU use try-with-resource
         SqlSession session = sessionFactory.openSession();
         try {
             session

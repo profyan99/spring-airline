@@ -32,8 +32,11 @@ public class AdminDAOImpl implements AdminDAO {
 
     @Override
     public Admin register(Admin admin) {
+    	// REVU use try-with-resource
         SqlSession session = sessionFactory.openSession();
         try {
+        	// REVU what about getUserMapper etc. ?
+        	// e.g. getUserMapper.register(admin)
             session
                     .getMapper(UserMapper.class)
                     .register(admin);
@@ -83,6 +86,7 @@ public class AdminDAOImpl implements AdminDAO {
 
     @Override
     public void updateAdmin(Admin admin) {
+    	// REVU use try-with-resource
         SqlSession session = sessionFactory.openSession();
         try {
             session

@@ -4,8 +4,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+// REVU rename :-)
 public class SimpleException extends RuntimeException {
     private String field;
+    // REVU it is better to have here ErrorCode instead of it's string
     private String errorCode;
 
     public SimpleException(String message, String field, String errorCode) {

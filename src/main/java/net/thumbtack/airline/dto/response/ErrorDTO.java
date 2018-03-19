@@ -1,5 +1,6 @@
 package net.thumbtack.airline.dto.response;
 
+// REVU rename to ErrorDto
 public class ErrorDTO {
 
     private  String errorCode;

@@ -46,9 +46,15 @@ public class UserServiceImpl implements UserService {
     public BaseLoginDTO login(LoginRequestDTO loginRequestDTO) {
         BaseLoginDTO baseLoginDTO;
         BaseUser user = userDAO.login(loginRequestDTO.getLogin());
+        // REVU create private checkUser
         if(user == null) {
             throw new SimpleException(ConstantsSetting.ErrorsConstants.ACCOUNT_NOT_FOUND.toString(), this.getClass().getName(), "");
         }
+        // REVU revert condition
+        // if(wrong)
+        // throw...
+        // and here is OK
+        // and you will have less "else"
         if(user.getPassword().equals(loginRequestDTO.getPassword())) {
             if (user.getUserType().equals(ConstantsSetting.UserRoles.ADMIN_ROLE.toString())) {
                 baseLoginDTO = new AdminResponseDTO(
@@ -82,6 +88,7 @@ public class UserServiceImpl implements UserService {
     public UserDTO get(int id) {
         UserDTO userDTO;
         BaseUser user = userDAO.get(id);
+        // REVU copy/paste. Create private method checkUser
         if(user == null) {
             throw new SimpleException(ConstantsSetting.ErrorsConstants.ACCOUNT_NOT_FOUND.toString(), this.getClass().getName(), "");
         }

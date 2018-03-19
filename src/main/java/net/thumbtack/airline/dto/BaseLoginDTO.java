@@ -1,5 +1,7 @@
+// REVU rename to net.thumbtack.airline.dto.response
 package net.thumbtack.airline.dto;
 
+// REVU rename to BaseLoginDto
 public class BaseLoginDTO extends UserDTO {
     private int id;
     private String userType;

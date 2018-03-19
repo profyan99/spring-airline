@@ -30,6 +30,8 @@ public class ConstantsSetting {
     public static final String EMAIL_REGEX = "^([a-z0-9_-]+\\.)*[a-z0-9_-]+@[a-z0-9_-]+(\\.[a-z0-9_-]+)*\\.[a-z]{2,6}$";
     public static final String NAME_REGEX = "^[а-яА-ЯёЁ\\s\\-]+$";
 
+    // REVU rename to UserRole
+    // move to model package
     public enum UserRoles {
         ADMIN_ROLE("ADMIN"),
         CLIENT_ROLE("CLIENT");
