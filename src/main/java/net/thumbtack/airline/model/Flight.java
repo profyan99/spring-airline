@@ -1,10 +1,9 @@
-package net.thumbtack.airline.dto;
-
-import net.thumbtack.airline.model.Schedule;
+package net.thumbtack.airline.model;
 
 import java.util.List;
 
-public class FlightDTO {
+public class Flight {
+    private int id;
     private String flightName;
     private String planeName;
     private String fromTown;
@@ -15,25 +14,11 @@ public class FlightDTO {
     private int priceEconomy;
     private Schedule schedule;
     private List<String> dates;
+    private boolean approved;
+    private Plane plane;
 
-    public FlightDTO(String flightName, String planeName, String fromTown, String toTown, String start,
-                     String duration, int priceBusiness, int priceEconomy, Schedule schedule) {
-
-        this.flightName = flightName;
-        this.planeName = planeName;
-        this.fromTown = fromTown;
-        this.toTown = toTown;
-        this.start = start;
-        this.duration = duration;
-        this.priceBusiness = priceBusiness;
-        this.priceEconomy = priceEconomy;
-        this.schedule = schedule;
-        dates = null;
-    }
-
-    // For FlightAddResponseDTO, because we need schedule and dates together
-    public FlightDTO(String flightName, String planeName, String fromTown, String toTown, String start,
-                     String duration, int priceBusiness, int priceEconomy, Schedule schedule, List<String> dates) {
+    public Flight(String flightName, String planeName, String fromTown, String toTown, String start, String duration,
+                  int priceBusiness, int priceEconomy, Schedule schedule, List<String> dates, boolean approved, Plane plane) {
         this.flightName = flightName;
         this.planeName = planeName;
         this.fromTown = fromTown;
@@ -44,25 +29,21 @@ public class FlightDTO {
         this.priceEconomy = priceEconomy;
         this.schedule = schedule;
         this.dates = dates;
+        this.approved = approved;
+        this.plane = plane;
+        id = 0;
     }
 
-    public FlightDTO(String flightName, String planeName, String fromTown, String toTown, String start,
-                     String duration, int priceBusiness, int priceEconomy, List<String> dates) {
+    public Flight() {
 
-        this.flightName = flightName;
-        this.planeName = planeName;
-        this.fromTown = fromTown;
-        this.toTown = toTown;
-        this.start = start;
-        this.duration = duration;
-        this.priceBusiness = priceBusiness;
-        this.priceEconomy = priceEconomy;
-        this.dates = dates;
-        schedule = null;
     }
 
-    public FlightDTO() {
+    public int getId() {
+        return id;
+    }
 
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getFlightName() {
@@ -143,5 +124,40 @@ public class FlightDTO {
 
     public void setDates(List<String> dates) {
         this.dates = dates;
+    }
+
+    public boolean isApproved() {
+        return approved;
+    }
+
+    public void setApproved(boolean approved) {
+        this.approved = approved;
+    }
+
+    public Plane getPlane() {
+        return plane;
+    }
+
+    public void setPlane(Plane plane) {
+        this.plane = plane;
+    }
+
+    @Override
+    public String toString() {
+        return "Flight{" +
+                "id=" + id +
+                ", flightName='" + flightName + '\'' +
+                ", planeName='" + planeName + '\'' +
+                ", fromTown='" + fromTown + '\'' +
+                ", toTown='" + toTown + '\'' +
+                ", start='" + start + '\'' +
+                ", duration='" + duration + '\'' +
+                ", priceBusiness=" + priceBusiness +
+                ", priceEconomy=" + priceEconomy +
+                ", schedule=" + schedule +
+                ", dates=" + dates +
+                ", approved=" + approved +
+                ", plane=" + plane +
+                '}';
     }
 }

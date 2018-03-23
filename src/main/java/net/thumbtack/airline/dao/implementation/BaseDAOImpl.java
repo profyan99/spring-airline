@@ -1,9 +1,6 @@
 package net.thumbtack.airline.dao.implementation;
 
-import net.thumbtack.airline.dao.mapper.AdminMapper;
-import net.thumbtack.airline.dao.mapper.ClientMapper;
-import net.thumbtack.airline.dao.mapper.CookieMapper;
-import net.thumbtack.airline.dao.mapper.UserMapper;
+import net.thumbtack.airline.dao.mapper.*;
 import org.apache.ibatis.session.SqlSession;
 
 public class BaseDAOImpl {
@@ -22,4 +19,10 @@ public class BaseDAOImpl {
     protected CookieMapper getCookieMapper(SqlSession session) {
         return session.getMapper(CookieMapper.class);
     }
+
+    protected PlaneMapper getPlaneMapper(SqlSession session) {
+        return session.getMapper(PlaneMapper.class);
+    }
+
+    protected FlightMapper getFlightMapper(SqlSession session) { return session.getMapper(FlightMapper.class); }
 }

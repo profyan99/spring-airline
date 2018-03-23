@@ -8,6 +8,7 @@ import net.thumbtack.airline.dto.response.AdminResponseDTO;
 import net.thumbtack.airline.dto.response.AdminUpdateResponseDTO;
 import net.thumbtack.airline.dto.response.ClientResponseDTO;
 import net.thumbtack.airline.exception.BaseException;
+import net.thumbtack.airline.exception.ErrorCode;
 import net.thumbtack.airline.model.Plane;
 import net.thumbtack.airline.model.UserRole;
 import net.thumbtack.airline.service.AdminService;
@@ -61,7 +62,7 @@ public class AdminController {
                                     @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
         UserCookieDTO userCookieDTO = cookieService.getUserCookie(uuid);
         if(uuid.isEmpty() || !userCookieDTO.getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "", "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "", ErrorCode.UNAUTHORISED_ERROR);
         }
         request.setId(userCookieDTO.getId());
         AdminUpdateResponseDTO adminResponse =  adminService.update(request);
@@ -71,7 +72,7 @@ public class AdminController {
     @GetMapping("/clients")
     public ResponseEntity<?> clients(@CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
         if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "", "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
         }
         List<ClientResponseDTO> adminResponse =  adminService.getClients();
         return ResponseEntity.ok(adminResponse);
@@ -80,7 +81,7 @@ public class AdminController {
     @GetMapping("/planes")
     public ResponseEntity<?> planes(@CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
         if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "", "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
         }
         List<Plane> adminResponse =  adminService.getPlanes();
         return ResponseEntity.ok(adminResponse);

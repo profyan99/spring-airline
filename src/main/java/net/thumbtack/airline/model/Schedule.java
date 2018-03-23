@@ -1,6 +1,7 @@
-package net.thumbtack.airline.dto;
+package net.thumbtack.airline.model;
 
 public class Schedule {
+    private int id;
     private String fromDate;
     private String toDate;
     private String period;
@@ -9,10 +10,19 @@ public class Schedule {
         this.fromDate = fromDate;
         this.toDate = toDate;
         this.period = period;
+        id = 0;
     }
 
     public Schedule() {
 
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getFromDate() {

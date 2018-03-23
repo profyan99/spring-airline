@@ -1,7 +1,10 @@
 package net.thumbtack.airline.service.Implementation;
 
+import net.thumbtack.airline.ConstantsSetting;
 import net.thumbtack.airline.dao.CookieDAO;
 import net.thumbtack.airline.dto.UserCookieDTO;
+import net.thumbtack.airline.exception.BaseException;
+import net.thumbtack.airline.exception.ErrorCode;
 import net.thumbtack.airline.model.UserCookie;
 import net.thumbtack.airline.service.CookieService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +23,17 @@ public class CookieServiceImpl implements CookieService {
     }
 
     @Override
+    public boolean exists(String uuid) {
+        return cookieDAO.exists(uuid);
+    }
+
+    @Override
     public UserCookieDTO getUserCookie(String uuid) {
         UserCookie cookie = cookieDAO.get(uuid);
+        if(cookie == null) {
+            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), this.getClass().getName(),
+                    ErrorCode.UNAUTHORISED_ERROR);
+        }
         return new UserCookieDTO(cookie.getId(), cookie.getUserType());
     }
 

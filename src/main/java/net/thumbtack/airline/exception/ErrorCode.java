@@ -1,0 +1,13 @@
+package net.thumbtack.airline.exception;
+
+public enum ErrorCode {
+    UNAUTHORISED_ERROR,
+    ALREADY_LOGIN,
+    REGISTRATION_ERROR,
+    ERROR_WITH_DATABASE,
+    ACCOUNT_EXIST_ERROR,
+    INVALID_PASSWORD,
+    FLIGHT_EXIST_ERROR,
+    INVALID_DATE_FORMAT,
+    ACCOUNT_NOT_FOUND
+}

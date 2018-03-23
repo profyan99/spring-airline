@@ -9,6 +9,7 @@ import net.thumbtack.airline.dto.response.AdminResponseDTO;
 import net.thumbtack.airline.dto.response.AdminUpdateResponseDTO;
 import net.thumbtack.airline.dto.response.ClientResponseDTO;
 import net.thumbtack.airline.exception.BaseException;
+import net.thumbtack.airline.exception.ErrorCode;
 import net.thumbtack.airline.model.Admin;
 import net.thumbtack.airline.model.Plane;
 import net.thumbtack.airline.service.AdminService;
@@ -43,7 +44,8 @@ public class AdminServiceImpl implements AdminService {
     public AdminResponseDTO register(AdminRegistrationRequestDTO request) {
         AdminResponseDTO responseDTO;
         if (userDAO.exists(request.getLogin())) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.ACCOUNT_EXIST_ERROR.toString(), this.getClass().getName(), "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.ACCOUNT_EXIST_ERROR.toString(),
+                    this.getClass().getName(), ErrorCode.ACCOUNT_EXIST_ERROR);
         }
         Admin admin = new Admin(
                 request.getFirstName(),
@@ -86,7 +88,8 @@ public class AdminServiceImpl implements AdminService {
         AdminUpdateResponseDTO response;
         Admin admin = adminDAO.findAdminById(request.getId());
         if (!admin.getPassword().equals(request.getOldPassword())) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.INVALID_PASSWORD.toString(), this.getClass().getName(), "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.INVALID_PASSWORD.toString(),
+                    this.getClass().getName(), ErrorCode.INVALID_PASSWORD);
         }
         admin.setFirstName(request.getFirstName());
         admin.setLastName(request.getLastName());
@@ -106,7 +109,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<Plane> getPlanes() {
-        return null;
+        return adminDAO.getPlanes();
     }
 
 }

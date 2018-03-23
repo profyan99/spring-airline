@@ -20,7 +20,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {BaseException.class})
     public ResponseEntity<?> handleSimpleException(BaseException ex) {
-        return ResponseEntity.badRequest().body(new ErrorDto(ex.getErrorCode(), ex.getField(), ex.getMessage()));
+        return ResponseEntity.badRequest().body(new ErrorDto(ex.getErrorCode().name(), ex.getField(), ex.getMessage()));
     }
 
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,

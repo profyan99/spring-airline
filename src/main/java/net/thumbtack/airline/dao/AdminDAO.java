@@ -2,6 +2,7 @@ package net.thumbtack.airline.dao;
 
 import net.thumbtack.airline.model.Admin;
 import net.thumbtack.airline.model.Client;
+import net.thumbtack.airline.model.Plane;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -43,4 +44,10 @@ public interface AdminDAO {
      * @see Client
      */
     List<Client> getClients();
+
+    /**
+     * Get all {@link Plane}
+     * @return {@link List<Plane>}
+     */
+    List<Plane> getPlanes();
 }

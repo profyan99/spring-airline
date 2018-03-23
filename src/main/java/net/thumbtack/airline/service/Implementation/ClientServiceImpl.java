@@ -8,6 +8,7 @@ import net.thumbtack.airline.dto.request.ClientUpdateRequestDTO;
 import net.thumbtack.airline.dto.response.ClientResponseDTO;
 import net.thumbtack.airline.dto.response.ClientUpdateResponseDTO;
 import net.thumbtack.airline.exception.BaseException;
+import net.thumbtack.airline.exception.ErrorCode;
 import net.thumbtack.airline.model.Client;
 import net.thumbtack.airline.service.ClientService;
 import org.slf4j.Logger;
@@ -38,7 +39,8 @@ public class ClientServiceImpl implements ClientService {
     public ClientResponseDTO register(ClientRegistrationRequestDTO request) {
         ClientResponseDTO responseDTO;
         if (!userDAO.exists(request.getLogin())) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.ACCOUNT_EXIST_ERROR.toString(), this.getClass().getName(), "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.ACCOUNT_EXIST_ERROR.toString(),
+                    this.getClass().getName(), ErrorCode.ACCOUNT_EXIST_ERROR);
         }
         Client client = new Client(
                 request.getFirstName(),
@@ -68,7 +70,8 @@ public class ClientServiceImpl implements ClientService {
         ClientUpdateResponseDTO response;
         Client client = clientDAO.findClientById(request.getId());
         if (!client.getPassword().equals(request.getOldPassword())) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.INVALID_PASSWORD.toString(), this.getClass().getName(), "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.INVALID_PASSWORD.toString(),
+                    this.getClass().getName(), ErrorCode.INVALID_PASSWORD);
         }
         client.setFirstName(request.getFirstName());
         client.setLastName(request.getLastName());

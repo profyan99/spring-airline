@@ -10,6 +10,7 @@ import net.thumbtack.airline.dto.response.AdminResponseDTO;
 import net.thumbtack.airline.dto.response.BaseLoginDto;
 import net.thumbtack.airline.dto.response.ClientResponseDTO;
 import net.thumbtack.airline.exception.BaseException;
+import net.thumbtack.airline.exception.ErrorCode;
 import net.thumbtack.airline.model.BaseUser;
 import net.thumbtack.airline.model.Client;
 import net.thumbtack.airline.model.UserRole;
@@ -49,7 +50,8 @@ public class UserServiceImpl implements UserService {
         BaseUser user = userDAO.login(loginRequestDTO.getLogin());
         checkUser(user);
         if (!user.getPassword().equals(loginRequestDTO.getPassword())) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.INVALID_PASSWORD.toString(), this.getClass().getName(), "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.INVALID_PASSWORD.toString(),
+                    this.getClass().getName(), ErrorCode.INVALID_PASSWORD);
         }
         if (user.getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
             baseLoginDTO = new AdminResponseDTO(
@@ -106,7 +108,8 @@ public class UserServiceImpl implements UserService {
 
     private void checkUser(BaseUser user) {
         if (user == null) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.ACCOUNT_NOT_FOUND.toString(), this.getClass().getName(), "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.ACCOUNT_NOT_FOUND.toString(),
+                    this.getClass().getName(), ErrorCode.ACCOUNT_NOT_FOUND);
         }
     }
 }

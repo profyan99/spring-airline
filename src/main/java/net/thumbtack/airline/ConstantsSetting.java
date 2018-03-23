@@ -38,6 +38,7 @@ public class ConstantsSetting {
         INVALID_PASSWORD("Invalid password"),
         UNAUTHORISED_ERROR("You haven't logged in or you haven't admin's permission"),
         ALREADY_LOGIN("You have already logged in"),
+        FLIGHT_EXIST_ERROR("Flight has already created"),
         SIMPLE_ERROR("Error with ");
 
         private final String name;

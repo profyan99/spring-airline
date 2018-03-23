@@ -1,8 +1,8 @@
 package net.thumbtack.airline.dto.response;
 
-import net.thumbtack.airline.dto.Schedule;
 import net.thumbtack.airline.dto.FlightDTO;
 import net.thumbtack.airline.model.Plane;
+import net.thumbtack.airline.model.Schedule;
 
 import java.util.List;
 

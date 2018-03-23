@@ -1,7 +1,7 @@
 package net.thumbtack.airline.dto.request;
 
 import net.thumbtack.airline.dto.FlightDTO;
-import net.thumbtack.airline.dto.Schedule;
+import net.thumbtack.airline.model.Schedule;
 
 import java.util.List;
 

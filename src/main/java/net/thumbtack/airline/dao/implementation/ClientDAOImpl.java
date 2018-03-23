@@ -3,6 +3,7 @@ package net.thumbtack.airline.dao.implementation;
 import net.thumbtack.airline.ConstantsSetting;
 import net.thumbtack.airline.dao.ClientDAO;
 import net.thumbtack.airline.exception.BaseException;
+import net.thumbtack.airline.exception.ErrorCode;
 import net.thumbtack.airline.model.Client;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -34,7 +35,8 @@ public class ClientDAOImpl extends BaseDAOImpl implements ClientDAO {
             return client;
         } catch (RuntimeException e) {
             logger.error("Couldn't create client: " + e.toString());
-            throw new BaseException(ConstantsSetting.ErrorsConstants.REGISTRATION_ERROR.toString(), this.getClass().getName(), "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.REGISTRATION_ERROR.toString(),
+                    this.getClass().getName(), ErrorCode.REGISTRATION_ERROR);
         }
     }
 
@@ -45,7 +47,8 @@ public class ClientDAOImpl extends BaseDAOImpl implements ClientDAO {
             client = getClientMapper(session).getClient(id);
         } catch (RuntimeException e) {
             logger.error("Couldn't get client: " + e.toString());
-            throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + "get client", this.getClass().getName(), "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + "get client",
+                    this.getClass().getName(), ErrorCode.ERROR_WITH_DATABASE);
         }
         return client;
     }
@@ -60,7 +63,7 @@ public class ClientDAOImpl extends BaseDAOImpl implements ClientDAO {
         } catch (RuntimeException e) {
             logger.error("Couldn't update client: " + e.toString());
             throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + "updating client",
-                    this.getClass().getName(), "");
+                    this.getClass().getName(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
 
@@ -71,7 +74,8 @@ public class ClientDAOImpl extends BaseDAOImpl implements ClientDAO {
             client = getClientMapper(session).findClientById(id);
         } catch (RuntimeException e) {
             logger.error("Couldn't find by id client: " + e.toString());
-            throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + " find client by id", this.getClass().getName(), "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + " find client by id",
+                    this.getClass().getName(), ErrorCode.ERROR_WITH_DATABASE);
         }
         return client;
     }

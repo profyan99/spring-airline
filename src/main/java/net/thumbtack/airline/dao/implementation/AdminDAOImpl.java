@@ -3,8 +3,10 @@ package net.thumbtack.airline.dao.implementation;
 import net.thumbtack.airline.ConstantsSetting;
 import net.thumbtack.airline.dao.AdminDAO;
 import net.thumbtack.airline.exception.BaseException;
+import net.thumbtack.airline.exception.ErrorCode;
 import net.thumbtack.airline.model.Admin;
 import net.thumbtack.airline.model.Client;
+import net.thumbtack.airline.model.Plane;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.slf4j.Logger;
@@ -37,7 +39,8 @@ public class AdminDAOImpl extends BaseDAOImpl implements AdminDAO {
             return admin;
         } catch (RuntimeException e) {
             logger.error("Couldn't create admin: " + e.toString());
-            throw new BaseException(ConstantsSetting.ErrorsConstants.REGISTRATION_ERROR.toString(), this.getClass().getName(), "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.REGISTRATION_ERROR.toString(), this.getClass().getName(),
+                    ErrorCode.REGISTRATION_ERROR);
         }
     }
 
@@ -48,7 +51,8 @@ public class AdminDAOImpl extends BaseDAOImpl implements AdminDAO {
             admin = getAdminMapper(session).getAdmin(id);
         } catch (RuntimeException e) {
             logger.error("Couldn't getAdmin admin: " + e.toString());
-            throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + " get admin", this.getClass().getName(), "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + " get admin",
+                    this.getClass().getName(), ErrorCode.ERROR_WITH_DATABASE);
         }
         return admin;
     }
@@ -60,7 +64,8 @@ public class AdminDAOImpl extends BaseDAOImpl implements AdminDAO {
             admin = getAdminMapper(session).findAdminById(id);
         } catch (RuntimeException e) {
             logger.error("Couldn't find by id admin: " + e.toString());
-            throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + " find admin by id", this.getClass().getName(), "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + " find admin by id",
+                    this.getClass().getName(), ErrorCode.ERROR_WITH_DATABASE);
         }
         return admin;
     }
@@ -75,7 +80,7 @@ public class AdminDAOImpl extends BaseDAOImpl implements AdminDAO {
         } catch (RuntimeException e) {
             logger.error("Couldn't update admin: " + e.toString());
             throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + "updating admin",
-                    this.getClass().getName(), "");
+                    this.getClass().getName(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
 
@@ -86,8 +91,22 @@ public class AdminDAOImpl extends BaseDAOImpl implements AdminDAO {
             clients = getClientMapper(session).getAll();
         } catch (RuntimeException e) {
             logger.error("Couldn't find all clients: " + e.toString());
-            throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + " get clients", this.getClass().getName(), "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + " get clients",
+                    this.getClass().getName(), ErrorCode.ERROR_WITH_DATABASE);
         }
         return clients;
+    }
+
+    @Override
+    public List<Plane> getPlanes() {
+        List<Plane> planes;
+        try (SqlSession session = sessionFactory.openSession()) {
+            planes = getPlaneMapper(session).getAll();
+        } catch (RuntimeException e) {
+            logger.error("Couldn't find all planes: " + e.toString());
+            throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + " get planes",
+                    this.getClass().getName(), ErrorCode.ERROR_WITH_DATABASE);
+        }
+        return planes;
     }
 }

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.thumbtack.airline.dao.mapper.FlightMapper">
+
+    <resultMap id="FlightResult" type="Flight">
+        <id column="f_id" property="id"/>
+        <result column="flightName" property="flightName"/>
+        <result column="planeName" property="planeName"/>
+        <result column="fromTown" property="fromTown"/>
+        <result column="toTown" property="toTown"/>
+        <result column="start" property="start"/>
+        <result column="duration" property="duration"/>
+        <result column="priceBusiness" property="priceBusiness"/>
+        <result column="priceEconomy" property="priceEconomy"/>
+        <result column="approved" property="approved"/>
+        <association property="schedule" javaType="Schedule">
+            <id column="s_id" property="id"/>
+            <result column="fromDate" property="fromDate"/>
+            <result column="toDate" property="toDate"/>
+            <result column="period" property="period"/>
+        </association>
+        <association property="plane" javaType="Plane">
+            <result column="name" property="name"/>
+            <result column="bussinesRows" property="bussinesRows"/>
+            <result column="economyRows" property="economyRows"/>
+            <result column="placesInBusinessRow" property="placesInBusinessRow"/>
+            <result column="placesInEconomyRow" property="placesInEconomyRow"/>
+        </association>
+        <collection property="dates" ofType="string">
+            <result column="day" property=""/>
+        </collection>
+    </resultMap>
+
+    <select id="get" resultMap="FlightResult" parameterType="string">
+        SELECT
+            f.id AS f_id,
+            f.flightName,
+            f.planeName,
+            f.fromTown,
+            f.toTown,
+            f.start,
+            f.duration,
+            f.priceBusiness,
+            f.priceEconomy,
+            f.approved,
+            s.id AS s_id,
+            s.fromDate,
+            s.toDate,
+            s.period,
+            p.name,
+            p.bussinesRows,
+            p.economyRows,
+            p.placesInBusinessRow,
+            p.placesInEconomyRow,
+            df.day
+        FROM flight f
+            LEFT JOIN schedule s ON f.id = s.flightId
+            RIGHT JOIN plane p ON f.planeName = p.name
+            RIGHT JOIN day_flight df ON f.id = df.flightId
+        WHERE
+            f.flightName = #{flightName}
+    </select>
+
+    <select id="exists" parameterType="string" resultType="_boolean">
+        SELECT EXISTS(SELECT 1
+                      FROM flight
+                      WHERE UPPER(flightName) = UPPER(#{flightName}))
+    </select>
+
+    <insert id="addFlight" parameterType="Flight" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO flight (flightName, planeName, fromTown, toTown, start, duration, priceBusiness, priceEconomy,
+                            approved) VALUES
+            (#{flightName}, #{planeName}, #{fromTown}, #{toTown}, #{start}, #{duration}, #{priceBusiness},
+             #{priceEconomy},
+             #{approved});
+    </insert>
+
+    <insert id="addDate" parameterType="Flight">
+        INSERT INTO day_flight(day, flightId) VALUES
+        <foreach collection="dates" item="e" index="index" open="(" separator="),(" close=")">
+            #{e},
+            #{id}
+        </foreach>
+    </insert>
+
+    <insert id="addSchedule" parameterType="Flight">
+        INSERT INTO schedule (fromDate, toDate, flightId, period) VALUES (#{schedule.fromDate}, #{schedule.toDate},
+                                                                          #{id}, #{schedule.period})
+    </insert>
+
+
+</mapper>

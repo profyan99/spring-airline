@@ -7,6 +7,7 @@ import net.thumbtack.airline.dto.request.ClientUpdateRequestDTO;
 import net.thumbtack.airline.dto.response.ClientResponseDTO;
 import net.thumbtack.airline.dto.response.ClientUpdateResponseDTO;
 import net.thumbtack.airline.exception.BaseException;
+import net.thumbtack.airline.exception.ErrorCode;
 import net.thumbtack.airline.model.UserRole;
 import net.thumbtack.airline.service.ClientService;
 import net.thumbtack.airline.service.CookieService;
@@ -53,7 +54,7 @@ public class ClientController {
     public ResponseEntity<?> update(@RequestBody @Valid ClientUpdateRequestDTO request,
                                     @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
         if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.CLIENT_ROLE.toString())) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "", "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
         }
         ClientUpdateResponseDTO clientResponse =  clientService.update(request);
         return ResponseEntity.ok(clientResponse);

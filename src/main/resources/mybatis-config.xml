@@ -12,6 +12,8 @@
 		<typeAlias type="net.thumbtack.airline.model.Client" alias="Client"/>
 		<typeAlias type="net.thumbtack.airline.model.UserCookie" alias="Cookie"/>
 		<typeAlias type="net.thumbtack.airline.model.Plane" alias="Plane"/>
+		<typeAlias type="net.thumbtack.airline.model.Flight" alias="Flight"/>
+		<typeAlias type="net.thumbtack.airline.model.Schedule" alias="Schedule"/>
 	</typeAliases>
 
 	<!--<settings>
@@ -34,7 +36,9 @@
 		<mapper resource="net/thumbtack/airline/mapper/AdminMapper.xml"/>
 		<mapper resource="net/thumbtack/airline/mapper/UserMapper.xml"/>
 		<mapper resource="net/thumbtack/airline/mapper/ClientMapper.xml"/>
-		<mapper resource="net/thumbtack/airline/mapper/UserCookie.xml"/>
+		<mapper resource="net/thumbtack/airline/mapper/CookieMapper.xml"/>
+		<mapper resource="net/thumbtack/airline/mapper/PlaneMapper.xml"/>
+		<mapper resource="net/thumbtack/airline/mapper/FlightMapper.xml"/>
 	</mappers>
 
 

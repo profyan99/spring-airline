@@ -17,4 +17,8 @@
         DELETE FROM cookies WHERE uuid=#{uuid}
     </delete>
 
+    <select id="exists" parameterType="string" resultType="_boolean">
+        SELECT EXISTS(SELECT 1 FROM cookies WHERE uuid=#{uuid})
+    </select>
+
 </mapper>

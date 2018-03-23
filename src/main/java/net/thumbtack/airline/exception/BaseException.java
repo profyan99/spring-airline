@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class BaseException extends RuntimeException {
     private String field;
     //TODO make enum with code errors
-    private String errorCode;
+    private ErrorCode errorCode;
 
-    public BaseException(String message, String field, String errorCode) {
+    public BaseException(String message, String field, ErrorCode errorCode) {
         super(message);
         this.field = field;
         this.errorCode = errorCode;
@@ -19,7 +19,7 @@ public class BaseException extends RuntimeException {
         return field;
     }
 
-    public String getErrorCode() {
+    public ErrorCode getErrorCode() {
         return errorCode;
     }
 }

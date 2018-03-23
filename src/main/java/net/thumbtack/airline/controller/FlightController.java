@@ -7,6 +7,7 @@ import net.thumbtack.airline.dto.request.FlightUpdateRequestDTO;
 import net.thumbtack.airline.dto.response.FlightAddResponseDTO;
 import net.thumbtack.airline.dto.response.FlightUpdateResponseDTO;
 import net.thumbtack.airline.exception.BaseException;
+import net.thumbtack.airline.exception.ErrorCode;
 import net.thumbtack.airline.model.UserRole;
 import net.thumbtack.airline.service.CookieService;
 import net.thumbtack.airline.service.FlightService;
@@ -39,7 +40,7 @@ public class FlightController {
     public ResponseEntity<?> add(@RequestBody FlightAddRequestDTO request,
                                  @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
         if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "", "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
         }
         FlightAddResponseDTO flightResponse =  flightService.add(request);
         return ResponseEntity.ok(flightResponse);
@@ -49,7 +50,7 @@ public class FlightController {
     public ResponseEntity<?> update(@RequestBody FlightUpdateRequestDTO request,
                                     @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
         if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "", "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
         }
         FlightUpdateResponseDTO flightResponse =  flightService.update(request);
         return ResponseEntity.ok(flightResponse);
@@ -59,7 +60,7 @@ public class FlightController {
     public ResponseEntity<?> delete(@PathVariable("id") int id,
                                     @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
         if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "", "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
         }
         flightService.delete(id);
         return ResponseEntity.ok().build();
@@ -69,7 +70,7 @@ public class FlightController {
     public ResponseEntity<?> get(@PathVariable("id") int id,
                                  @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
         if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "", "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
         }
         FlightAddResponseDTO flightResponse =  flightService.get(id);
         return ResponseEntity.ok(flightResponse);
@@ -79,7 +80,7 @@ public class FlightController {
     public ResponseEntity<?> approve(@PathVariable("id") int id,
                                      @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
         if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "", "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
         }
         FlightAddResponseDTO flightResponse =  flightService.approve(id);
         return ResponseEntity.ok(flightResponse);
@@ -95,7 +96,7 @@ public class FlightController {
             @RequestParam(required = false, value = "toDate", defaultValue = "") String toDate,
             @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
         if(uuid.isEmpty()) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "", "");
+            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
         }
 
         //TODO check user role. If admin, return flight with approve and plane
