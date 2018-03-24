@@ -109,4 +109,16 @@ public class AdminDAOImpl extends BaseDAOImpl implements AdminDAO {
         }
         return planes;
     }
+
+    @Override
+    public void clearDataBase() {
+        try (SqlSession session = sessionFactory.openSession()) {
+            getAdminMapper(session).clearDataBase();
+            session.commit();
+        } catch (RuntimeException e) {
+            logger.error("Couldn't clear data base: " + e.toString());
+            throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + " clearing DB",
+                    this.getClass().getName(), ErrorCode.ERROR_WITH_DATABASE);
+        }
+    }
 }

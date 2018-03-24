@@ -2,9 +2,11 @@ package net.thumbtack.airline;
 
 import net.thumbtack.airline.dto.response.ErrorDto;
 import net.thumbtack.airline.exception.BaseException;
+import net.thumbtack.airline.exception.ErrorCode;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -30,5 +32,12 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         result.getFieldErrors().forEach((e) ->
                 errors.add(new ErrorDto(e.getCode() + ": " + e.getRejectedValue(), e.getField(), e.getDefaultMessage())));
         return ResponseEntity.badRequest().body(errors);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers,
+                                                                  HttpStatus status, WebRequest request) {
+        return ResponseEntity.badRequest().body(new ErrorDto(ErrorCode.INVALID_JSON_FORMAT.toString(), request.getContextPath(),
+                ConstantsSetting.ErrorsConstants.INVALID_JSON_FORMAT.toString()));
     }
 }

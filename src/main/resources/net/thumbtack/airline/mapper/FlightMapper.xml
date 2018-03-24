@@ -78,18 +78,16 @@
              #{approved});
     </insert>
 
-    <insert id="addDate" parameterType="Flight">
+    <insert id="addDateAndSchedule" parameterType="Flight">
         INSERT INTO day_flight(day, flightId) VALUES
         <foreach collection="dates" item="e" index="index" open="(" separator="),(" close=")">
             #{e},
             #{id}
-        </foreach>
+        </foreach>;
+        <if test="schedule != null">
+            INSERT INTO schedule (fromDate, toDate, flightId, period) VALUES (#{schedule.fromDate}, #{schedule.toDate},
+            #{id}, #{schedule.period})
+        </if>;
     </insert>
-
-    <insert id="addSchedule" parameterType="Flight">
-        INSERT INTO schedule (fromDate, toDate, flightId, period) VALUES (#{schedule.fromDate}, #{schedule.toDate},
-                                                                          #{id}, #{schedule.period})
-    </insert>
-
 
 </mapper>

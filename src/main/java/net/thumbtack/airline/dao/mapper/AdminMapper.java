@@ -10,4 +10,6 @@ public interface AdminMapper {
     Admin getAdmin(int id);
 
     void updateAdmin(Admin admin);
+
+    void clearDataBase();
 }

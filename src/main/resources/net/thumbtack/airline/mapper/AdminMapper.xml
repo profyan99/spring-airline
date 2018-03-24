@@ -32,4 +32,9 @@
     <update id="updateAdmin" parameterType="Admin">
         UPDATE admin SET position=#{position} WHERE foreignKey=#{id}
     </update>
+
+    <delete id="clearDataBase">
+        DELETE FROM user;
+        DELETE FROM flight;
+    </delete>
 </mapper>

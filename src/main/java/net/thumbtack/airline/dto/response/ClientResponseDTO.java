@@ -31,4 +31,12 @@ public class ClientResponseDTO extends BaseLoginDto {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    @Override
+    public String toString() {
+        return "ClientResponseDTO{" +
+                "phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
 }

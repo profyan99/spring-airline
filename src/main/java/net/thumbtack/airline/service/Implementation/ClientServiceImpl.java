@@ -38,7 +38,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public ClientResponseDTO register(ClientRegistrationRequestDTO request) {
         ClientResponseDTO responseDTO;
-        if (!userDAO.exists(request.getLogin())) {
+        if (userDAO.exists(request.getLogin())) {
             throw new BaseException(ConstantsSetting.ErrorsConstants.ACCOUNT_EXIST_ERROR.toString(),
                     this.getClass().getName(), ErrorCode.ACCOUNT_EXIST_ERROR);
         }

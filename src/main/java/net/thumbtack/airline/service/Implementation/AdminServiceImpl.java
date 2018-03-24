@@ -80,6 +80,7 @@ public class AdminServiceImpl implements AdminService {
                         e.getPhone(),
                         e.getEmail()
                 )));
+        logger.error(responseDTOS.toString());
         return responseDTOS;
     }
 
@@ -112,4 +113,8 @@ public class AdminServiceImpl implements AdminService {
         return adminDAO.getPlanes();
     }
 
+    @Override
+    public void clearDataBase() {
+        adminDAO.clearDataBase();
+    }
 }

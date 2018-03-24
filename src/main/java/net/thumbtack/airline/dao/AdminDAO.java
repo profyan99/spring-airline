@@ -50,4 +50,9 @@ public interface AdminDAO {
      * @return {@link List<Plane>}
      */
     List<Plane> getPlanes();
+
+    /**
+     * clear all data in database. Not for production
+     */
+    void clearDataBase();
 }

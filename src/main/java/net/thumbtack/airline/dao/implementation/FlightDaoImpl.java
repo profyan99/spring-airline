@@ -29,10 +29,7 @@ public class FlightDaoImpl extends BaseDAOImpl implements FlightDao {
     public Flight add(Flight flight) {
         try (SqlSession session = sessionFactory.openSession()) {
             getFlightMapper(session).addFlight(flight);
-            getFlightMapper(session).addDate(flight);
-            if (flight.getSchedule() != null) {
-                getFlightMapper(session).addSchedule(flight);
-            }
+            getFlightMapper(session).addDateAndSchedule(flight);
             flight.setPlane(getPlaneMapper(session).get(flight.getPlaneName()));
             session.commit();
             return flight;

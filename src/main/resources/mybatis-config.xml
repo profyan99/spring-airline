@@ -16,10 +16,6 @@
 		<typeAlias type="net.thumbtack.airline.model.Schedule" alias="Schedule"/>
 	</typeAliases>
 
-	<!--<settings>
-		<setting name="aggressiveLazyLoading" value="false" />
-	</settings>-->
-
 	<environments default="development">
 		<environment id="development">
 			<transactionManager type='JDBC' />
@@ -28,6 +24,8 @@
 				<property name='url' value='${jdbc.url}' />
 				<property name='username' value='${jdbc.username}' />
 				<property name='password' value='${jdbc.password}' />
+				<property name="poolPingQuery" value="SELECT 1" />
+				<property name="poolPingEnabled" value="true" />
 			</dataSource>
 		</environment>
 	</environments>

@@ -31,7 +31,7 @@
 
     <select id="getAll" resultMap="ClientResult">
         SELECT u.id, u.firstName, u.lastName, u.patronymic, u.login, u.password, c.email, c.phone FROM user u
-        RIGHT JOIN client c ON u.id = c.foreignKey
+        RIGHT JOIN client c ON u.id = c.foreignKey WHERE u.userType='CLIENT'
     </select>
 
 </mapper>

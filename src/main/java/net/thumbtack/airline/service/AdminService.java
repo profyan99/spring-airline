@@ -17,4 +17,6 @@ public interface AdminService {
     AdminUpdateResponseDTO update(AdminUpdateRequestDTO request);
 
     List<Plane> getPlanes();
+
+    void clearDataBase();
 }
