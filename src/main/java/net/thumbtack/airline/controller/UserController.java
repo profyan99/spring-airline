@@ -67,7 +67,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/account")
+    @GetMapping(path = "/account")
     public ResponseEntity<?> get(@CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
         if(uuid.isEmpty()) {
             throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);

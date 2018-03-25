@@ -32,7 +32,7 @@ public class UserDAOImpl extends BaseDAOImpl implements UserDAO {
         } catch (RuntimeException e) {
             logger.error("Couldn't check for exist user: " + e.toString());
             throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + "exist user",
-                    this.getClass().getName(), ErrorCode.ERROR_WITH_DATABASE);
+                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
 
@@ -44,7 +44,7 @@ public class UserDAOImpl extends BaseDAOImpl implements UserDAO {
         } catch (RuntimeException e) {
             logger.error("Couldn't getAdmin user by getAdmin: " + e.toString());
             throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + "getAdmin",
-                    this.getClass().getName(), ErrorCode.ERROR_WITH_DATABASE);
+                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
         }
         return user;
     }
@@ -57,7 +57,7 @@ public class UserDAOImpl extends BaseDAOImpl implements UserDAO {
         } catch (RuntimeException e) {
             logger.error("Couldn't get user by id: " + e.toString());
             throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + "get user",
-                    this.getClass().getName(), ErrorCode.ERROR_WITH_DATABASE);
+                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
         }
         return user;
     }

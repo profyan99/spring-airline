@@ -52,7 +52,7 @@ public class AdminDAOImpl extends BaseDAOImpl implements AdminDAO {
         } catch (RuntimeException e) {
             logger.error("Couldn't getAdmin admin: " + e.toString());
             throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + " get admin",
-                    this.getClass().getName(), ErrorCode.ERROR_WITH_DATABASE);
+                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
         }
         return admin;
     }
@@ -65,7 +65,7 @@ public class AdminDAOImpl extends BaseDAOImpl implements AdminDAO {
         } catch (RuntimeException e) {
             logger.error("Couldn't find by id admin: " + e.toString());
             throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + " find admin by id",
-                    this.getClass().getName(), ErrorCode.ERROR_WITH_DATABASE);
+                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
         }
         return admin;
     }
@@ -80,7 +80,7 @@ public class AdminDAOImpl extends BaseDAOImpl implements AdminDAO {
         } catch (RuntimeException e) {
             logger.error("Couldn't update admin: " + e.toString());
             throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + "updating admin",
-                    this.getClass().getName(), ErrorCode.ERROR_WITH_DATABASE);
+                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
 
@@ -92,7 +92,7 @@ public class AdminDAOImpl extends BaseDAOImpl implements AdminDAO {
         } catch (RuntimeException e) {
             logger.error("Couldn't find all clients: " + e.toString());
             throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + " get clients",
-                    this.getClass().getName(), ErrorCode.ERROR_WITH_DATABASE);
+                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
         }
         return clients;
     }
@@ -105,7 +105,7 @@ public class AdminDAOImpl extends BaseDAOImpl implements AdminDAO {
         } catch (RuntimeException e) {
             logger.error("Couldn't find all planes: " + e.toString());
             throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + " get planes",
-                    this.getClass().getName(), ErrorCode.ERROR_WITH_DATABASE);
+                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
         }
         return planes;
     }
@@ -118,7 +118,7 @@ public class AdminDAOImpl extends BaseDAOImpl implements AdminDAO {
         } catch (RuntimeException e) {
             logger.error("Couldn't clear data base: " + e.toString());
             throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + " clearing DB",
-                    this.getClass().getName(), ErrorCode.ERROR_WITH_DATABASE);
+                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
 }

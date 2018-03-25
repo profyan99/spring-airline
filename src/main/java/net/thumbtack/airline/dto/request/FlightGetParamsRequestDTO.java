@@ -7,14 +7,25 @@ public class FlightGetParamsRequestDTO {
     private String planeName;
     private String fromDate;
     private String toDate;
+    private String userType;
 
-    public FlightGetParamsRequestDTO(String fromTown, String toTown, String flightName, String planeName, String fromDate, String toDate) {
+    public FlightGetParamsRequestDTO(String fromTown, String toTown, String flightName, String planeName, String fromDate,
+                                     String toDate, String userType) {
         this.fromTown = fromTown;
         this.toTown = toTown;
         this.flightName = flightName;
         this.planeName = planeName;
         this.fromDate = fromDate;
         this.toDate = toDate;
+        this.userType = userType;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 
     public String getFromTown() {

@@ -5,6 +5,7 @@ import net.thumbtack.airline.dto.request.FlightAddRequestDTO;
 import net.thumbtack.airline.dto.request.FlightGetParamsRequestDTO;
 import net.thumbtack.airline.dto.request.FlightUpdateRequestDTO;
 import net.thumbtack.airline.dto.response.FlightAddResponseDTO;
+import net.thumbtack.airline.dto.response.FlightGetResponseDTO;
 import net.thumbtack.airline.dto.response.FlightUpdateResponseDTO;
 import net.thumbtack.airline.exception.BaseException;
 import net.thumbtack.airline.exception.ErrorCode;
@@ -48,10 +49,12 @@ public class FlightController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@RequestBody FlightUpdateRequestDTO request,
-                                    @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
+                                    @CookieValue(value = "${cookie}", defaultValue = "") String uuid,
+                                    @PathVariable(value = "id") int flightId) {
         if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
             throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
         }
+        request.setId(flightId);
         FlightUpdateResponseDTO flightResponse =  flightService.update(request);
         return ResponseEntity.ok(flightResponse);
     }
@@ -66,7 +69,7 @@ public class FlightController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(path = "/{id}")
     public ResponseEntity<?> get(@PathVariable("id") int id,
                                  @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
         if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
@@ -100,8 +103,8 @@ public class FlightController {
         }
 
         //TODO check user role. If admin, return flight with approve and plane
-        List<FlightAddResponseDTO> flightResponse =  flightService.get(new FlightGetParamsRequestDTO(
-                fromTown, toTown, flightName, planeName, fromDate, toDate
+        List<FlightGetResponseDTO> flightResponse =  flightService.get(new FlightGetParamsRequestDTO(
+                fromTown, toTown, flightName, planeName, fromDate, toDate, cookieService.getUserCookie(uuid).getUserType()
         ));
         return ResponseEntity.ok(flightResponse);
     }

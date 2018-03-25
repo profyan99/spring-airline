@@ -19,6 +19,12 @@ public class Flight {
 
     public Flight(String flightName, String planeName, String fromTown, String toTown, String start, String duration,
                   int priceBusiness, int priceEconomy, Schedule schedule, List<String> dates, boolean approved, Plane plane) {
+        this(flightName, planeName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, schedule, dates, approved, plane, 0);
+    }
+
+    public Flight(String flightName, String planeName, String fromTown, String toTown, String start, String duration,
+                  int priceBusiness, int priceEconomy, Schedule schedule, List<String> dates, boolean approved, Plane plane,
+                  int id) {
         this.flightName = flightName;
         this.planeName = planeName;
         this.fromTown = fromTown;
@@ -31,7 +37,7 @@ public class Flight {
         this.dates = dates;
         this.approved = approved;
         this.plane = plane;
-        id = 0;
+        this.id = id;
     }
 
     public Flight() {

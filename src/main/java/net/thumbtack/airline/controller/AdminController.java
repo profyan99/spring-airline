@@ -69,9 +69,8 @@ public class AdminController {
         return ResponseEntity.ok(adminResponse);
     }
 
-    @GetMapping("/clients")
+    @RequestMapping(value = "/clients", method = RequestMethod.GET)
     public ResponseEntity<?> clients(@CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        logger.error("CONTROLLER ------------------");
         if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
             throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
         }
@@ -79,7 +78,7 @@ public class AdminController {
         return ResponseEntity.ok(adminResponse);
     }
 
-    @GetMapping("/planes")
+    @GetMapping(path = "/planes")
     public ResponseEntity<?> planes(@CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
         if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
             throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);

@@ -40,7 +40,9 @@ public class ConstantsSetting {
         UNAUTHORISED_ERROR("You haven't logged in or you haven't admin's permission"),
         ALREADY_LOGIN("You have already logged in"),
         FLIGHT_EXIST_ERROR("Flight has already created"),
+        FLIGHT_NOT_FOUND("Flight not found"),
         INVALID_JSON_FORMAT("You have error in your JSON syntax, please check request data and send again."),
+        INVALID_DATE("Invalid value of date"),
         SIMPLE_ERROR("Error with ");
 
         private final String name;

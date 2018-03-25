@@ -34,7 +34,7 @@
         </collection>
     </resultMap>
 
-    <select id="get" resultMap="FlightResult" parameterType="string">
+    <select id="get" resultMap="FlightResult" parameterType="_int">
         SELECT
             f.id AS f_id,
             f.flightName,
@@ -61,13 +61,19 @@
             RIGHT JOIN plane p ON f.planeName = p.name
             RIGHT JOIN day_flight df ON f.id = df.flightId
         WHERE
-            f.flightName = #{flightName}
+            f.id = #{flightId}
     </select>
 
-    <select id="exists" parameterType="string" resultType="_boolean">
+    <select id="existsByName" parameterType="string" resultType="_boolean">
         SELECT EXISTS(SELECT 1
                       FROM flight
                       WHERE UPPER(flightName) = UPPER(#{flightName}))
+    </select>
+
+    <select id="existsById" parameterType="_int" resultType="_boolean">
+        SELECT EXISTS(SELECT 1
+        FROM flight
+        WHERE id=#{flightId})
     </select>
 
     <insert id="addFlight" parameterType="Flight" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
@@ -89,5 +95,77 @@
             #{id}, #{schedule.period})
         </if>;
     </insert>
+
+    <update id="update" parameterType="Flight">
+        UPDATE flight SET flightName = #{flightName}, planeName = #{planeName}, fromTown = #{fromTown}, toTown = #{toTown},
+        start = #{start}, duration = #{duration}, priceBusiness = #{priceBusiness}, priceEconomy = #{priceEconomy},
+        approved = #{approved} WHERE id = #{id};
+
+        <if test="schedule != null">
+            UPDATE schedule SET  fromDate = #{schedule.fromDate}, toDate =  #{schedule.toDate}, period = #{schedule.period}
+            WHERE flightId = #{id}
+        </if>;
+
+        DELETE FROM day_flight WHERE flightId = #{id};
+
+        INSERT INTO day_flight(day, flightId) VALUES
+        <foreach collection="dates" item="e" index="index" open="(" separator="),(" close=")">
+            #{e},
+            #{id}
+        </foreach>;
+
+    </update>
+
+    <delete id="delete" parameterType="_int">
+        DELETE FROM flight WHERE id=#{flightId}
+    </delete>
+
+    <select id="getAll" parameterMap="FlightResult">
+        SELECT
+            f.id AS f_id,
+            f.flightName,
+            f.planeName,
+            f.fromTown,
+            f.toTown,
+            f.start,
+            f.duration,
+            f.priceBusiness,
+            f.priceEconomy,
+            f.approved,
+            s.id AS s_id,
+            s.fromDate,
+            s.toDate,
+            s.period,
+            p.name,
+            p.bussinesRows,
+            p.economyRows,
+            p.placesInBusinessRow,
+            p.placesInEconomyRow,
+            df.day
+        FROM flight f
+            LEFT JOIN schedule s ON f.id = s.flightId
+            RIGHT JOIN plane p ON f.planeName = p.name
+            RIGHT JOIN day_flight df ON f.id = df.flightId
+        <where>
+            <if test="flightName != null">
+                f.flightName=#{flightName}
+            </if>
+            <if test="planeName != null">
+                 AND f.planeName = #{planeName}
+            </if>
+            <if test="fromTown != null">
+                AND f.fromTown = #{fromTown}
+            </if>
+            <if test="toTown != null">
+                AND f.toTown = #{toTown}
+            </if>
+            <if test="fromDate != null">
+                AND DATE(#{fromDate}) >= s.fromDate
+            </if>
+            <if test="toDate != null">
+                AND s.toDate >= DATE(#{toDate})
+            </if>
+        </where>
+    </select>
 
 </mapper>

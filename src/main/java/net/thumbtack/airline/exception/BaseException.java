@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(code = HttpStatus.BAD_REQUEST)
 public class BaseException extends RuntimeException {
     private String field;
-    //TODO make enum with code errors
     private ErrorCode errorCode;
 
     public BaseException(String message, String field, ErrorCode errorCode) {

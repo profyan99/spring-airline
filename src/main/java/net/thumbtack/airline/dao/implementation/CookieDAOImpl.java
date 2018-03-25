@@ -32,7 +32,7 @@ public class CookieDAOImpl extends  BaseDAOImpl implements CookieDAO {
         } catch (RuntimeException e) {
             logger.error("Couldn't check for exist cookie: "+e.toString());
             throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + "exist cookie",
-                    this.getClass().getName(), ErrorCode.ERROR_WITH_DATABASE);
+                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
 
@@ -45,7 +45,7 @@ public class CookieDAOImpl extends  BaseDAOImpl implements CookieDAO {
         } catch (RuntimeException e) {
             logger.error("Couldn't get cookie: " + e.toString());
             throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + "get cookie",
-                    this.getClass().getName(), ErrorCode.ERROR_WITH_DATABASE);
+                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
         }
         return cookie;
     }
@@ -59,7 +59,7 @@ public class CookieDAOImpl extends  BaseDAOImpl implements CookieDAO {
         } catch (RuntimeException e) {
             logger.error("Couldn't set cookie: " + e.toString());
             throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + "set cookie",
-                    this.getClass().getName(), ErrorCode.ERROR_WITH_DATABASE);
+                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
 
@@ -74,7 +74,7 @@ public class CookieDAOImpl extends  BaseDAOImpl implements CookieDAO {
             logger.error("Couldn't delete cookie: " + e.toString());
             session.rollback();
             throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + "delete cookie",
-                    this.getClass().getName(), ErrorCode.ERROR_WITH_DATABASE);
+                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
         } finally {
             session.close();
         }

@@ -36,7 +36,7 @@ public class ClientDAOImpl extends BaseDAOImpl implements ClientDAO {
         } catch (RuntimeException e) {
             logger.error("Couldn't create client: " + e.toString());
             throw new BaseException(ConstantsSetting.ErrorsConstants.REGISTRATION_ERROR.toString(),
-                    this.getClass().getName(), ErrorCode.REGISTRATION_ERROR);
+                    this.getClass().getSimpleName(), ErrorCode.REGISTRATION_ERROR);
         }
     }
 
@@ -48,7 +48,7 @@ public class ClientDAOImpl extends BaseDAOImpl implements ClientDAO {
         } catch (RuntimeException e) {
             logger.error("Couldn't get client: " + e.toString());
             throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + "get client",
-                    this.getClass().getName(), ErrorCode.ERROR_WITH_DATABASE);
+                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
         }
         return client;
     }
@@ -63,7 +63,7 @@ public class ClientDAOImpl extends BaseDAOImpl implements ClientDAO {
         } catch (RuntimeException e) {
             logger.error("Couldn't update client: " + e.toString());
             throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + "updating client",
-                    this.getClass().getName(), ErrorCode.ERROR_WITH_DATABASE);
+                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
 
@@ -75,7 +75,7 @@ public class ClientDAOImpl extends BaseDAOImpl implements ClientDAO {
         } catch (RuntimeException e) {
             logger.error("Couldn't find by id client: " + e.toString());
             throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR.toString() + " find client by id",
-                    this.getClass().getName(), ErrorCode.ERROR_WITH_DATABASE);
+                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
         }
         return client;
     }
