@@ -43,6 +43,7 @@ public class ConstantsSetting {
         FLIGHT_NOT_FOUND("Flight not found"),
         INVALID_JSON_FORMAT("You have error in your JSON syntax, please check request data and send again."),
         INVALID_DATE("Invalid value of date"),
+        INVALID_REQUEST_DATA("Invalid request. Please check and send again."),
         SIMPLE_ERROR("Error with ");
 
         private final String name;

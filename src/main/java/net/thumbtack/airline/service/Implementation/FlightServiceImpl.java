@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
@@ -101,6 +102,10 @@ public class FlightServiceImpl implements FlightService {
         LocalDate localDate, dateTo;
         localDate = LocalDate.parse(getFromDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         dateTo = LocalDate.parse(getToDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        if(!localDate.isBefore(dateTo)) {
+            throw new BaseException(ConstantsSetting.ErrorsConstants.INVALID_DATE.toString(),
+                    localDate.toString() + " and " + dateTo.toString(), ErrorCode.INVALID_DATE);
+        }
         //TODO Is it a good solution?
         //dates = new ArrayList<>(localDate.lengthOfYear()); // max size, mini optimization
         dates = new ArrayList<>();
@@ -246,33 +251,37 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     public List<FlightGetResponseDTO> get(FlightGetParamsRequestDTO params) {
-
         if (!params.getFromTown().isEmpty() && params.getToTown().isEmpty()) { // вылетающие из fromTown
             params.setToTown(null);
         } else if (params.getFromTown().isEmpty() && !params.getToTown().isEmpty()) { // прилетающие в town
             params.setFromTown(null);
+        } else if (params.getFromTown().isEmpty() && params.getToTown().isEmpty()) { // не указан город
+            throw new BaseException(ConstantsSetting.ErrorsConstants.INVALID_REQUEST_DATA.toString(),
+                    "Get flights", ErrorCode.INVALID_REQUEST_DATA);
         }
-        /*else if(!params.getFromTown().isEmpty() && !params.getToTown().isEmpty()) { // !рейсы между этими городами
-
-        }*/
-        if (params.getFlightName().isEmpty()) { // рейсы с указанным названием
+        if (params.getFlightName().isEmpty()) {
             params.setFlightName(null);
         }
-        if (params.getPlaneName().isEmpty()) { // рейсы на данном типе самолета
+        if (params.getPlaneName().isEmpty()) {
             params.setPlaneName(null);
         }
-        if (params.getFromDate().isEmpty()) { // рейсы с этой даты
+        if (params.getFromDate().isEmpty()) {
             params.setFromDate(null);
         }
-        if (params.getToDate().isEmpty()) { // рейсы до этой даты
+        if (params.getToDate().isEmpty()) {
             params.setToDate(null);
         }
-        if (!params.getFromDate().isEmpty() && !params.getToDate().isEmpty() &&
-                !LocalDate.parse(params.getFromDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")).isBefore(
+        if (params.getFromDate() != null && params.getToDate() != null) { // если указаны даты
+            try {
+                if (!LocalDate.parse(params.getFromDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")).isBefore(
                         LocalDate.parse(params.getToDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")))) {
-
-            throw new BaseException(ConstantsSetting.ErrorsConstants.INVALID_DATE.toString(),
-                    params.getFromDate() + " and " + params.getToDate(), ErrorCode.INVALID_DATE);
+                    throw new BaseException(ConstantsSetting.ErrorsConstants.INVALID_DATE.toString(),
+                            params.getFromDate() + " and " + params.getToDate(), ErrorCode.INVALID_DATE);
+                }
+            } catch (DateTimeParseException e) {
+                throw new BaseException(ConstantsSetting.ErrorsConstants.INVALID_DATE.toString(),
+                        params.getFromDate() + " and " + params.getToDate(), ErrorCode.INVALID_DATE);
+            }
         }
 
         List<FlightGetResponseDTO> response = new ArrayList<>();

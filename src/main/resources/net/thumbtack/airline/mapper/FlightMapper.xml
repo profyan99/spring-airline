@@ -17,7 +17,6 @@
         <result column="priceEconomy" property="priceEconomy"/>
         <result column="approved" property="approved"/>
         <association property="schedule" javaType="Schedule">
-            <id column="s_id" property="id"/>
             <result column="fromDate" property="fromDate"/>
             <result column="toDate" property="toDate"/>
             <result column="period" property="period"/>
@@ -46,7 +45,6 @@
             f.priceBusiness,
             f.priceEconomy,
             f.approved,
-            s.id AS s_id,
             s.fromDate,
             s.toDate,
             s.period,
@@ -120,7 +118,7 @@
         DELETE FROM flight WHERE id=#{flightId}
     </delete>
 
-    <select id="getAll" parameterMap="FlightResult">
+    <select id="getAll" resultMap="FlightResult">
         SELECT
             f.id AS f_id,
             f.flightName,
@@ -132,7 +130,6 @@
             f.priceBusiness,
             f.priceEconomy,
             f.approved,
-            s.id AS s_id,
             s.fromDate,
             s.toDate,
             s.period,
@@ -160,10 +157,10 @@
                 AND f.toTown = #{toTown}
             </if>
             <if test="fromDate != null">
-                AND DATE(#{fromDate}) >= s.fromDate
+                AND #{fromDate} BETWEEN s.fromDate AND s.toDate
             </if>
             <if test="toDate != null">
-                AND s.toDate >= DATE(#{toDate})
+                AND #{toDate} BETWEEN s.fromDate AND s.toDate
             </if>
         </where>
     </select>

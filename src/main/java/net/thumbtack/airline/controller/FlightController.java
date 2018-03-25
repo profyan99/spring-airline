@@ -101,8 +101,6 @@ public class FlightController {
         if(uuid.isEmpty()) {
             throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
         }
-
-        //TODO check user role. If admin, return flight with approve and plane
         List<FlightGetResponseDTO> flightResponse =  flightService.get(new FlightGetParamsRequestDTO(
                 fromTown, toTown, flightName, planeName, fromDate, toDate, cookieService.getUserCookie(uuid).getUserType()
         ));

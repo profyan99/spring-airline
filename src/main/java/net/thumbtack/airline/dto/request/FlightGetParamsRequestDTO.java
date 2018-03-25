@@ -75,4 +75,5 @@ public class FlightGetParamsRequestDTO {
     public void setToDate(String toDate) {
         this.toDate = toDate;
     }
+
 }
