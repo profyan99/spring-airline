@@ -55,8 +55,6 @@ public class UserController {
     		// let ErrorCode know it's strings
             throw new BaseException(ConstantsSetting.ErrorsConstants.ALREADY_LOGIN.toString(), "",  ErrorCode.ALREADY_LOGIN);
         }
-    	// REVU not transactionally
-    	// you can login but do not save cookie
         BaseLoginDto userResponse = userService.login(loginRequestDTO);
         String cookieValue = cookieService.setUserCookie(new UserCookieDTO(userResponse.getId(), userResponse.getUserType()));
         response.addCookie(new Cookie(COOKIE, cookieValue));
