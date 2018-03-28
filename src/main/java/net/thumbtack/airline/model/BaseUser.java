@@ -5,6 +5,7 @@ public class BaseUser {
     private String firstName;
     private String lastName;
     private String patronymic;
+    // REVU change to enum UserRole userType
     private String userType;
 
     private String login;

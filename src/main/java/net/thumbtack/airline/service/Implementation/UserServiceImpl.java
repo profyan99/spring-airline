@@ -53,6 +53,7 @@ public class UserServiceImpl implements UserService {
             throw new BaseException(ConstantsSetting.ErrorsConstants.INVALID_PASSWORD.toString(),
                     this.getClass().getName(), ErrorCode.INVALID_PASSWORD);
         }
+        // REVU switch
         if (user.getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
             baseLoginDTO = new AdminResponseDTO(
                     user.getFirstName(),
