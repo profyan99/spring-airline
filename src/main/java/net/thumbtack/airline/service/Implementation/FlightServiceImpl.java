@@ -27,6 +27,7 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.PatternSyntaxException;
 
 @Service
 public class FlightServiceImpl implements FlightService {
@@ -99,45 +100,51 @@ public class FlightServiceImpl implements FlightService {
 
     private List<String> setDates(String getFromDate, String getToDate, String schedulePeriod) {
         List<String> dates;
-        LocalDate localDate, dateTo;
-        localDate = LocalDate.parse(getFromDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        LocalDate dateFrom, dateTo;
+        dateFrom = LocalDate.parse(getFromDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         dateTo = LocalDate.parse(getToDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        if(!localDate.isBefore(dateTo)) {
+        if(!dateFrom.isBefore(dateTo)) {
             throw new BaseException(ConstantsSetting.ErrorsConstants.INVALID_DATE.toString(),
-                    localDate.toString() + " and " + dateTo.toString(), ErrorCode.INVALID_DATE);
+                    dateFrom.toString() + " and " + dateTo.toString(), ErrorCode.INVALID_DATE);
         }
-        //TODO Is it a good solution?
-        //dates = new ArrayList<>(localDate.lengthOfYear()); // max size, mini optimization
-        dates = new ArrayList<>();
+        dates = new ArrayList<>(dateTo.getDayOfYear() -  dateFrom.getDayOfYear() + 1);
         String period = schedulePeriod.toUpperCase();
 
         if (period.equals(FlightPeriod.DAILY.toString())) {
-            for (int i = localDate.getDayOfYear(), length = dateTo.getDayOfYear(); i <= length; i++) {
-                dates.add(localDate.withDayOfYear(i).toString());
+            for (int i = dateFrom.getDayOfYear(), length = dateTo.getDayOfYear(); i <= length; i++) {
+                dates.add(dateFrom.withDayOfYear(i).toString());
             }
         } else if (period.equals(FlightPeriod.EVEN.toString())) {
-            for (int i = localDate.getDayOfYear(), length = dateTo.getDayOfYear(); i <= length; i += 1) {
-                localDate = localDate.withDayOfYear(i);
-                if (localDate.getDayOfMonth() % 2 == 0) {
-                    dates.add(localDate.toString());
+            for (int i = dateFrom.getDayOfYear(), length = dateTo.getDayOfYear(); i <= length; i++) {
+                dateFrom = dateFrom.withDayOfYear(i);
+                if (dateFrom.getDayOfMonth() % 2 == 0) {
+                    dates.add(dateFrom.toString());
                 }
             }
         } else if (period.equals(FlightPeriod.ODD.toString())) {
-            for (int i = localDate.getDayOfYear(), length = dateTo.getDayOfYear(); i <= length; i += 1) {
-                localDate = localDate.withDayOfYear(i);
-                if (localDate.getDayOfMonth() % 2 != 0) {
-                    dates.add(localDate.toString());
+            for (int i = dateFrom.getDayOfYear(), length = dateTo.getDayOfYear(); i <= length; i++) {
+                dateFrom = dateFrom.withDayOfYear(i);
+                if (dateFrom.getDayOfMonth() % 2 != 0) {
+                    dates.add(dateFrom.toString());
                 }
             }
         } else {
-            String[] days = period.split(",");
+            String[] days;
+            try {
+                days = period.split(",");
+            } catch (PatternSyntaxException e) {
+                logger.error("Error while parsing days of period");
+                throw new BaseException(ConstantsSetting.ErrorsConstants.INVALID_DATE.toString(),
+                        period, ErrorCode.INVALID_DATE);
+            }
+
             boolean dayOfWeek;
 
             for (String s : days) {
                 dayOfWeek = false;
                 for (FlightPeriod p : FlightPeriod.values()) { // if the day of the week is specified
                     if (s.equals(p.toString())) {
-                        setDays(dates, p, localDate, dateTo);
+                        setDays(dates, p, dateFrom, dateTo);
                         dayOfWeek = true;
                     }
                 }
@@ -150,10 +157,10 @@ public class FlightServiceImpl implements FlightService {
                         throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR + "parsing date from string",
                                 this.getClass().getSimpleName(), ErrorCode.INVALID_DATE_FORMAT);
                     }
-                    for (int i = localDate.getMonthValue(), months = dateTo.getMonthValue(); i <= months; i++) {
-                        localDate = localDate.withMonth(i);
-                        if (dayNumber <= localDate.lengthOfMonth()) {
-                            dates.add(localDate.withDayOfMonth(dayNumber).toString());
+                    for (int i = dateFrom.getMonthValue(), months = dateTo.getMonthValue(); i <= months; i++) {
+                        dateFrom = dateFrom.withMonth(i);
+                        if (dayNumber <= dateFrom.lengthOfMonth()) {
+                            dates.add(dateFrom.withDayOfMonth(dayNumber).toString());
                         }
                     }
                 }

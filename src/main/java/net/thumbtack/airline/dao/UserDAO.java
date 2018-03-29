@@ -1,7 +1,10 @@
 package net.thumbtack.airline.dao;
 
 import net.thumbtack.airline.model.BaseUser;
+import net.thumbtack.airline.model.Country;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface UserDAO {
@@ -26,4 +29,10 @@ public interface UserDAO {
      * @return {@link BaseUser}
      */
     BaseUser get(int id);
+
+    /**
+     * Get countries' names and iso3166 codes for citizenship
+     * @return {@link List< Country >}
+     */
+    List<Country> getCountries();
 }

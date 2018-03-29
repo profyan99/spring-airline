@@ -7,7 +7,7 @@ public class Client extends BaseUser {
     public Client(String firstName, String secondName, String patronymic, String login,
                   String password, String email, String phone) {
 
-        super(firstName, secondName, patronymic, login, password, UserRole.CLIENT_ROLE.toString());
+        super(firstName, secondName, patronymic, login, password, UserRole.CLIENT_ROLE);
         this.email = email;
         this.phone = phone;
     }

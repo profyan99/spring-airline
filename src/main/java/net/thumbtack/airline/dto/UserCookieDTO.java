@@ -1,10 +1,12 @@
 package net.thumbtack.airline.dto;
 
+import net.thumbtack.airline.model.UserRole;
+
 public class UserCookieDTO {
     private int id;
-    private String userType;
+    private UserRole userType;
 
-    public UserCookieDTO(int id, String userType) {
+    public UserCookieDTO(int id, UserRole userType) {
         this.id = id;
         this.userType = userType;
     }
@@ -21,11 +23,11 @@ public class UserCookieDTO {
         this.id = id;
     }
 
-    public String getUserType() {
+    public UserRole getUserType() {
         return userType;
     }
 
-    public void setUserType(String userType) {
+    public void setUserType(UserRole userType) {
         this.userType = userType;
     }
 }

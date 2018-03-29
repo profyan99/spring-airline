@@ -25,6 +25,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest().body(new ErrorDto(ex.getErrorCode().name(), ex.getField(), ex.getMessage()));
     }
 
+    @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
                                                                   HttpStatus status, WebRequest request) {
         BindingResult result = ex.getBindingResult();

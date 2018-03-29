@@ -4,7 +4,8 @@ import net.thumbtack.airline.ConstantsSetting;
 import net.thumbtack.airline.dto.UserDTO;
 import net.thumbtack.airline.dto.validator.annotation.PasswordValid;
 import net.thumbtack.airline.dto.validator.annotation.PhoneValid;
-import org.hibernate.validator.constraints.Email;
+
+import javax.validation.constraints.Email;
 
 public class ClientUpdateRequestDTO extends UserDTO {
 

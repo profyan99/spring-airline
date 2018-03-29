@@ -26,4 +26,16 @@
         UPDATE user SET firstName=#{firstName}, lastName=#{lastName}, patronymic=#{patronymic}, password=#{password}
     </update>
 
+    <select id="getCountries" resultType="Country">
+        SELECT * FROM countries
+    </select>
+
+    <insert id="fill" parameterType="map">
+        INSERT INTO countries(name, iso3166) VALUES
+        <foreach collection="countries" item="e" index="index" open="(" separator="),(" close=")">
+            #{index},
+            #{e}
+        </foreach>;
+    </insert>
+
 </mapper>

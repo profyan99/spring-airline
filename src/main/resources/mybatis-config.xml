@@ -14,6 +14,7 @@
 		<typeAlias type="net.thumbtack.airline.model.Plane" alias="Plane"/>
 		<typeAlias type="net.thumbtack.airline.model.Flight" alias="Flight"/>
 		<typeAlias type="net.thumbtack.airline.model.Schedule" alias="Schedule"/>
+		<typeAlias type="net.thumbtack.airline.model.Country" alias="Country"/>
 	</typeAliases>
 
 	<environments default="development">

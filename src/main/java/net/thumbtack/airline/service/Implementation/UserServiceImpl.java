@@ -3,6 +3,7 @@ package net.thumbtack.airline.service.Implementation;
 import net.thumbtack.airline.ConstantsSetting;
 import net.thumbtack.airline.dao.AdminDAO;
 import net.thumbtack.airline.dao.ClientDAO;
+import net.thumbtack.airline.dao.CookieDAO;
 import net.thumbtack.airline.dao.UserDAO;
 import net.thumbtack.airline.dto.UserDTO;
 import net.thumbtack.airline.dto.request.LoginRequestDTO;
@@ -13,6 +14,7 @@ import net.thumbtack.airline.exception.BaseException;
 import net.thumbtack.airline.exception.ErrorCode;
 import net.thumbtack.airline.model.BaseUser;
 import net.thumbtack.airline.model.Client;
+import net.thumbtack.airline.model.Country;
 import net.thumbtack.airline.model.UserRole;
 import net.thumbtack.airline.service.UserService;
 import org.slf4j.Logger;
@@ -20,12 +22,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
 
     private UserDAO userDAO;
     private AdminDAO adminDAO;
     private ClientDAO clientDAO;
+    private CookieDAO cookieDAO;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -44,6 +49,11 @@ public class UserServiceImpl implements UserService {
         this.userDAO = userDAO;
     }
 
+    @Autowired
+    public void setCookieDAO(CookieDAO cookieDAO) {
+        this.cookieDAO = cookieDAO;
+    }
+
     @Override
     public BaseLoginDto login(LoginRequestDTO loginRequestDTO) {
         BaseLoginDto baseLoginDTO;
@@ -53,7 +63,7 @@ public class UserServiceImpl implements UserService {
             throw new BaseException(ConstantsSetting.ErrorsConstants.INVALID_PASSWORD.toString(),
                     this.getClass().getName(), ErrorCode.INVALID_PASSWORD);
         }
-        if (user.getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
+        if (user.getUserType().equals(UserRole.ADMIN_ROLE)) {
             baseLoginDTO = new AdminResponseDTO(
                     user.getFirstName(),
                     user.getLastName(),
@@ -82,7 +92,7 @@ public class UserServiceImpl implements UserService {
         UserDTO userDTO;
         BaseUser user = userDAO.get(id);
         checkUser(user);
-        if (user.getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
+        if (user.getUserType().equals(UserRole.ADMIN_ROLE)) {
             userDTO = new AdminResponseDTO(
                     user.getFirstName(),
                     user.getLastName(),
@@ -105,6 +115,12 @@ public class UserServiceImpl implements UserService {
         }
         return userDTO;
     }
+
+    @Override
+    public List<Country> getCountries() {
+        return userDAO.getCountries();
+    }
+
 
     private void checkUser(BaseUser user) {
         if (user == null) {

@@ -2,10 +2,10 @@ package net.thumbtack.airline.model;
 
 public class UserCookie {
     private int id;
-    private String userType;
+    private UserRole userType;
     private String uuid;
 
-    public UserCookie(int id, String userType, String uuid) {
+    public UserCookie(int id, UserRole userType, String uuid) {
         this.id = id;
         this.userType = userType;
         this.uuid = uuid;
@@ -23,11 +23,11 @@ public class UserCookie {
         this.id = id;
     }
 
-    public String getUserType() {
+    public UserRole getUserType() {
         return userType;
     }
 
-    public void setUserType(String userType) {
+    public void setUserType(UserRole userType) {
         this.userType = userType;
     }
 

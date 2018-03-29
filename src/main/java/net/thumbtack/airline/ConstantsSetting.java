@@ -7,7 +7,6 @@ import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @ConfigurationProperties
-//@PropertySource("constants.properties")
 @PropertySource("classpath:constants.properties")
 public class ConstantsSetting {
 

@@ -1,11 +1,13 @@
 package net.thumbtack.airline.dto.response;
 
+import net.thumbtack.airline.model.UserRole;
+
 public class ClientResponseDTO extends BaseLoginDto {
 
     private String phone;
     private String email;
 
-    public ClientResponseDTO(String firstName, String lastName, String patronymic, int id, String userType,
+    public ClientResponseDTO(String firstName, String lastName, String patronymic, int id, UserRole userType,
                              String phone, String email) {
         super(firstName, lastName, patronymic, id, userType);
         this.phone = phone;

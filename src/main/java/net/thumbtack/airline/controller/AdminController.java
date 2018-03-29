@@ -61,7 +61,7 @@ public class AdminController {
     public ResponseEntity<?> update(@RequestBody @Valid AdminUpdateRequestDTO request,
                                     @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
         UserCookieDTO userCookieDTO = cookieService.getUserCookie(uuid);
-        if(uuid.isEmpty() || !userCookieDTO.getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
+        if(uuid.isEmpty() || !userCookieDTO.getUserType().equals(UserRole.ADMIN_ROLE)) {
             throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "", ErrorCode.UNAUTHORISED_ERROR);
         }
         request.setId(userCookieDTO.getId());
@@ -71,7 +71,7 @@ public class AdminController {
 
     @RequestMapping(value = "/clients", method = RequestMethod.GET)
     public ResponseEntity<?> clients(@CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
+        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE)) {
             throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
         }
         List<ClientResponseDTO> adminResponse =  adminService.getClients();
@@ -80,7 +80,7 @@ public class AdminController {
 
     @GetMapping(path = "/planes")
     public ResponseEntity<?> planes(@CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
+        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE)) {
             throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
         }
         List<Plane> adminResponse =  adminService.getPlanes();
@@ -90,7 +90,7 @@ public class AdminController {
 
     @DeleteMapping("/debug/clear")
     public ResponseEntity<?> clear(@CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
+        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE)) {
             throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
         }
         adminService.clearDataBase();

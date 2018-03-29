@@ -53,9 +53,11 @@ public class ClientController {
     @PutMapping
     public ResponseEntity<?> update(@RequestBody @Valid ClientUpdateRequestDTO request,
                                     @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.CLIENT_ROLE.toString())) {
+        UserCookieDTO userCookieDTO = cookieService.getUserCookie(uuid);
+        if(uuid.isEmpty() || !userCookieDTO.getUserType().equals(UserRole.CLIENT_ROLE)) {
             throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
         }
+        request.setId(userCookieDTO.getId());
         ClientUpdateResponseDTO clientResponse =  clientService.update(request);
         return ResponseEntity.ok(clientResponse);
     }

@@ -75,4 +75,12 @@ public class UserController {
         UserDTO userResponse =  userService.get(cookieService.getUserCookie(uuid).getId());
         return ResponseEntity.ok(userResponse);
     }
+
+    @GetMapping(path = "/countries")
+    public ResponseEntity<?> countries(@CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
+        if(uuid.isEmpty()) {
+            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
+        }
+        return ResponseEntity.ok(userService.getCountries());
+    }
 }

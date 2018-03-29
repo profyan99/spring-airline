@@ -40,7 +40,7 @@ public class FlightController {
     @PostMapping
     public ResponseEntity<?> add(@RequestBody FlightAddRequestDTO request,
                                  @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
+        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE)) {
             throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
         }
         FlightAddResponseDTO flightResponse =  flightService.add(request);
@@ -51,7 +51,7 @@ public class FlightController {
     public ResponseEntity<?> update(@RequestBody FlightUpdateRequestDTO request,
                                     @CookieValue(value = "${cookie}", defaultValue = "") String uuid,
                                     @PathVariable(value = "id") int flightId) {
-        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
+        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE)) {
             throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
         }
         request.setId(flightId);
@@ -62,7 +62,7 @@ public class FlightController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") int id,
                                     @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
+        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE)) {
             throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
         }
         flightService.delete(id);
@@ -72,7 +72,7 @@ public class FlightController {
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> get(@PathVariable("id") int id,
                                  @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
+        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE)) {
             throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
         }
         FlightAddResponseDTO flightResponse =  flightService.get(id);
@@ -82,7 +82,7 @@ public class FlightController {
     @PutMapping("/{id}/approve")
     public ResponseEntity<?> approve(@PathVariable("id") int id,
                                      @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
+        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE)) {
             throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
         }
         FlightAddResponseDTO flightResponse =  flightService.approve(id);

@@ -1,5 +1,7 @@
 package net.thumbtack.airline.dto.request;
 
+import net.thumbtack.airline.model.UserRole;
+
 public class FlightGetParamsRequestDTO {
     private String fromTown;
     private String toTown;
@@ -7,10 +9,10 @@ public class FlightGetParamsRequestDTO {
     private String planeName;
     private String fromDate;
     private String toDate;
-    private String userType;
+    private UserRole userType;
 
     public FlightGetParamsRequestDTO(String fromTown, String toTown, String flightName, String planeName, String fromDate,
-                                     String toDate, String userType) {
+                                     String toDate, UserRole userType) {
         this.fromTown = fromTown;
         this.toTown = toTown;
         this.flightName = flightName;
@@ -20,11 +22,11 @@ public class FlightGetParamsRequestDTO {
         this.userType = userType;
     }
 
-    public String getUserType() {
+    public UserRole getUserType() {
         return userType;
     }
 
-    public void setUserType(String userType) {
+    public void setUserType(UserRole userType) {
         this.userType = userType;
     }
 

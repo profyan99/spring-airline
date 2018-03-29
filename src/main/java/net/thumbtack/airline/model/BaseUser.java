@@ -5,16 +5,16 @@ public class BaseUser {
     private String firstName;
     private String lastName;
     private String patronymic;
-    private String userType;
+    private UserRole userType;
 
     private String login;
     private String password;
 
-    public BaseUser(String firstName, String lastName, String patronymic, String login, String password, String userType) {
+    public BaseUser(String firstName, String lastName, String patronymic, String login, String password, UserRole userType) {
         this(0, firstName, lastName, patronymic, userType, login, password);
     }
 
-    public BaseUser(int id, String firstName, String lastName, String patronymic, String userType, String login, String password) {
+    public BaseUser(int id, String firstName, String lastName, String patronymic, UserRole userType, String login, String password) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -60,11 +60,11 @@ public class BaseUser {
         this.patronymic = patronymic;
     }
 
-    public String getUserType() {
+    public UserRole getUserType() {
         return userType;
     }
 
-    public void setUserType(String userType) {
+    public void setUserType(UserRole userType) {
         this.userType = userType;
     }
 

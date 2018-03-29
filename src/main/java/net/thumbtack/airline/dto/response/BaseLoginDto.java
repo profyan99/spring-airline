@@ -1,12 +1,13 @@
 package net.thumbtack.airline.dto.response;
 
 import net.thumbtack.airline.dto.UserDTO;
+import net.thumbtack.airline.model.UserRole;
 
 public class BaseLoginDto extends UserDTO {
     private int id;
-    private String userType;
+    private UserRole userType;
 
-    public BaseLoginDto(String firstName, String lastName, String patronymic, int id, String userType) {
+    public BaseLoginDto(String firstName, String lastName, String patronymic, int id, UserRole userType) {
         super(firstName, lastName, patronymic);
         this.id = id;
         this.userType = userType;
@@ -24,11 +25,11 @@ public class BaseLoginDto extends UserDTO {
         this.id = id;
     }
 
-    public String getUserType() {
+    public UserRole getUserType() {
         return userType;
     }
 
-    public void setUserType(String userType) {
+    public void setUserType(UserRole userType) {
         this.userType = userType;
     }
 }

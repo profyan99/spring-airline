@@ -1,5 +1,6 @@
 package net.thumbtack.airline.dto;
 
+import net.thumbtack.airline.dto.validator.annotation.TimeValid;
 import net.thumbtack.airline.model.Schedule;
 
 import java.util.List;
@@ -9,7 +10,11 @@ public class FlightDTO {
     private String planeName;
     private String fromTown;
     private String toTown;
+
+    @TimeValid
     private String start;
+
+    @TimeValid
     private String duration;
     private int priceBusiness;
     private int priceEconomy;

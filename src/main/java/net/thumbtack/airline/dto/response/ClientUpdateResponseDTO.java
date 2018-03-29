@@ -1,13 +1,14 @@
 package net.thumbtack.airline.dto.response;
 
 import net.thumbtack.airline.dto.UserDTO;
+import net.thumbtack.airline.model.UserRole;
 
 public class ClientUpdateResponseDTO extends UserDTO {
-    private String userType;
+    private UserRole userType;
     private String phone;
     private String email;
 
-    public ClientUpdateResponseDTO(String firstName, String lastName, String patronymic, String userType,
+    public ClientUpdateResponseDTO(String firstName, String lastName, String patronymic, UserRole userType,
                                    String phone, String email) {
 
         super(firstName, lastName, patronymic);
@@ -20,11 +21,11 @@ public class ClientUpdateResponseDTO extends UserDTO {
 
     }
 
-    public String getUserType() {
+    public UserRole getUserType() {
         return userType;
     }
 
-    public void setUserType(String userType) {
+    public void setUserType(UserRole userType) {
         this.userType = userType;
     }
 
