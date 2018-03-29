@@ -46,7 +46,13 @@ public class UserController {
     @PostMapping("/session")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequestDTO,
                                    @CookieValue(value = "${cookie}", defaultValue = "") String uuid, HttpServletResponse response) {
-        if(!uuid.isEmpty() && cookieService.exists(uuid)) {
+        // REVU move to Cookie service
+    	// e.g. cookieService.checkExists(uuid);
+    	if(!uuid.isEmpty() && cookieService.exists(uuid)) {
+    		// REVU why do you have ErrorsConstants.ALREADY_LOGIN and ErrorCode.ALREADY_LOGIN at the same time ?
+    		// I think ErrorCode.ALREADY_LOGIN is enough 
+    		// add constructor by String to ErrorCode and String getCodeString()
+    		// let ErrorCode know it's strings
             throw new BaseException(ConstantsSetting.ErrorsConstants.ALREADY_LOGIN.toString(), "",  ErrorCode.ALREADY_LOGIN);
         }
         BaseLoginDto userResponse = userService.login(loginRequestDTO);
