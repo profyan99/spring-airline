@@ -1,26 +1,26 @@
 package net.thumbtack.airline.service;
 
-import net.thumbtack.airline.dto.request.FlightAddRequestDTO;
-import net.thumbtack.airline.dto.request.FlightGetParamsRequestDTO;
-import net.thumbtack.airline.dto.request.FlightUpdateRequestDTO;
-import net.thumbtack.airline.dto.response.FlightAddResponseDTO;
-import net.thumbtack.airline.dto.response.FlightGetResponseDTO;
-import net.thumbtack.airline.dto.response.FlightUpdateResponseDTO;
+import net.thumbtack.airline.dto.request.FlightAddRequestDto;
+import net.thumbtack.airline.dto.request.FlightGetParamsRequestDto;
+import net.thumbtack.airline.dto.request.FlightUpdateRequestDto;
+import net.thumbtack.airline.dto.response.FlightAddResponseDto;
+import net.thumbtack.airline.dto.response.FlightGetResponseDto;
+import net.thumbtack.airline.dto.response.FlightUpdateResponseDto;
 
 import java.util.List;
 
 public interface FlightService {
-    FlightAddResponseDTO add(FlightAddRequestDTO request);
+    FlightAddResponseDto add(FlightAddRequestDto request);
 
-    FlightUpdateResponseDTO update(FlightUpdateRequestDTO request);
+    FlightUpdateResponseDto update(FlightUpdateRequestDto request);
 
     void delete(int id);
 
-    FlightAddResponseDTO get(int id);
+    FlightAddResponseDto get(int id);
 
-    List<FlightGetResponseDTO> get(FlightGetParamsRequestDTO params);
+    List<FlightGetResponseDto> get(FlightGetParamsRequestDto params);
 
-    FlightAddResponseDTO approve(int id);
+    FlightAddResponseDto approve(int id);
 
 
 }

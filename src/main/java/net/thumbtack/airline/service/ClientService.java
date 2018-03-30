@@ -1,12 +1,12 @@
 package net.thumbtack.airline.service;
 
-import net.thumbtack.airline.dto.request.ClientRegistrationRequestDTO;
-import net.thumbtack.airline.dto.request.ClientUpdateRequestDTO;
-import net.thumbtack.airline.dto.response.ClientResponseDTO;
-import net.thumbtack.airline.dto.response.ClientUpdateResponseDTO;
+import net.thumbtack.airline.dto.request.ClientRegistrationRequestDto;
+import net.thumbtack.airline.dto.request.ClientUpdateRequestDto;
+import net.thumbtack.airline.dto.response.ClientResponseDto;
+import net.thumbtack.airline.dto.response.ClientUpdateResponseDto;
 
 public interface ClientService {
-    ClientResponseDTO register(ClientRegistrationRequestDTO request);
+    ClientResponseDto register(ClientRegistrationRequestDto request);
 
-    ClientUpdateResponseDTO update(ClientUpdateRequestDTO request);
+    ClientUpdateResponseDto update(ClientUpdateRequestDto request);
 }

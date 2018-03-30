@@ -1,14 +1,13 @@
 package net.thumbtack.airline.service.Implementation;
 
-import net.thumbtack.airline.ConstantsSetting;
 import net.thumbtack.airline.dao.FlightDao;
-import net.thumbtack.airline.dto.request.FlightAddRequestDTO;
-import net.thumbtack.airline.dto.request.FlightGetParamsRequestDTO;
-import net.thumbtack.airline.dto.request.FlightUpdateRequestDTO;
-import net.thumbtack.airline.dto.response.FlightAddResponseDTO;
-import net.thumbtack.airline.dto.response.FlightGetResponseAdminDTO;
-import net.thumbtack.airline.dto.response.FlightGetResponseDTO;
-import net.thumbtack.airline.dto.response.FlightUpdateResponseDTO;
+import net.thumbtack.airline.dto.request.FlightAddRequestDto;
+import net.thumbtack.airline.dto.request.FlightGetParamsRequestDto;
+import net.thumbtack.airline.dto.request.FlightUpdateRequestDto;
+import net.thumbtack.airline.dto.response.FlightAddResponseDto;
+import net.thumbtack.airline.dto.response.FlightGetResponseAdminDto;
+import net.thumbtack.airline.dto.response.FlightGetResponseDto;
+import net.thumbtack.airline.dto.response.FlightUpdateResponseDto;
 import net.thumbtack.airline.exception.BaseException;
 import net.thumbtack.airline.exception.ErrorCode;
 import net.thumbtack.airline.model.Flight;
@@ -42,9 +41,9 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public FlightAddResponseDTO add(FlightAddRequestDTO request) {
+    public FlightAddResponseDto add(FlightAddRequestDto request) {
         if (flightDao.exists(request.getFlightName())) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.FLIGHT_EXIST_ERROR.toString(), this.getClass().getName(),
+            throw new BaseException(ErrorCode.FLIGHT_EXIST_ERROR.getErrorCodeString(), this.getClass().getSimpleName(),
                     ErrorCode.FLIGHT_EXIST_ERROR);
         }
         List<String> dates = request.getDates();
@@ -67,7 +66,7 @@ public class FlightServiceImpl implements FlightService {
                 null
         );
         flightDao.add(flight);
-        return new FlightAddResponseDTO(
+        return new FlightAddResponseDto(
                 flight.getFlightName(),
                 flight.getPlaneName(),
                 flight.getFromTown(),
@@ -104,7 +103,7 @@ public class FlightServiceImpl implements FlightService {
         dateFrom = LocalDate.parse(getFromDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         dateTo = LocalDate.parse(getToDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         if(!dateFrom.isBefore(dateTo)) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.INVALID_DATE.toString(),
+            throw new BaseException(ErrorCode.INVALID_DATE.getErrorCodeString(),
                     dateFrom.toString() + " and " + dateTo.toString(), ErrorCode.INVALID_DATE);
         }
         dates = new ArrayList<>(dateTo.getDayOfYear() -  dateFrom.getDayOfYear() + 1);
@@ -134,7 +133,7 @@ public class FlightServiceImpl implements FlightService {
                 days = period.split(",");
             } catch (PatternSyntaxException e) {
                 logger.error("Error while parsing days of period");
-                throw new BaseException(ConstantsSetting.ErrorsConstants.INVALID_DATE.toString(),
+                throw new BaseException(ErrorCode.INVALID_DATE.getErrorCodeString(),
                         period, ErrorCode.INVALID_DATE);
             }
 
@@ -154,7 +153,7 @@ public class FlightServiceImpl implements FlightService {
                         dayNumber = Integer.parseInt(s);
                     } catch (NumberFormatException e) {
                         logger.error("Error while parsing integer of day: " + s);
-                        throw new BaseException(ConstantsSetting.ErrorsConstants.SIMPLE_ERROR + "parsing date from string",
+                        throw new BaseException(ErrorCode.INVALID_DATE.getErrorCodeString(),
                                 this.getClass().getSimpleName(), ErrorCode.INVALID_DATE_FORMAT);
                     }
                     for (int i = dateFrom.getMonthValue(), months = dateTo.getMonthValue(); i <= months; i++) {
@@ -170,7 +169,7 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public FlightUpdateResponseDTO update(FlightUpdateRequestDTO request) {
+    public FlightUpdateResponseDto update(FlightUpdateRequestDto request) {
         checkFlightToExist(request.getId());
         List<String> dates = request.getDates();
         if (dates == null) {
@@ -192,7 +191,7 @@ public class FlightServiceImpl implements FlightService {
                 request.getId()
         );
         flightDao.update(flight);
-        return new FlightUpdateResponseDTO(
+        return new FlightUpdateResponseDto(
                 flight.getFlightName(),
                 flight.getPlaneName(),
                 flight.getFromTown(),
@@ -215,10 +214,10 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public FlightAddResponseDTO get(int id) {
+    public FlightAddResponseDto get(int id) {
         checkFlightToExist(id);
         Flight flight = flightDao.get(id);
-        return new FlightAddResponseDTO(
+        return new FlightAddResponseDto(
                 flight.getFlightName(),
                 flight.getPlaneName(),
                 flight.getFromTown(),
@@ -236,10 +235,10 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public FlightAddResponseDTO approve(int id) {
+    public FlightAddResponseDto approve(int id) {
         checkFlightToExist(id);
         Flight flight = flightDao.approve(id);
-        return new FlightAddResponseDTO(
+        return new FlightAddResponseDto(
                 flight.getFlightName(),
                 flight.getPlaneName(),
                 flight.getFromTown(),
@@ -257,13 +256,13 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public List<FlightGetResponseDTO> get(FlightGetParamsRequestDTO params) {
+    public List<FlightGetResponseDto> get(FlightGetParamsRequestDto params) {
         if (!params.getFromTown().isEmpty() && params.getToTown().isEmpty()) { // вылетающие из fromTown
             params.setToTown(null);
         } else if (params.getFromTown().isEmpty() && !params.getToTown().isEmpty()) { // прилетающие в town
             params.setFromTown(null);
         } else if (params.getFromTown().isEmpty() && params.getToTown().isEmpty()) { // не указан город
-            throw new BaseException(ConstantsSetting.ErrorsConstants.INVALID_REQUEST_DATA.toString(),
+            throw new BaseException(ErrorCode.INVALID_REQUEST_DATA.getErrorCodeString(),
                     "Get flights", ErrorCode.INVALID_REQUEST_DATA);
         }
         if (params.getFlightName().isEmpty()) {
@@ -282,16 +281,16 @@ public class FlightServiceImpl implements FlightService {
             try {
                 if (!LocalDate.parse(params.getFromDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")).isBefore(
                         LocalDate.parse(params.getToDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")))) {
-                    throw new BaseException(ConstantsSetting.ErrorsConstants.INVALID_DATE.toString(),
+                    throw new BaseException(ErrorCode.INVALID_DATE.getErrorCodeString(),
                             params.getFromDate() + " and " + params.getToDate(), ErrorCode.INVALID_DATE);
                 }
             } catch (DateTimeParseException e) {
-                throw new BaseException(ConstantsSetting.ErrorsConstants.INVALID_DATE.toString(),
+                throw new BaseException(ErrorCode.INVALID_DATE.getErrorCodeString(),
                         params.getFromDate() + " and " + params.getToDate(), ErrorCode.INVALID_DATE);
             }
         }
 
-        List<FlightGetResponseDTO> response = new ArrayList<>();
+        List<FlightGetResponseDto> response = new ArrayList<>();
         flightDao.getAll(
                 params.getFlightName(),
                 params.getPlaneName(),
@@ -300,9 +299,9 @@ public class FlightServiceImpl implements FlightService {
                 params.getFromDate(),
                 params.getToDate()
         ).forEach((e) -> {
-            FlightGetResponseDTO flightDto;
-            if (params.getUserType().equals(UserRole.ADMIN_ROLE.toString())) {
-                flightDto = new FlightGetResponseAdminDTO(
+            FlightGetResponseDto flightDto;
+            if (params.getUserType().equals(UserRole.ADMIN_ROLE)) {
+                flightDto = new FlightGetResponseAdminDto(
                         e.getFlightName(),
                         e.getPlaneName(),
                         e.getFromTown(),
@@ -318,7 +317,7 @@ public class FlightServiceImpl implements FlightService {
                         e.isApproved()
                 );
             } else {
-                flightDto = new FlightGetResponseDTO(
+                flightDto = new FlightGetResponseDto(
                         e.getFlightName(),
                         e.getPlaneName(),
                         e.getFromTown(),
@@ -339,7 +338,7 @@ public class FlightServiceImpl implements FlightService {
 
     private void checkFlightToExist(int id) {
         if (!flightDao.exists(id)) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.FLIGHT_NOT_FOUND.toString(), this.getClass().getSimpleName(),
+            throw new BaseException(ErrorCode.FLIGHT_NOT_FOUND.getErrorCodeString(), this.getClass().getSimpleName(),
                     ErrorCode.FLIGHT_NOT_FOUND);
         }
     }

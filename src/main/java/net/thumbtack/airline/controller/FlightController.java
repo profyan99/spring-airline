@@ -1,17 +1,12 @@
 package net.thumbtack.airline.controller;
 
-import net.thumbtack.airline.ConstantsSetting;
-import net.thumbtack.airline.dto.request.FlightAddRequestDTO;
-import net.thumbtack.airline.dto.request.FlightGetParamsRequestDTO;
-import net.thumbtack.airline.dto.request.FlightUpdateRequestDTO;
-import net.thumbtack.airline.dto.response.FlightAddResponseDTO;
-import net.thumbtack.airline.dto.response.FlightGetResponseDTO;
-import net.thumbtack.airline.dto.response.FlightUpdateResponseDTO;
-import net.thumbtack.airline.exception.BaseException;
-import net.thumbtack.airline.exception.ErrorCode;
+import net.thumbtack.airline.dto.request.FlightAddRequestDto;
+import net.thumbtack.airline.dto.request.FlightGetParamsRequestDto;
+import net.thumbtack.airline.dto.request.FlightUpdateRequestDto;
+import net.thumbtack.airline.dto.response.FlightGetResponseDto;
 import net.thumbtack.airline.model.UserRole;
-import net.thumbtack.airline.service.CookieService;
 import net.thumbtack.airline.service.FlightService;
+import net.thumbtack.airline.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +20,7 @@ public class FlightController {
 
     private FlightService flightService;
 
-    private CookieService cookieService;
+    private UserService userService;
 
     @Autowired
     public void setFlightService(FlightService flightService) {
@@ -33,38 +28,30 @@ public class FlightController {
     }
 
     @Autowired
-    public void setCookieService(CookieService cookieService) {
-        this.cookieService = cookieService;
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 
     @PostMapping
-    public ResponseEntity<?> add(@RequestBody FlightAddRequestDTO request,
+    public ResponseEntity<?> add(@RequestBody FlightAddRequestDto request,
                                  @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE)) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
-        }
-        FlightAddResponseDTO flightResponse =  flightService.add(request);
-        return ResponseEntity.ok(flightResponse);
+        userService.getUserCookie(uuid, UserRole.ADMIN_ROLE);
+        return ResponseEntity.ok(flightService.add(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@RequestBody FlightUpdateRequestDTO request,
+    public ResponseEntity<?> update(@RequestBody FlightUpdateRequestDto request,
                                     @CookieValue(value = "${cookie}", defaultValue = "") String uuid,
                                     @PathVariable(value = "id") int flightId) {
-        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE)) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
-        }
+        userService.getUserCookie(uuid, UserRole.ADMIN_ROLE);
         request.setId(flightId);
-        FlightUpdateResponseDTO flightResponse =  flightService.update(request);
-        return ResponseEntity.ok(flightResponse);
+        return ResponseEntity.ok(flightService.update(request));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") int id,
                                     @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE)) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
-        }
+        userService.getUserCookie(uuid, UserRole.ADMIN_ROLE);
         flightService.delete(id);
         return ResponseEntity.ok().build();
     }
@@ -72,21 +59,15 @@ public class FlightController {
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> get(@PathVariable("id") int id,
                                  @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE)) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
-        }
-        FlightAddResponseDTO flightResponse =  flightService.get(id);
-        return ResponseEntity.ok(flightResponse);
+        userService.getUserCookie(uuid, UserRole.ADMIN_ROLE);
+        return ResponseEntity.ok(flightService.get(id));
     }
 
     @PutMapping("/{id}/approve")
     public ResponseEntity<?> approve(@PathVariable("id") int id,
                                      @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE)) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
-        }
-        FlightAddResponseDTO flightResponse =  flightService.approve(id);
-        return ResponseEntity.ok(flightResponse);
+        userService.getUserCookie(uuid, UserRole.ADMIN_ROLE);
+        return ResponseEntity.ok(flightService.approve(id));
     }
 
     @GetMapping
@@ -98,11 +79,9 @@ public class FlightController {
             @RequestParam(required = false, value = "fromDate", defaultValue = "") String fromDate,
             @RequestParam(required = false, value = "toDate", defaultValue = "") String toDate,
             @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        if(uuid.isEmpty()) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
-        }
-        List<FlightGetResponseDTO> flightResponse =  flightService.get(new FlightGetParamsRequestDTO(
-                fromTown, toTown, flightName, planeName, fromDate, toDate, cookieService.getUserCookie(uuid).getUserType()
+
+        List<FlightGetResponseDto> flightResponse = flightService.get(new FlightGetParamsRequestDto(
+                fromTown, toTown, flightName, planeName, fromDate, toDate, userService.getUserCookie(uuid).getUserType()
         ));
         return ResponseEntity.ok(flightResponse);
     }

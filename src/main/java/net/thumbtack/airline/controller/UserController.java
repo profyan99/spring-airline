@@ -1,13 +1,10 @@
 package net.thumbtack.airline.controller;
 
-import net.thumbtack.airline.ConstantsSetting;
-import net.thumbtack.airline.dto.UserCookieDTO;
-import net.thumbtack.airline.dto.UserDTO;
-import net.thumbtack.airline.dto.request.LoginRequestDTO;
+import net.thumbtack.airline.dto.UserCookieDto;
+import net.thumbtack.airline.dto.request.LoginRequestDto;
 import net.thumbtack.airline.dto.response.BaseLoginDto;
 import net.thumbtack.airline.exception.BaseException;
 import net.thumbtack.airline.exception.ErrorCode;
-import net.thumbtack.airline.service.CookieService;
 import net.thumbtack.airline.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +23,6 @@ public class UserController {
 
     private UserService userService;
 
-    private CookieService cookieService;
-
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Value(value = "${cookie}")
@@ -38,35 +33,25 @@ public class UserController {
         this.userService = userService;
     }
 
-    @Autowired
-    public void setCookieService(CookieService cookieService) {
-        this.cookieService = cookieService;
-    }
-
     @PostMapping("/session")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequestDTO,
+    public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto,
                                    @CookieValue(value = "${cookie}", defaultValue = "") String uuid, HttpServletResponse response) {
-        // REVU move to Cookie service
-    	// e.g. cookieService.checkExists(uuid);
-    	if(!uuid.isEmpty() && cookieService.exists(uuid)) {
-    		// REVU why do you have ErrorsConstants.ALREADY_LOGIN and ErrorCode.ALREADY_LOGIN at the same time ?
-    		// I think ErrorCode.ALREADY_LOGIN is enough 
-    		// add constructor by String to ErrorCode and String getCodeString()
-    		// let ErrorCode know it's strings
-            throw new BaseException(ConstantsSetting.ErrorsConstants.ALREADY_LOGIN.toString(), "",  ErrorCode.ALREADY_LOGIN);
+
+        if (!userService.exists(uuid)) {
+            throw new BaseException(ErrorCode.ALREADY_LOGIN.getErrorCodeString(), "", ErrorCode.ALREADY_LOGIN);
         }
-        BaseLoginDto userResponse = userService.login(loginRequestDTO);
-        String cookieValue = cookieService.setUserCookie(new UserCookieDTO(userResponse.getId(), userResponse.getUserType()));
+        BaseLoginDto userResponse = userService.login(loginRequestDto);
+        String cookieValue = userService.setUserCookie(new UserCookieDto(userResponse.getId(), userResponse.getUserType()));
         response.addCookie(new Cookie(COOKIE, cookieValue));
         return ResponseEntity.ok(userResponse);
     }
 
     @DeleteMapping("/session")
     public ResponseEntity<?> logout(@CookieValue(value = "${cookie}", defaultValue = "") String uuid, HttpServletResponse response) {
-        if(uuid.isEmpty()) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "", ErrorCode.UNAUTHORISED_ERROR);
+        if (!userService.exists(uuid)) {
+            throw new BaseException(ErrorCode.UNAUTHORISED_ERROR.getErrorCodeString(), "", ErrorCode.UNAUTHORISED_ERROR);
         }
-        cookieService.deleteUserCookie(uuid);
+        userService.deleteUserCookie(uuid);
         Cookie cookie = new Cookie(COOKIE, null);
         cookie.setMaxAge(0);
         response.addCookie(cookie);
@@ -75,18 +60,12 @@ public class UserController {
 
     @GetMapping(path = "/account")
     public ResponseEntity<?> get(@CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        if(uuid.isEmpty()) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
-        }
-        UserDTO userResponse =  userService.get(cookieService.getUserCookie(uuid).getId());
-        return ResponseEntity.ok(userResponse);
+        return ResponseEntity.ok(userService.get(userService.getUserCookie(uuid).getId()));
     }
 
     @GetMapping(path = "/countries")
     public ResponseEntity<?> countries(@CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        if(uuid.isEmpty()) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
-        }
+        userService.getUserCookie(uuid);
         return ResponseEntity.ok(userService.getCountries());
     }
 }

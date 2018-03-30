@@ -22,7 +22,9 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {BaseException.class})
     public ResponseEntity<?> handleSimpleException(BaseException ex) {
-        return ResponseEntity.badRequest().body(new ErrorDto(ex.getErrorCode().name(), ex.getField(), ex.getMessage()));
+        List<ErrorDto> errors = new ArrayList<>();
+        errors.add(new ErrorDto(ex.getErrorCode().name(), ex.getField(), ex.getMessage()));
+        return ResponseEntity.badRequest().body(errors);
     }
 
     @Override
@@ -38,7 +40,9 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers,
                                                                   HttpStatus status, WebRequest request) {
-        return ResponseEntity.badRequest().body(new ErrorDto(ErrorCode.INVALID_JSON_FORMAT.toString(), request.getContextPath(),
-                ConstantsSetting.ErrorsConstants.INVALID_JSON_FORMAT.toString()));
+        List<ErrorDto> errors = new ArrayList<>();
+        errors.add(new ErrorDto(ErrorCode.INVALID_JSON_FORMAT.name(), request.getContextPath(),
+                ErrorCode.INVALID_JSON_FORMAT.getErrorCodeString()));
+        return ResponseEntity.badRequest().body(errors);
     }
 }

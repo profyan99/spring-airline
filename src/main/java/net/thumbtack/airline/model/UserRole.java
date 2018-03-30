@@ -1,5 +1,7 @@
 package net.thumbtack.airline.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum UserRole {
     ADMIN_ROLE("ADMIN"),
     CLIENT_ROLE("CLIENT");
@@ -11,6 +13,7 @@ public enum UserRole {
     }
 
     @Override
+    @JsonValue
     public String toString() {
         return this.name;
     }

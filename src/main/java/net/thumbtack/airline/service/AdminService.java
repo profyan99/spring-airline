@@ -1,20 +1,20 @@
 package net.thumbtack.airline.service;
 
-import net.thumbtack.airline.dto.request.AdminRegistrationRequestDTO;
-import net.thumbtack.airline.dto.request.AdminUpdateRequestDTO;
-import net.thumbtack.airline.dto.response.AdminResponseDTO;
-import net.thumbtack.airline.dto.response.AdminUpdateResponseDTO;
-import net.thumbtack.airline.dto.response.ClientResponseDTO;
+import net.thumbtack.airline.dto.request.AdminRegistrationRequestDto;
+import net.thumbtack.airline.dto.request.AdminUpdateRequestDto;
+import net.thumbtack.airline.dto.response.AdminResponseDto;
+import net.thumbtack.airline.dto.response.AdminUpdateResponseDto;
+import net.thumbtack.airline.dto.response.ClientResponseDto;
 import net.thumbtack.airline.model.Plane;
 
 import java.util.List;
 
 public interface AdminService {
-    AdminResponseDTO register(AdminRegistrationRequestDTO request);
+    AdminResponseDto register(AdminRegistrationRequestDto request);
 
-    List<ClientResponseDTO> getClients();
+    List<ClientResponseDto> getClients();
 
-    AdminUpdateResponseDTO update(AdminUpdateRequestDTO request);
+    AdminUpdateResponseDto update(AdminUpdateRequestDto request);
 
     List<Plane> getPlanes();
 

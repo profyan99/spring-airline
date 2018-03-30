@@ -1,21 +1,18 @@
 package net.thumbtack.airline.service.Implementation;
 
-import net.thumbtack.airline.ConstantsSetting;
-import net.thumbtack.airline.dao.AdminDAO;
-import net.thumbtack.airline.dao.ClientDAO;
-import net.thumbtack.airline.dao.CookieDAO;
-import net.thumbtack.airline.dao.UserDAO;
-import net.thumbtack.airline.dto.UserDTO;
-import net.thumbtack.airline.dto.request.LoginRequestDTO;
-import net.thumbtack.airline.dto.response.AdminResponseDTO;
+import net.thumbtack.airline.dao.AdminDao;
+import net.thumbtack.airline.dao.ClientDao;
+import net.thumbtack.airline.dao.CookieDao;
+import net.thumbtack.airline.dao.UserDao;
+import net.thumbtack.airline.dto.UserCookieDto;
+import net.thumbtack.airline.dto.UserDto;
+import net.thumbtack.airline.dto.request.LoginRequestDto;
+import net.thumbtack.airline.dto.response.AdminResponseDto;
 import net.thumbtack.airline.dto.response.BaseLoginDto;
-import net.thumbtack.airline.dto.response.ClientResponseDTO;
+import net.thumbtack.airline.dto.response.ClientResponseDto;
 import net.thumbtack.airline.exception.BaseException;
 import net.thumbtack.airline.exception.ErrorCode;
-import net.thumbtack.airline.model.BaseUser;
-import net.thumbtack.airline.model.Client;
-import net.thumbtack.airline.model.Country;
-import net.thumbtack.airline.model.UserRole;
+import net.thumbtack.airline.model.*;
 import net.thumbtack.airline.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,58 +20,59 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    private UserDAO userDAO;
-    private AdminDAO adminDAO;
-    private ClientDAO clientDAO;
-    private CookieDAO cookieDAO;
+    private UserDao userDao;
+    private AdminDao adminDao;
+    private ClientDao clientDao;
+    private CookieDao cookieDao;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public void setAdminDAO(AdminDAO adminDAO) {
-        this.adminDAO = adminDAO;
+    public void setAdminDao(AdminDao adminDao) {
+        this.adminDao = adminDao;
     }
 
     @Autowired
-    public void setClientDAO(ClientDAO clientDAO) {
-        this.clientDAO = clientDAO;
+    public void setClientDao(ClientDao clientDao) {
+        this.clientDao = clientDao;
     }
 
     @Autowired
-    public void setUserDAO(UserDAO userDAO) {
-        this.userDAO = userDAO;
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
     }
 
     @Autowired
-    public void setCookieDAO(CookieDAO cookieDAO) {
-        this.cookieDAO = cookieDAO;
+    public void setCookieDao(CookieDao cookieDao) {
+        this.cookieDao = cookieDao;
     }
 
     @Override
-    public BaseLoginDto login(LoginRequestDTO loginRequestDTO) {
+    public BaseLoginDto login(LoginRequestDto loginRequestDto) {
         BaseLoginDto baseLoginDTO;
-        BaseUser user = userDAO.login(loginRequestDTO.getLogin());
+        BaseUser user = userDao.login(loginRequestDto.getLogin());
         checkUser(user);
-        if (!user.getPassword().equals(loginRequestDTO.getPassword())) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.INVALID_PASSWORD.toString(),
-                    this.getClass().getName(), ErrorCode.INVALID_PASSWORD);
+        if (!user.getPassword().equals(loginRequestDto.getPassword())) {
+            throw new BaseException(ErrorCode.INVALID_PASSWORD.getErrorCodeString(),
+                    this.getClass().getSimpleName(), ErrorCode.INVALID_PASSWORD);
         }
         if (user.getUserType().equals(UserRole.ADMIN_ROLE)) {
-            baseLoginDTO = new AdminResponseDTO(
+            baseLoginDTO = new AdminResponseDto(
                     user.getFirstName(),
                     user.getLastName(),
                     user.getPatronymic(),
                     user.getId(),
                     user.getUserType(),
-                    adminDAO.getAdmin(user.getId()).getPosition()
+                    adminDao.getAdmin(user.getId()).getPosition()
             );
         } else {
-            Client client = clientDAO.getClient(user.getId());
-            baseLoginDTO = new ClientResponseDTO(
+            Client client = clientDao.getClient(user.getId());
+            baseLoginDTO = new ClientResponseDto(
                     user.getFirstName(),
                     user.getLastName(),
                     user.getPatronymic(),
@@ -88,22 +86,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO get(int id) {
-        UserDTO userDTO;
-        BaseUser user = userDAO.get(id);
+    public UserDto get(int id) {
+        UserDto userDto;
+        BaseUser user = userDao.get(id);
         checkUser(user);
         if (user.getUserType().equals(UserRole.ADMIN_ROLE)) {
-            userDTO = new AdminResponseDTO(
+            userDto = new AdminResponseDto(
                     user.getFirstName(),
                     user.getLastName(),
                     user.getPatronymic(),
                     user.getId(),
                     user.getUserType(),
-                    adminDAO.getAdmin(user.getId()).getPosition()
+                    adminDao.getAdmin(user.getId()).getPosition()
             );
         } else {
-            Client client = clientDAO.getClient(user.getId());
-            userDTO = new ClientResponseDTO(
+            Client client = clientDao.getClient(user.getId());
+            userDto = new ClientResponseDto(
                     user.getFirstName(),
                     user.getLastName(),
                     user.getPatronymic(),
@@ -113,19 +111,59 @@ public class UserServiceImpl implements UserService {
                     client.getEmail()
             );
         }
-        return userDTO;
+        return userDto;
     }
 
     @Override
     public List<Country> getCountries() {
-        return userDAO.getCountries();
+        return userDao.getCountries();
     }
 
+    @Override
+    public boolean exists(String uuid) {
+        return !uuid.isEmpty() && cookieDao.exists(uuid);
+    }
+
+    @Override
+    public UserCookieDto getUserCookie(String uuid) {
+        if(uuid.isEmpty()) {
+            throw new BaseException(ErrorCode.UNAUTHORISED_ERROR.getErrorCodeString(), this.getClass().getSimpleName(),
+                    ErrorCode.UNAUTHORISED_ERROR);
+        }
+        UserCookie cookie = cookieDao.get(uuid);
+        if(cookie == null) {
+            throw new BaseException(ErrorCode.UNAUTHORISED_ERROR.getErrorCodeString(), this.getClass().getSimpleName(),
+                    ErrorCode.UNAUTHORISED_ERROR);
+        }
+        return new UserCookieDto(cookie.getId(), cookie.getUserType());
+    }
+
+    @Override
+    public UserCookieDto getUserCookie(String uuid, UserRole role) {
+        UserCookieDto cookieDTO = getUserCookie(uuid);
+        if(!cookieDTO.getUserType().equals(role)) {
+            throw new BaseException(ErrorCode.NO_ACCESS.getErrorCodeString(), this.getClass().getSimpleName(),
+                    ErrorCode.NO_ACCESS);
+        }
+        return cookieDTO;
+    }
+
+    @Override
+    public String setUserCookie(UserCookieDto userCookieDto) {
+        UUID uuid = UUID.randomUUID();
+        cookieDao.set(new UserCookie(userCookieDto.getId(), userCookieDto.getUserType(), uuid.toString()));
+        return uuid.toString();
+    }
+
+    @Override
+    public void deleteUserCookie(String uuid) {
+        cookieDao.delete(uuid);
+    }
 
     private void checkUser(BaseUser user) {
         if (user == null) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.ACCOUNT_NOT_FOUND.toString(),
-                    this.getClass().getName(), ErrorCode.ACCOUNT_NOT_FOUND);
+            throw new BaseException(ErrorCode.ACCOUNT_NOT_FOUND.getErrorCodeString(),
+                    this.getClass().getSimpleName(), ErrorCode.ACCOUNT_NOT_FOUND);
         }
     }
 }

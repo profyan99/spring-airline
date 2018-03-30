@@ -1,11 +1,9 @@
 package net.thumbtack.airline.dao;
 
 import net.thumbtack.airline.model.Flight;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
 public interface FlightDao {
 
     /**
@@ -65,12 +63,13 @@ public interface FlightDao {
 
     /**
      * Get {@link Flight} with conditions
+     *
      * @param flightName if it isn't null, search with flightName
-     * @param PlaneName if it isn't null, search with planeName
-     * @param FromTown if it isn't null, search with fromTown
-     * @param ToTown if it isn't null, search with toTown
-     * @param FromDate if it isn't null, search with fromDate
-     * @param ToDate if it isn't null, search with toDate
+     * @param PlaneName  if it isn't null, search with planeName
+     * @param FromTown   if it isn't null, search with fromTown
+     * @param ToTown     if it isn't null, search with toTown
+     * @param FromDate   if it isn't null, search with fromDate
+     * @param ToDate     if it isn't null, search with toDate
      * @return {@link List<Flight>}
      */
     List<Flight> getAll(String flightName, String PlaneName, String FromTown, String ToTown, String FromDate, String ToDate);

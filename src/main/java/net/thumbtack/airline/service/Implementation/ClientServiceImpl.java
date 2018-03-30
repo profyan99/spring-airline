@@ -1,12 +1,11 @@
 package net.thumbtack.airline.service.Implementation;
 
-import net.thumbtack.airline.ConstantsSetting;
-import net.thumbtack.airline.dao.ClientDAO;
-import net.thumbtack.airline.dao.UserDAO;
-import net.thumbtack.airline.dto.request.ClientRegistrationRequestDTO;
-import net.thumbtack.airline.dto.request.ClientUpdateRequestDTO;
-import net.thumbtack.airline.dto.response.ClientResponseDTO;
-import net.thumbtack.airline.dto.response.ClientUpdateResponseDTO;
+import net.thumbtack.airline.dao.ClientDao;
+import net.thumbtack.airline.dao.UserDao;
+import net.thumbtack.airline.dto.request.ClientRegistrationRequestDto;
+import net.thumbtack.airline.dto.request.ClientUpdateRequestDto;
+import net.thumbtack.airline.dto.response.ClientResponseDto;
+import net.thumbtack.airline.dto.response.ClientUpdateResponseDto;
 import net.thumbtack.airline.exception.BaseException;
 import net.thumbtack.airline.exception.ErrorCode;
 import net.thumbtack.airline.model.Client;
@@ -21,26 +20,26 @@ public class ClientServiceImpl implements ClientService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private ClientDAO clientDAO;
+    private ClientDao clientDao;
 
-    private UserDAO userDAO;
+    private UserDao userDao;
 
     @Autowired
-    public void setAdminDAO(ClientDAO clientDAO) {
-        this.clientDAO = clientDAO;
+    public void setAdminDAO(ClientDao clientDao) {
+        this.clientDao = clientDao;
     }
 
     @Autowired
-    public void setUserDAO(UserDAO userDAO) {
-        this.userDAO = userDAO;
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
     }
 
     @Override
-    public ClientResponseDTO register(ClientRegistrationRequestDTO request) {
-        ClientResponseDTO responseDTO;
-        if (userDAO.exists(request.getLogin())) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.ACCOUNT_EXIST_ERROR.toString(),
-                    this.getClass().getName(), ErrorCode.ACCOUNT_EXIST_ERROR);
+    public ClientResponseDto register(ClientRegistrationRequestDto request) {
+        ClientResponseDto responseDTO;
+        if (userDao.exists(request.getLogin())) {
+            throw new BaseException(ErrorCode.ACCOUNT_EXIST_ERROR.getErrorCodeString(),
+                    this.getClass().getSimpleName(), ErrorCode.ACCOUNT_EXIST_ERROR);
         }
         Client client = new Client(
                 request.getFirstName(),
@@ -51,8 +50,8 @@ public class ClientServiceImpl implements ClientService {
                 request.getEmail(),
                 request.getPhone().replace("-", "")
         );
-        clientDAO.register(client);
-        responseDTO = new ClientResponseDTO(
+        clientDao.register(client);
+        responseDTO = new ClientResponseDto(
                 client.getFirstName(),
                 client.getLastName(),
                 client.getPatronymic(),
@@ -66,12 +65,12 @@ public class ClientServiceImpl implements ClientService {
 
 
     @Override
-    public ClientUpdateResponseDTO update(ClientUpdateRequestDTO request) {
-        ClientUpdateResponseDTO response;
-        Client client = clientDAO.findClientById(request.getId());
+    public ClientUpdateResponseDto update(ClientUpdateRequestDto request) {
+        ClientUpdateResponseDto response;
+        Client client = clientDao.findClientById(request.getId());
         if (!client.getPassword().equals(request.getOldPassword())) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.INVALID_PASSWORD.toString(),
-                    this.getClass().getName(), ErrorCode.INVALID_PASSWORD);
+            throw new BaseException(ErrorCode.INVALID_PASSWORD.getErrorCodeString(),
+                    this.getClass().getSimpleName(), ErrorCode.INVALID_PASSWORD);
         }
         client.setFirstName(request.getFirstName());
         client.setLastName(request.getLastName());
@@ -79,8 +78,8 @@ public class ClientServiceImpl implements ClientService {
         client.setPassword(request.getNewPassword());
         client.setEmail(request.getEmail());
         client.setPhone(request.getPhone());
-        clientDAO.updateClient(client);
-        response = new ClientUpdateResponseDTO(
+        clientDao.updateClient(client);
+        response = new ClientUpdateResponseDto(
                 client.getFirstName(),
                 client.getLastName(),
                 client.getPatronymic(),

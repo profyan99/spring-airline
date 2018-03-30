@@ -26,36 +26,10 @@ public class ConstantsSetting {
     public static final String BAD_PASSWORD = "Bad password";
     public static final String BAD_PHONE = "Bad phone";
     public static final String BAD_EMAIL = "Bad email";
+    public static final String BAD_PASSPORT = "Bad passport";
 
     public static final String EMAIL_REGEX = "^([a-z0-9_-]+\\.)*[a-z0-9_-]+@[a-z0-9_-]+(\\.[a-z0-9_-]+)*\\.[a-z]{2,6}$";
     public static final String NAME_REGEX = "^[а-яА-ЯёЁ\\s\\-]+$";
-
-
-    public enum ErrorsConstants {
-        REGISTRATION_ERROR("Error with registration"),
-        ACCOUNT_EXIST_ERROR("Account has already registered"),
-        ACCOUNT_NOT_FOUND("Account not found"),
-        INVALID_PASSWORD("Invalid password"),
-        UNAUTHORISED_ERROR("You haven't logged in or you haven't admin's permission"),
-        ALREADY_LOGIN("You have already logged in"),
-        FLIGHT_EXIST_ERROR("Flight has already created"),
-        FLIGHT_NOT_FOUND("Flight not found"),
-        INVALID_JSON_FORMAT("You have error in your JSON syntax, please check request data and send again."),
-        INVALID_DATE("Invalid value of date"),
-        INVALID_REQUEST_DATA("Invalid request. Please check and send again."),
-        SIMPLE_ERROR("Error with ");
-
-        private final String name;
-
-        ErrorsConstants(String s) {
-            this.name = s;
-        }
-
-        @Override
-        public String toString() {
-            return this.name;
-        }
-    }
 
     public int getMinPasswordLength() {
 

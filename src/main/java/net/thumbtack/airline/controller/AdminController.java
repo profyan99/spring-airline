@@ -1,18 +1,12 @@
 package net.thumbtack.airline.controller;
 
-import net.thumbtack.airline.ConstantsSetting;
-import net.thumbtack.airline.dto.UserCookieDTO;
-import net.thumbtack.airline.dto.request.AdminRegistrationRequestDTO;
-import net.thumbtack.airline.dto.request.AdminUpdateRequestDTO;
-import net.thumbtack.airline.dto.response.AdminResponseDTO;
-import net.thumbtack.airline.dto.response.AdminUpdateResponseDTO;
-import net.thumbtack.airline.dto.response.ClientResponseDTO;
-import net.thumbtack.airline.exception.BaseException;
-import net.thumbtack.airline.exception.ErrorCode;
-import net.thumbtack.airline.model.Plane;
+import net.thumbtack.airline.dto.UserCookieDto;
+import net.thumbtack.airline.dto.request.AdminRegistrationRequestDto;
+import net.thumbtack.airline.dto.request.AdminUpdateRequestDto;
+import net.thumbtack.airline.dto.response.AdminResponseDto;
 import net.thumbtack.airline.model.UserRole;
 import net.thumbtack.airline.service.AdminService;
-import net.thumbtack.airline.service.CookieService;
+import net.thumbtack.airline.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -32,7 +25,7 @@ public class AdminController {
 
     private AdminService adminService;
 
-    private CookieService cookieService;
+    private UserService userService;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -45,57 +38,42 @@ public class AdminController {
     }
 
     @Autowired
-    public void setCookieService(CookieService cookieService) {
-        this.cookieService = cookieService;
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 
     @PostMapping("/admin")
-    public ResponseEntity<?> registration(@RequestBody @Valid AdminRegistrationRequestDTO reg, HttpServletResponse response) {
-        AdminResponseDTO adminResponse = adminService.register(reg);
-        String cookieValue = cookieService.setUserCookie(new UserCookieDTO(adminResponse.getId(), adminResponse.getUserType()));
+    public ResponseEntity<?> registration(@RequestBody @Valid AdminRegistrationRequestDto reg, HttpServletResponse response) {
+        AdminResponseDto adminResponse = adminService.register(reg);
+        String cookieValue = userService.setUserCookie(new UserCookieDto(adminResponse.getId(), adminResponse.getUserType()));
         response.addCookie(new Cookie(COOKIE, cookieValue));
         return ResponseEntity.ok(adminResponse);
     }
 
     @PutMapping("/admin")
-    public ResponseEntity<?> update(@RequestBody @Valid AdminUpdateRequestDTO request,
+    public ResponseEntity<?> update(@RequestBody @Valid AdminUpdateRequestDto request,
                                     @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        UserCookieDTO userCookieDTO = cookieService.getUserCookie(uuid);
-        if(uuid.isEmpty() || !userCookieDTO.getUserType().equals(UserRole.ADMIN_ROLE)) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "", ErrorCode.UNAUTHORISED_ERROR);
-        }
-        request.setId(userCookieDTO.getId());
-        AdminUpdateResponseDTO adminResponse =  adminService.update(request);
-        return ResponseEntity.ok(adminResponse);
+        request.setId(userService.getUserCookie(uuid, UserRole.ADMIN_ROLE).getId());
+        return ResponseEntity.ok(adminService.update(request));
     }
 
     @RequestMapping(value = "/clients", method = RequestMethod.GET)
     public ResponseEntity<?> clients(@CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE)) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
-        }
-        List<ClientResponseDTO> adminResponse =  adminService.getClients();
-        return ResponseEntity.ok(adminResponse);
+        userService.getUserCookie(uuid, UserRole.ADMIN_ROLE);
+        return ResponseEntity.ok(adminService.getClients());
     }
 
     @GetMapping(path = "/planes")
     public ResponseEntity<?> planes(@CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE)) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
-        }
-        List<Plane> adminResponse =  adminService.getPlanes();
-        return ResponseEntity.ok(adminResponse);
-
+        userService.getUserCookie(uuid, UserRole.ADMIN_ROLE);
+        return ResponseEntity.ok(adminService.getPlanes());
     }
 
     @DeleteMapping("/debug/clear")
     public ResponseEntity<?> clear(@CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        if(uuid.isEmpty() || !cookieService.getUserCookie(uuid).getUserType().equals(UserRole.ADMIN_ROLE)) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
-        }
+        userService.getUserCookie(uuid, UserRole.ADMIN_ROLE);
         adminService.clearDataBase();
         return ResponseEntity.ok().build();
-
     }
 
 }

@@ -7,7 +7,7 @@
 
     <insert id="register" parameterType="User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO user(firstName, lastName, patronymic, userType, login, password)
-        VALUES (#{firstName}, #{lastName}, #{patronymic}, #{userType}, #{login}, #{password})
+        VALUES (#{firstName}, #{lastName}, #{patronymic}, #{userType.name}, #{login}, #{password})
     </insert>
 
     <select id="exists" parameterType="string" resultType="_boolean">

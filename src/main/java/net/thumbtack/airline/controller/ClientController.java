@@ -1,16 +1,12 @@
 package net.thumbtack.airline.controller;
 
-import net.thumbtack.airline.ConstantsSetting;
-import net.thumbtack.airline.dto.UserCookieDTO;
-import net.thumbtack.airline.dto.request.ClientRegistrationRequestDTO;
-import net.thumbtack.airline.dto.request.ClientUpdateRequestDTO;
-import net.thumbtack.airline.dto.response.ClientResponseDTO;
-import net.thumbtack.airline.dto.response.ClientUpdateResponseDTO;
-import net.thumbtack.airline.exception.BaseException;
-import net.thumbtack.airline.exception.ErrorCode;
+import net.thumbtack.airline.dto.UserCookieDto;
+import net.thumbtack.airline.dto.request.ClientRegistrationRequestDto;
+import net.thumbtack.airline.dto.request.ClientUpdateRequestDto;
+import net.thumbtack.airline.dto.response.ClientResponseDto;
 import net.thumbtack.airline.model.UserRole;
 import net.thumbtack.airline.service.ClientService;
-import net.thumbtack.airline.service.CookieService;
+import net.thumbtack.airline.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -27,7 +23,7 @@ public class ClientController {
 
     private ClientService clientService;
 
-    private CookieService cookieService;
+    private UserService userService;
 
     @Value(value = "${cookie}")
     private String COOKIE;
@@ -38,27 +34,23 @@ public class ClientController {
     }
 
     @Autowired
-    public void setCookieService(CookieService cookieService) {
-        this.cookieService = cookieService;
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 
+
     @PostMapping
-    public ResponseEntity<?> registration(@RequestBody @Valid ClientRegistrationRequestDTO reg, HttpServletResponse response) {
-        ClientResponseDTO clientResponse = clientService.register(reg);
-        String cookieValue = cookieService.setUserCookie(new UserCookieDTO(clientResponse.getId(), clientResponse.getUserType()));
+    public ResponseEntity<?> registration(@RequestBody @Valid ClientRegistrationRequestDto reg, HttpServletResponse response) {
+        ClientResponseDto clientResponse = clientService.register(reg);
+        String cookieValue = userService.setUserCookie(new UserCookieDto(clientResponse.getId(), clientResponse.getUserType()));
         response.addCookie(new Cookie(COOKIE, cookieValue));
         return ResponseEntity.ok(clientResponse);
     }
 
     @PutMapping
-    public ResponseEntity<?> update(@RequestBody @Valid ClientUpdateRequestDTO request,
+    public ResponseEntity<?> update(@RequestBody @Valid ClientUpdateRequestDto request,
                                     @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        UserCookieDTO userCookieDTO = cookieService.getUserCookie(uuid);
-        if(uuid.isEmpty() || !userCookieDTO.getUserType().equals(UserRole.CLIENT_ROLE)) {
-            throw new BaseException(ConstantsSetting.ErrorsConstants.UNAUTHORISED_ERROR.toString(), "",  ErrorCode.UNAUTHORISED_ERROR);
-        }
-        request.setId(userCookieDTO.getId());
-        ClientUpdateResponseDTO clientResponse =  clientService.update(request);
-        return ResponseEntity.ok(clientResponse);
+        request.setId(userService.getUserCookie(uuid, UserRole.CLIENT_ROLE).getId());
+        return ResponseEntity.ok(clientService.update(request));
     }
 }
