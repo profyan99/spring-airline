@@ -11,21 +11,19 @@ public class FlightAddResponseDto extends FlightDto {
     private Plane plane;
     private boolean approved;
 
-    public FlightAddResponseDto(String flightName, String planeName, String fromTown, String toTown, String start,
-                                String duration, int priceBusiness, int priceEconomy, Schedule schedule, int flightId,
-                                Plane plane, boolean approved, List<String> dates) {
-
-        super(flightName, planeName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, schedule, dates);
+    public FlightAddResponseDto(String flightName, String fromTown, String toTown, String start, String duration,
+                                int priceBusiness, int priceEconomy, Schedule schedule, List<String> dates, int flightId,
+                                Plane plane, boolean approved) {
+        super(flightName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, schedule, dates);
         this.flightId = flightId;
         this.plane = plane;
         this.approved = approved;
     }
 
-    public FlightAddResponseDto(String flightName, String planeName, String fromTown, String toTown, String start,
-                                String duration, int priceBusiness, int priceEconomy, List<String> dates, int flightId,
-                                Plane plane, boolean approved) {
-
-        super(flightName, planeName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, dates);
+    public FlightAddResponseDto(String flightName, String fromTown, String toTown, String start, String duration,
+                                int priceBusiness, int priceEconomy, List<String> dates, int flightId, Plane plane,
+                                boolean approved) {
+        super(flightName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, dates);
         this.flightId = flightId;
         this.plane = plane;
         this.approved = approved;

@@ -1,15 +1,13 @@
 package net.thumbtack.airline.dto.request;
 
-import net.thumbtack.airline.model.Passenger;
-
 import java.util.List;
 
 public class OrderAddRequestDto {
     private int flightId;
     private String date;
-    private List<Passenger> passengers;
+    private List<PassengerDto> passengers;
 
-    public OrderAddRequestDto(int flightId, String date, List<Passenger> passengers) {
+    public OrderAddRequestDto(int flightId, String date, List<PassengerDto> passengers) {
         this.flightId = flightId;
         this.date = date;
         this.passengers = passengers;
@@ -31,11 +29,11 @@ public class OrderAddRequestDto {
         this.date = date;
     }
 
-    public List<Passenger> getPassengers() {
+    public List<PassengerDto> getPassengers() {
         return passengers;
     }
 
-    public void setPassengers(List<Passenger> passengers) {
+    public void setPassengers(List<PassengerDto> passengers) {
         this.passengers = passengers;
     }
 }

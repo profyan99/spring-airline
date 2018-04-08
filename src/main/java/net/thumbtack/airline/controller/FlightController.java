@@ -35,7 +35,7 @@ public class FlightController {
     @PostMapping
     public ResponseEntity<?> add(@RequestBody FlightAddRequestDto request,
                                  @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        userService.getUserCookie(uuid, UserRole.ADMIN_ROLE);
+        userService.authorizeUser(uuid, UserRole.ADMIN_ROLE);
         return ResponseEntity.ok(flightService.add(request));
     }
 
@@ -43,7 +43,7 @@ public class FlightController {
     public ResponseEntity<?> update(@RequestBody FlightUpdateRequestDto request,
                                     @CookieValue(value = "${cookie}", defaultValue = "") String uuid,
                                     @PathVariable(value = "id") int flightId) {
-        userService.getUserCookie(uuid, UserRole.ADMIN_ROLE);
+        userService.authorizeUser(uuid, UserRole.ADMIN_ROLE);
         request.setId(flightId);
         return ResponseEntity.ok(flightService.update(request));
     }
@@ -51,7 +51,7 @@ public class FlightController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") int id,
                                     @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        userService.getUserCookie(uuid, UserRole.ADMIN_ROLE);
+        userService.authorizeUser(uuid, UserRole.ADMIN_ROLE);
         flightService.delete(id);
         return ResponseEntity.ok().build();
     }
@@ -59,14 +59,14 @@ public class FlightController {
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> get(@PathVariable("id") int id,
                                  @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        userService.getUserCookie(uuid, UserRole.ADMIN_ROLE);
+        userService.authorizeUser(uuid, UserRole.ADMIN_ROLE);
         return ResponseEntity.ok(flightService.get(id));
     }
 
     @PutMapping("/{id}/approve")
     public ResponseEntity<?> approve(@PathVariable("id") int id,
                                      @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        userService.getUserCookie(uuid, UserRole.ADMIN_ROLE);
+        userService.authorizeUser(uuid, UserRole.ADMIN_ROLE);
         return ResponseEntity.ok(flightService.approve(id));
     }
 
@@ -81,7 +81,7 @@ public class FlightController {
             @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
 
         List<FlightGetResponseDto> flightResponse = flightService.get(new FlightGetParamsRequestDto(
-                fromTown, toTown, flightName, planeName, fromDate, toDate, userService.getUserCookie(uuid).getUserType()
+                fromTown, toTown, flightName, planeName, fromDate, toDate, userService.authorizeUser(uuid).getUserType()
         ));
         return ResponseEntity.ok(flightResponse);
     }

@@ -60,12 +60,12 @@ public class UserController {
 
     @GetMapping(path = "/account")
     public ResponseEntity<?> get(@CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        return ResponseEntity.ok(userService.get(userService.getUserCookie(uuid).getId()));
+        return ResponseEntity.ok(userService.get(userService.authorizeUser(uuid).getId()));
     }
 
     @GetMapping(path = "/countries")
     public ResponseEntity<?> countries(@CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        userService.getUserCookie(uuid);
+        userService.authorizeUser(uuid);
         return ResponseEntity.ok(userService.getCountries());
     }
 }

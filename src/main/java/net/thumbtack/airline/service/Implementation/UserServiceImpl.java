@@ -125,7 +125,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserCookieDto getUserCookie(String uuid) {
+    public UserCookieDto authorizeUser(String uuid) {
         if(uuid.isEmpty()) {
             throw new BaseException(ErrorCode.UNAUTHORISED_ERROR.getErrorCodeString(), this.getClass().getSimpleName(),
                     ErrorCode.UNAUTHORISED_ERROR);
@@ -139,8 +139,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserCookieDto getUserCookie(String uuid, UserRole role) {
-        UserCookieDto cookieDTO = getUserCookie(uuid);
+    public UserCookieDto authorizeUser(String uuid, UserRole role) {
+        UserCookieDto cookieDTO = authorizeUser(uuid);
         if(!cookieDTO.getUserType().equals(role)) {
             throw new BaseException(ErrorCode.NO_ACCESS.getErrorCodeString(), this.getClass().getSimpleName(),
                     ErrorCode.NO_ACCESS);

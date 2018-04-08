@@ -68,7 +68,6 @@ public class FlightServiceImpl implements FlightService {
         flightDao.add(flight);
         return new FlightAddResponseDto(
                 flight.getFlightName(),
-                flight.getPlaneName(),
                 flight.getFromTown(),
                 flight.getToTown(),
                 flight.getStart(),
@@ -76,10 +75,10 @@ public class FlightServiceImpl implements FlightService {
                 flight.getPriceBusiness(),
                 flight.getPriceEconomy(),
                 flight.getSchedule(),
+                flight.getDates(),
                 flight.getId(),
                 flight.getPlane(),
-                flight.isApproved(),
-                flight.getDates()
+                flight.isApproved()
         );
     }
 
@@ -186,14 +185,13 @@ public class FlightServiceImpl implements FlightService {
                 request.getPriceEconomy(),
                 request.getSchedule(),
                 dates,
-                request.isApproved(),
+                false,
                 null,
                 request.getId()
         );
         flightDao.update(flight);
         return new FlightUpdateResponseDto(
                 flight.getFlightName(),
-                flight.getPlaneName(),
                 flight.getFromTown(),
                 flight.getToTown(),
                 flight.getStart(),
@@ -201,9 +199,10 @@ public class FlightServiceImpl implements FlightService {
                 flight.getPriceBusiness(),
                 flight.getPriceEconomy(),
                 flight.getSchedule(),
+                flight.getDates(),
                 flight.getId(),
                 flight.getPlane(),
-                flight.getDates()
+                flight.isApproved()
         );
     }
 
@@ -219,7 +218,6 @@ public class FlightServiceImpl implements FlightService {
         Flight flight = flightDao.get(id);
         return new FlightAddResponseDto(
                 flight.getFlightName(),
-                flight.getPlaneName(),
                 flight.getFromTown(),
                 flight.getToTown(),
                 flight.getStart(),
@@ -227,10 +225,10 @@ public class FlightServiceImpl implements FlightService {
                 flight.getPriceBusiness(),
                 flight.getPriceEconomy(),
                 flight.getSchedule(),
+                flight.getDates(),
                 flight.getId(),
                 flight.getPlane(),
-                flight.isApproved(),
-                flight.getDates()
+                flight.isApproved()
         );
     }
 
@@ -240,7 +238,6 @@ public class FlightServiceImpl implements FlightService {
         Flight flight = flightDao.approve(id);
         return new FlightAddResponseDto(
                 flight.getFlightName(),
-                flight.getPlaneName(),
                 flight.getFromTown(),
                 flight.getToTown(),
                 flight.getStart(),
@@ -248,10 +245,10 @@ public class FlightServiceImpl implements FlightService {
                 flight.getPriceBusiness(),
                 flight.getPriceEconomy(),
                 flight.getSchedule(),
+                flight.getDates(),
                 flight.getId(),
                 flight.getPlane(),
-                flight.isApproved(),
-                flight.getDates()
+                flight.isApproved()
         );
     }
 

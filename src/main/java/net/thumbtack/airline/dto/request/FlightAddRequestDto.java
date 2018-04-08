@@ -6,21 +6,34 @@ import net.thumbtack.airline.model.Schedule;
 import java.util.List;
 
 public class FlightAddRequestDto extends FlightDto {
-    public FlightAddRequestDto(String flightName, String planeName, String fromTown, String toTown, String start,
-                               String duration, int priceBusiness, int priceEconomy, Schedule schedule) {
-        super(flightName, planeName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, schedule);
+    private String planeName;
+
+    public FlightAddRequestDto(String flightName, String fromTown, String toTown, String start, String duration,
+                               int priceBusiness, int priceEconomy, Schedule schedule, String planeName) {
+        super(flightName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, schedule);
+        this.planeName = planeName;
     }
 
-    public FlightAddRequestDto(String flightName, String planeName, String fromTown, String toTown, String start,
-                               String duration, int priceBusiness, int priceEconomy, Schedule schedule, List<String> dates) {
-        super(flightName, planeName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, schedule, dates);
+    public FlightAddRequestDto(String flightName, String fromTown, String toTown, String start, String duration,
+                               int priceBusiness, int priceEconomy, Schedule schedule, List<String> dates, String planeName) {
+        super(flightName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, schedule, dates);
+        this.planeName = planeName;
     }
 
-    public FlightAddRequestDto(String flightName, String planeName, String fromTown, String toTown, String start,
-                               String duration, int priceBusiness, int priceEconomy, List<String> dates) {
-        super(flightName, planeName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, dates);
+    public FlightAddRequestDto(String flightName, String fromTown, String toTown, String start, String duration,
+                               int priceBusiness, int priceEconomy, List<String> dates, String planeName) {
+        super(flightName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, dates);
+        this.planeName = planeName;
     }
 
     public FlightAddRequestDto() {
+    }
+
+    public String getPlaneName() {
+        return planeName;
+    }
+
+    public void setPlaneName(String planeName) {
+        this.planeName = planeName;
     }
 }

@@ -16,9 +16,9 @@ public interface UserService {
 
     List<Country> getCountries();
 
-    UserCookieDto getUserCookie(String uuid);
+    UserCookieDto authorizeUser(String uuid);
 
-    UserCookieDto getUserCookie(String uuid, UserRole role);
+    UserCookieDto authorizeUser(String uuid, UserRole role);
 
     String setUserCookie(UserCookieDto userCookieDto);
 

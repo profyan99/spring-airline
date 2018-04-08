@@ -1,5 +1,6 @@
 package net.thumbtack.airline.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import net.thumbtack.airline.ConstantsSetting;
 
 import javax.validation.constraints.NotBlank;
@@ -89,6 +90,7 @@ public class Passenger {
         this.passport = passport;
     }
 
+    @JsonProperty("clazz")
     public OrderClass getOrderClass() {
         return orderClass;
     }

@@ -7,7 +7,6 @@ import java.util.List;
 
 public class FlightDto {
     private String flightName;
-    private String planeName;
     private String fromTown;
     private String toTown;
 
@@ -21,11 +20,10 @@ public class FlightDto {
     private Schedule schedule;
     private List<String> dates;
 
-    public FlightDto(String flightName, String planeName, String fromTown, String toTown, String start,
+    public FlightDto(String flightName, String fromTown, String toTown, String start,
                      String duration, int priceBusiness, int priceEconomy, Schedule schedule) {
 
         this.flightName = flightName;
-        this.planeName = planeName;
         this.fromTown = fromTown;
         this.toTown = toTown;
         this.start = start;
@@ -37,10 +35,9 @@ public class FlightDto {
     }
 
     // For FlightAddResponseDto, because we need schedule and dates together
-    public FlightDto(String flightName, String planeName, String fromTown, String toTown, String start,
+    public FlightDto(String flightName, String fromTown, String toTown, String start,
                      String duration, int priceBusiness, int priceEconomy, Schedule schedule, List<String> dates) {
         this.flightName = flightName;
-        this.planeName = planeName;
         this.fromTown = fromTown;
         this.toTown = toTown;
         this.start = start;
@@ -51,11 +48,10 @@ public class FlightDto {
         this.dates = dates;
     }
 
-    public FlightDto(String flightName, String planeName, String fromTown, String toTown, String start,
+    public FlightDto(String flightName, String fromTown, String toTown, String start,
                      String duration, int priceBusiness, int priceEconomy, List<String> dates) {
 
         this.flightName = flightName;
-        this.planeName = planeName;
         this.fromTown = fromTown;
         this.toTown = toTown;
         this.start = start;
@@ -76,14 +72,6 @@ public class FlightDto {
 
     public void setFlightName(String flightName) {
         this.flightName = flightName;
-    }
-
-    public String getPlaneName() {
-        return planeName;
-    }
-
-    public void setPlaneName(String planeName) {
-        this.planeName = planeName;
     }
 
     public String getFromTown() {

@@ -22,6 +22,7 @@ public class OrderController {
         this.userService = userService;
     }
 
+    @Autowired
     public void setOrderService(OrderService orderService) {
         this.orderService = orderService;
     }
@@ -29,7 +30,7 @@ public class OrderController {
     @PostMapping(path = "/orders")
     public ResponseEntity<?> add(@RequestBody OrderAddRequestDto request,
                                  @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        userService.getUserCookie(uuid, UserRole.CLIENT_ROLE);
+        userService.authorizeUser(uuid, UserRole.CLIENT_ROLE);
         return ResponseEntity.ok(orderService.add(request));
     }
 }

@@ -1,34 +1,32 @@
 package net.thumbtack.airline.dto.request;
 
-import net.thumbtack.airline.dto.FlightDto;
 import net.thumbtack.airline.model.Schedule;
 
 import java.util.List;
 
-public class FlightUpdateRequestDto extends FlightDto {
-    private boolean approved;
+public class FlightUpdateRequestDto extends FlightAddRequestDto {
     private int id;
 
     public FlightUpdateRequestDto() {
 
     }
 
-    public FlightUpdateRequestDto(String flightName, String planeName, String fromTown, String toTown, String start,
-                                  String duration, int priceBusiness, int priceEconomy,
-                                  Schedule schedule, boolean approved) {
-
-        super(flightName, planeName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, schedule);
-        this.approved = approved;
-        id = 0;
+    public FlightUpdateRequestDto(String flightName, String fromTown, String toTown, String start, String duration,
+                                  int priceBusiness, int priceEconomy, Schedule schedule, String planeName, int id) {
+        super(flightName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, schedule, planeName);
+        this.id = id;
     }
 
-    public FlightUpdateRequestDto(String flightName, String planeName, String fromTown, String toTown, String start,
-                                  String duration, int priceBusiness, int priceEconomy,
-                                  List<String> dates, boolean approved) {
+    public FlightUpdateRequestDto(String flightName, String fromTown, String toTown, String start, String duration, 
+                                  int priceBusiness, int priceEconomy, Schedule schedule, List<String> dates, String planeName, int id) {
+        super(flightName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, schedule, dates, planeName);
+        this.id = id;
+    }
 
-        super(flightName, planeName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, dates);
-        this.approved = approved;
-        id = 0;
+    public FlightUpdateRequestDto(String flightName, String fromTown, String toTown, String start, String duration,
+                                  int priceBusiness, int priceEconomy, List<String> dates, String planeName, int id) {
+        super(flightName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, dates, planeName);
+        this.id = id;
     }
 
     public int getId() {
@@ -37,13 +35,5 @@ public class FlightUpdateRequestDto extends FlightDto {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public boolean isApproved() {
-        return approved;
-    }
-
-    public void setApproved(boolean approved) {
-        this.approved = approved;
     }
 }
