@@ -1,7 +1,5 @@
 package net.thumbtack.airline.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class Passenger {
     private int ticket;
 
@@ -79,7 +77,6 @@ public class Passenger {
         this.passport = passport;
     }
 
-    @JsonProperty("clazz")
     public OrderClass getOrderClass() {
         return orderClass;
     }
