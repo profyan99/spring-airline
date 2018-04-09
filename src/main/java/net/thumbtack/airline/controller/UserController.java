@@ -36,8 +36,8 @@ public class UserController {
     @PostMapping("/session")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto,
                                    @CookieValue(value = "${cookie}", defaultValue = "") String uuid, HttpServletResponse response) {
-
-        if (!userService.exists(uuid)) {
+    	// REVU move to userService.login
+    	if (!userService.exists(uuid)) {
             throw new BaseException(ErrorCode.ALREADY_LOGIN.getErrorCodeString(), "", ErrorCode.ALREADY_LOGIN);
         }
         BaseLoginDto userResponse = userService.login(loginRequestDto);
@@ -48,6 +48,7 @@ public class UserController {
 
     @DeleteMapping("/session")
     public ResponseEntity<?> logout(@CookieValue(value = "${cookie}", defaultValue = "") String uuid, HttpServletResponse response) {
+    	// REVU move to userService.login
         if (!userService.exists(uuid)) {
             throw new BaseException(ErrorCode.UNAUTHORISED_ERROR.getErrorCodeString(), "", ErrorCode.UNAUTHORISED_ERROR);
         }

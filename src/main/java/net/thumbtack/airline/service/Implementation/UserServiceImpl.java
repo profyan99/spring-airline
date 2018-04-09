@@ -30,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private ClientDao clientDao;
     private CookieDao cookieDao;
 
+    // REVU LOGGER, static
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -160,6 +161,7 @@ public class UserServiceImpl implements UserService {
         cookieDao.delete(uuid);
     }
 
+    // REVU static 
     private void checkUser(BaseUser user) {
         if (user == null) {
             throw new BaseException(ErrorCode.ACCOUNT_NOT_FOUND.getErrorCodeString(),

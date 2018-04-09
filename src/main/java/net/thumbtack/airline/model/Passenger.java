@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 public class Passenger {
     private int ticket;
 
+    // REVU it is model class, not request. Why validation ?
     @NotNull(message = ConstantsSetting.BAD_FIRSTNAME)
     @NotBlank(message = ConstantsSetting.BAD_FIRSTNAME)
     private String firstName;
@@ -90,6 +91,7 @@ public class Passenger {
         this.passport = passport;
     }
 
+    // REVU it is better to have "class" in json :-)
     @JsonProperty("clazz")
     public OrderClass getOrderClass() {
         return orderClass;

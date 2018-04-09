@@ -30,6 +30,8 @@ public class CookieDaoImpl extends BaseDaoImpl implements CookieDao {
             return getCookieMapper(session).exists(uuid);
         } catch (RuntimeException e) {
             logger.error("Couldn't check for exist cookie: "+e.toString());
+            // REVU you do not need to pass ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString()
+            // if you pass ErrorCode.ERROR_WITH_DATABASE
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "exist cookie",
                     this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
         }

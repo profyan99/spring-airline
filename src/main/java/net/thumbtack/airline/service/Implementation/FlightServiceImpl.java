@@ -33,6 +33,7 @@ public class FlightServiceImpl implements FlightService {
 
     private FlightDao flightDao;
 
+    // REVU static, LOGGER
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -82,6 +83,7 @@ public class FlightServiceImpl implements FlightService {
         );
     }
 
+    // REVU static
     private void setDays(List<String> dates, FlightPeriod dayOfWeek, LocalDate from, LocalDate to) {
         LocalDate localDate = LocalDate.now();
         for (int i = from.getMonthValue(); i <= to.getMonthValue(); i++) {
@@ -96,6 +98,7 @@ public class FlightServiceImpl implements FlightService {
         }
     }
 
+    // REVU static
     private List<String> setDates(String getFromDate, String getToDate, String schedulePeriod) {
         List<String> dates;
         LocalDate dateFrom, dateTo;
@@ -108,6 +111,7 @@ public class FlightServiceImpl implements FlightService {
         dates = new ArrayList<>(dateTo.getDayOfYear() -  dateFrom.getDayOfYear() + 1);
         String period = schedulePeriod.toUpperCase();
 
+        // REVU switch(period)
         if (period.equals(FlightPeriod.DAILY.toString())) {
             for (int i = dateFrom.getDayOfYear(), length = dateTo.getDayOfYear(); i <= length; i++) {
                 dates.add(dateFrom.withDayOfYear(i).toString());
@@ -333,6 +337,7 @@ public class FlightServiceImpl implements FlightService {
         return response;
     }
 
+    // REVU checkFlightExists
     private void checkFlightToExist(int id) {
         if (!flightDao.exists(id)) {
             throw new BaseException(ErrorCode.FLIGHT_NOT_FOUND.getErrorCodeString(), this.getClass().getSimpleName(),
