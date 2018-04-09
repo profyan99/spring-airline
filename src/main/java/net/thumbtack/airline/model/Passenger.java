@@ -27,8 +27,10 @@ public class Passenger {
 
     private int price;
 
+    private String place;
+
     public Passenger(int ticket, String firstName, String lastName, String nationality, String passport,
-                     OrderClass orderClass, int price) {
+                     OrderClass orderClass, int price, String place) {
         this.ticket = ticket;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -36,14 +38,11 @@ public class Passenger {
         this.passport = passport;
         this.orderClass = orderClass;
         this.price = price;
+        this.place = place;
     }
 
-    public Passenger(String firstName, String lastName, String nationality, String passport, OrderClass orderClass) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.nationality = nationality;
-        this.passport = passport;
-        this.orderClass = orderClass;
+    public Passenger(String firstName, String lastName, String nationality, String passport, OrderClass orderClass, int price) {
+        this(0, firstName, lastName, nationality, passport, orderClass, price, "");
     }
 
     public Passenger() {
@@ -106,4 +105,13 @@ public class Passenger {
     public void setPrice(int price) {
         this.price = price;
     }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
+    }
+
 }

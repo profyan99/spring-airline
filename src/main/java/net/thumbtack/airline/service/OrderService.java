@@ -1,8 +1,8 @@
 package net.thumbtack.airline.service;
 
 import net.thumbtack.airline.dto.request.OrderAddRequestDto;
-import net.thumbtack.airline.model.Order;
+import net.thumbtack.airline.dto.response.OrderAddResponseDto;
 
 public interface OrderService {
-    Order add(OrderAddRequestDto requestDto);
+    OrderAddResponseDto add(OrderAddRequestDto requestDto);
 }

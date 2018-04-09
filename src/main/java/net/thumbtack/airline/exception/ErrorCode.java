@@ -14,6 +14,8 @@ public enum ErrorCode {
     INVALID_REQUEST_DATA("Invalid request. Please check and send again."),
     ERROR_WITH_DATABASE("Error with "),
     NO_ACCESS("You haven't got permissions to get this resource."),
+    UNAPPROVED_FLIGHT("Flight didn't approved."),
+    ALREADY_APPROVED_FLIGHT("You can't vary flight, because it approved."),
     INVALID_DATE_FORMAT("Invalid date format. Please check and send again.");
 
     private final String errorCode;

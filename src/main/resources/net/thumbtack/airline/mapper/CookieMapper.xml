@@ -6,7 +6,7 @@
 <mapper namespace="net.thumbtack.airline.dao.mapper.CookieMapper">
 
     <insert id="set" parameterType="Cookie">
-        INSERT INTO cookies(uuid, id, userType) VALUES(#{uuid}, #{id}, #{userType.name})
+        INSERT INTO cookies(uuid, id, userType) VALUES(#{uuid}, #{id}, #{userType})
     </insert>
 
     <select id="get" parameterType="string" resultType="Cookie">

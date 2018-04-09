@@ -33,11 +33,11 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/session")
+    @PostMapping(path = "/session")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto,
                                    @CookieValue(value = "${cookie}", defaultValue = "") String uuid, HttpServletResponse response) {
 
-        if (!userService.exists(uuid)) {
+        if (userService.exists(uuid)) {
             throw new BaseException(ErrorCode.ALREADY_LOGIN.getErrorCodeString(), "", ErrorCode.ALREADY_LOGIN);
         }
         BaseLoginDto userResponse = userService.login(loginRequestDto);
@@ -46,7 +46,7 @@ public class UserController {
         return ResponseEntity.ok(userResponse);
     }
 
-    @DeleteMapping("/session")
+    @DeleteMapping(path = "/session")
     public ResponseEntity<?> logout(@CookieValue(value = "${cookie}", defaultValue = "") String uuid, HttpServletResponse response) {
         if (!userService.exists(uuid)) {
             throw new BaseException(ErrorCode.UNAUTHORISED_ERROR.getErrorCodeString(), "", ErrorCode.UNAUTHORISED_ERROR);

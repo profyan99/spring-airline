@@ -114,6 +114,10 @@
 
     </update>
 
+    <update id="approve">
+        UPDATE flight SET approved=TRUE WHERE id=#{flightId}
+    </update>
+
     <delete id="delete" parameterType="_int">
         DELETE FROM flight WHERE id=#{flightId}
     </delete>

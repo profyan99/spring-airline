@@ -50,7 +50,7 @@ public class ClientController {
     @PutMapping
     public ResponseEntity<?> update(@RequestBody @Valid ClientUpdateRequestDto request,
                                     @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        request.setId(userService.authorizeUser(uuid, UserRole.CLIENT_ROLE).getId());
+        request.setId(userService.authorizeUser(uuid, UserRole.CLIENT).getId());
         return ResponseEntity.ok(clientService.update(request));
     }
 }

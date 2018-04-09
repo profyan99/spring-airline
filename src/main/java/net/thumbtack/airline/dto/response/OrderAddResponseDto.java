@@ -1,11 +1,11 @@
-package net.thumbtack.airline.model;
+package net.thumbtack.airline.dto.response;
+
+import net.thumbtack.airline.dto.OrderDto;
 
 import java.util.List;
 
-public class Order {
+public class OrderAddResponseDto extends OrderDto {
     private int orderId;
-    private int flightId;
-    private String date;
     private int totalPrice;
     private String flightName;
     private String planeName;
@@ -13,13 +13,12 @@ public class Order {
     private String toTown;
     private String start;
     private String duration;
-    private List<Passenger> passengers;
+    private List<PassengerResponseDto> passengers;
 
-    public Order(int orderId, int flightId, String date, int totalPrice, String flightName, String planeName,
-                 String fromTown, String toTown, String start, String duration, List<Passenger> passengers) {
+    public OrderAddResponseDto(int flightId, String date, int orderId, int totalPrice, String flightName,
+                               String planeName, String fromTown, String toTown, String start, String duration, List<PassengerResponseDto> passengers) {
+        super(flightId, date);
         this.orderId = orderId;
-        this.flightId = flightId;
-        this.date = date;
         this.totalPrice = totalPrice;
         this.flightName = flightName;
         this.planeName = planeName;
@@ -30,16 +29,7 @@ public class Order {
         this.passengers = passengers;
     }
 
-    public Order(int flightId, String date, List<Passenger> passengers) {
-        this(0, flightId, date, 0, "", "", "", "", "", "", passengers);
-    }
-
-    public Order(int flightId, String date, int totalPrice, String flightName, String planeName, String fromTown,
-                 String toTown, String start, String duration, List<Passenger> passengers) {
-        this(0, flightId, date, totalPrice, flightName, planeName, fromTown, toTown, start, duration, passengers);
-    }
-
-    public Order() {
+    public OrderAddResponseDto() {
 
     }
 
@@ -49,22 +39,6 @@ public class Order {
 
     public void setOrderId(int orderId) {
         this.orderId = orderId;
-    }
-
-    public int getFlightId() {
-        return flightId;
-    }
-
-    public void setFlightId(int flightId) {
-        this.flightId = flightId;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
     }
 
     public int getTotalPrice() {
@@ -123,11 +97,11 @@ public class Order {
         this.duration = duration;
     }
 
-    public List<Passenger> getPassengers() {
+    public List<PassengerResponseDto> getPassengers() {
         return passengers;
     }
 
-    public void setPassengers(List<Passenger> passengers) {
+    public void setPassengers(List<PassengerResponseDto> passengers) {
         this.passengers = passengers;
     }
 }

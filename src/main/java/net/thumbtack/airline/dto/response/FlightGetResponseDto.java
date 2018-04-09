@@ -8,15 +8,15 @@ import java.util.List;
 public class FlightGetResponseDto extends FlightDto {
     private int flightId;
 
-    public FlightGetResponseDto(String flightName, String planeName, String fromTown, String toTown, String start, String duration,
+    public FlightGetResponseDto(String flightName,  String fromTown, String toTown, String start, String duration,
                                 int priceBusiness, int priceEconomy, Schedule schedule, List<String> dates, int flightId) {
-        super(flightName, planeName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, schedule, dates);
+        super(flightName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, schedule, dates);
         this.flightId = flightId;
     }
 
-    public FlightGetResponseDto(String flightName, String planeName, String fromTown, String toTown, String start, String duration,
+    public FlightGetResponseDto(String flightName,  String fromTown, String toTown, String start, String duration,
                                 int priceBusiness, int priceEconomy, List<String> dates, int flightId) {
-        super(flightName, planeName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, dates);
+        super(flightName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, dates);
         this.flightId = flightId;
     }
 

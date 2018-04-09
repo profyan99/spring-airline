@@ -30,7 +30,7 @@ public class OrderController {
     @PostMapping(path = "/orders")
     public ResponseEntity<?> add(@RequestBody OrderAddRequestDto request,
                                  @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        userService.authorizeUser(uuid, UserRole.CLIENT_ROLE);
+        userService.authorizeUser(uuid, UserRole.CLIENT);
         return ResponseEntity.ok(orderService.add(request));
     }
 }

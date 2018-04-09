@@ -53,25 +53,25 @@ public class AdminController {
     @PutMapping("/admin")
     public ResponseEntity<?> update(@RequestBody @Valid AdminUpdateRequestDto request,
                                     @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        request.setId(userService.authorizeUser(uuid, UserRole.ADMIN_ROLE).getId());
+        request.setId(userService.authorizeUser(uuid, UserRole.ADMIN).getId());
         return ResponseEntity.ok(adminService.update(request));
     }
 
     @RequestMapping(value = "/clients", method = RequestMethod.GET)
     public ResponseEntity<?> clients(@CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        userService.authorizeUser(uuid, UserRole.ADMIN_ROLE);
+        userService.authorizeUser(uuid, UserRole.ADMIN);
         return ResponseEntity.ok(adminService.getClients());
     }
 
     @GetMapping(path = "/planes")
     public ResponseEntity<?> planes(@CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        userService.authorizeUser(uuid, UserRole.ADMIN_ROLE);
+        userService.authorizeUser(uuid, UserRole.ADMIN);
         return ResponseEntity.ok(adminService.getPlanes());
     }
 
     @DeleteMapping("/debug/clear")
     public ResponseEntity<?> clear(@CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        userService.authorizeUser(uuid, UserRole.ADMIN_ROLE);
+        userService.authorizeUser(uuid, UserRole.ADMIN);
         adminService.clearDataBase();
         return ResponseEntity.ok().build();
     }

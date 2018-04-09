@@ -27,7 +27,9 @@ public class OrderDaoImpl extends BaseDaoImpl implements OrderDao {
     @Override
     public Order add(Order order) {
         try (SqlSession session = sessionFactory.openSession()) {
-
+            getOrderMapper(session).addOrder(order);
+            getOrderMapper(session).addPassenger(order);
+            order.setPassengers(getOrderMapper(session).getPassenger(order.getOrderId()));
             session.commit();
             return order;
         } catch (RuntimeException e) {

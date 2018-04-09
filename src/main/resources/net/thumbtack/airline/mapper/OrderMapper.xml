@@ -5,8 +5,42 @@
 
 <mapper namespace="net.thumbtack.airline.dao.mapper.OrderMapper">
 
-    <insert id="add" parameterType="Order" useGeneratedKeys="true" keyProperty="orderId" keyColumn="orderId">
+    <resultMap id="OrderResult" type="Order">
+        <id property="orderId" column="orderId"/>
+        <result property="flightId" column="flightId"/>
+        <result property="totalPrice" column="totalPrice"/>
+        <collection property="passengers" ofType="Passenger">
+            <id property="ticket" column="ticket"/>
+            <result property="orderId" column="orderId"/>
+            <result property="firstName" column="firstName"/>
+            <result property="lastName" column="lastName"/>
+            <result property="nationality" column="nationality"/>
+            <result property="passport" column="passport"/>
+            <result property="price" column="price"/>
+            <result property="orderClass" column="orderClass"/>
+            <result property="place" column="place"/>
+        </collection>
+    </resultMap>
 
+    <insert id="addOrder" useGeneratedKeys="true" keyProperty="orderId" keyColumn="orderId">
+        INSERT INTO orders (flightId, totalPrice) VALUES (#{flightId}, #{totalPrice})
     </insert>
 
+    <insert id="addPassenger">
+        INSERT INTO passenger(orderId, firstName, lastName, nationality, passport, price, orderClass, place) VALUES
+        <foreach collection="passengers" item="e" index="index" open="(" separator="),(" close=")">
+            #{orderId},
+            #{e.firstName},
+            #{e.lastName},
+            #{e.nationality},
+            #{e.passport},
+            #{e.price},
+            #{e.orderClass},
+            #{e.place}
+        </foreach>
+    </insert>
+
+    <select id="getPassenger" resultType="Passenger">
+        SELECT * FROM passenger WHERE orderId=#{orderId}
+    </select>
 </mapper>

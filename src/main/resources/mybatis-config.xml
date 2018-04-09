@@ -40,6 +40,7 @@
 		<mapper resource="net/thumbtack/airline/mapper/CookieMapper.xml"/>
 		<mapper resource="net/thumbtack/airline/mapper/PlaneMapper.xml"/>
 		<mapper resource="net/thumbtack/airline/mapper/FlightMapper.xml"/>
+		<mapper resource="net/thumbtack/airline/mapper/OrderMapper.xml"/>
 	</mappers>
 
 

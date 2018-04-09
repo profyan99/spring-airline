@@ -169,7 +169,7 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     public FlightUpdateResponseDto update(FlightUpdateRequestDto request) {
-        checkFlightToExist(request.getId());
+        checkForApprove(request.getId());
         List<String> dates = request.getDates();
         if (dates == null) {
             dates = setDates(request.getSchedule().getFromDate(), request.getSchedule().getToDate(), request.getSchedule().getPeriod());
@@ -208,7 +208,7 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     public void delete(int id) {
-        checkFlightToExist(id);
+        checkForApprove(id);
         flightDao.delete(id);
     }
 
@@ -234,7 +234,7 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     public FlightAddResponseDto approve(int id) {
-        checkFlightToExist(id);
+        checkForApprove(id);
         Flight flight = flightDao.approve(id);
         return new FlightAddResponseDto(
                 flight.getFlightName(),
@@ -297,10 +297,9 @@ public class FlightServiceImpl implements FlightService {
                 params.getToDate()
         ).forEach((e) -> {
             FlightGetResponseDto flightDto;
-            if (params.getUserType().equals(UserRole.ADMIN_ROLE)) {
+            if (params.getUserType().equals(UserRole.ADMIN)) {
                 flightDto = new FlightGetResponseAdminDto(
                         e.getFlightName(),
-                        e.getPlaneName(),
                         e.getFromTown(),
                         e.getToTown(),
                         e.getStart(),
@@ -316,7 +315,6 @@ public class FlightServiceImpl implements FlightService {
             } else {
                 flightDto = new FlightGetResponseDto(
                         e.getFlightName(),
-                        e.getPlaneName(),
                         e.getFromTown(),
                         e.getToTown(),
                         e.getStart(),
@@ -337,6 +335,14 @@ public class FlightServiceImpl implements FlightService {
         if (!flightDao.exists(id)) {
             throw new BaseException(ErrorCode.FLIGHT_NOT_FOUND.getErrorCodeString(), this.getClass().getSimpleName(),
                     ErrorCode.FLIGHT_NOT_FOUND);
+        }
+    }
+
+    private void checkForApprove(int id) {
+        checkFlightToExist(id);
+        if(flightDao.get(id).isApproved()) {
+            throw new BaseException(ErrorCode.ALREADY_APPROVED_FLIGHT.getErrorCodeString(), this.getClass().getSimpleName(),
+                    ErrorCode.ALREADY_APPROVED_FLIGHT);
         }
     }
 }

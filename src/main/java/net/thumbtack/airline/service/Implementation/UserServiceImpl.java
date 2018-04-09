@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
             throw new BaseException(ErrorCode.INVALID_PASSWORD.getErrorCodeString(),
                     this.getClass().getSimpleName(), ErrorCode.INVALID_PASSWORD);
         }
-        if (user.getUserType().equals(UserRole.ADMIN_ROLE)) {
+        if (user.getUserType().equals(UserRole.ADMIN)) {
             baseLoginDTO = new AdminResponseDto(
                     user.getFirstName(),
                     user.getLastName(),
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
         UserDto userDto;
         BaseUser user = userDao.get(id);
         checkUser(user);
-        if (user.getUserType().equals(UserRole.ADMIN_ROLE)) {
+        if (user.getUserType().equals(UserRole.ADMIN)) {
             userDto = new AdminResponseDto(
                     user.getFirstName(),
                     user.getLastName(),

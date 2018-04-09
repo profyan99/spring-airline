@@ -62,7 +62,7 @@ public class AdminControllerTests {
                 .andExpect(jsonPath("$.patronymic").value(requestDTO.getPatronymic()))
                 .andExpect(jsonPath("$.position").value(requestDTO.getPosition()))
                 .andExpect(jsonPath("$.id").isNumber())
-                .andExpect(jsonPath("$.userType").value(UserRole.ADMIN_ROLE.toString()))
+                .andExpect(jsonPath("$.userType").value(UserRole.ADMIN.toString()))
                 .andReturn();
         this.cookie = result.getResponse().getCookie("JAVASESSIONID");
 
@@ -125,7 +125,7 @@ public class AdminControllerTests {
                 .andExpect(jsonPath("$.lastName").value(requestDto.getLastName()))
                 .andExpect(jsonPath("$.patronymic").value(requestDto.getPatronymic()))
                 .andExpect(jsonPath("$.position").value(requestDto.getPosition()))
-                .andExpect(jsonPath("$.userType").value(UserRole.ADMIN_ROLE.toString()));
+                .andExpect(jsonPath("$.userType").value(UserRole.ADMIN.toString()));
 
         requestDto.setOldPassword("newpassword");
         this.mvc.perform(put("/api/admin")
