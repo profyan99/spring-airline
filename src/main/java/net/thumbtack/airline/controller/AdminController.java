@@ -27,7 +27,7 @@ public class AdminController {
 
     private UserService userService;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
     @Value(value = "${cookie}")
     private String COOKIE;

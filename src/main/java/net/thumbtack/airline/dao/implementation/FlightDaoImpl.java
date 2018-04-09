@@ -17,7 +17,7 @@ import java.util.List;
 @Repository
 public class FlightDaoImpl extends BaseDaoImpl implements FlightDao {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(FlightDaoImpl.class);
 
     private SqlSessionFactory sessionFactory;
 

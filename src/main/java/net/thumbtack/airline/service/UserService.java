@@ -10,7 +10,7 @@ import net.thumbtack.airline.model.UserRole;
 import java.util.List;
 
 public interface UserService {
-    BaseLoginDto login(LoginRequestDto loginRequestDto);
+    BaseLoginDto login(LoginRequestDto loginRequestDto, String uuid);
 
     UserDto get(int id);
 

@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ClientServiceImpl implements ClientService {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(ClientServiceImpl.class);
 
     private ClientDao clientDao;
 
@@ -39,7 +39,7 @@ public class ClientServiceImpl implements ClientService {
         ClientResponseDto responseDTO;
         if (userDao.exists(request.getLogin())) {
             throw new BaseException(ErrorCode.ACCOUNT_EXIST_ERROR.getErrorCodeString(),
-                    this.getClass().getSimpleName(), ErrorCode.ACCOUNT_EXIST_ERROR);
+                    "registration", ErrorCode.ACCOUNT_EXIST_ERROR);
         }
         Client client = new Client(
                 request.getFirstName(),
@@ -70,7 +70,7 @@ public class ClientServiceImpl implements ClientService {
         Client client = clientDao.findClientById(request.getId());
         if (!client.getPassword().equals(request.getOldPassword())) {
             throw new BaseException(ErrorCode.INVALID_PASSWORD.getErrorCodeString(),
-                    this.getClass().getSimpleName(), ErrorCode.INVALID_PASSWORD);
+                    "password", ErrorCode.INVALID_PASSWORD);
         }
         client.setFirstName(request.getFirstName());
         client.setLastName(request.getLastName());

@@ -27,7 +27,7 @@ import java.util.Map;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
 
     private OrderDao orderDao;
 
@@ -54,10 +54,10 @@ public class OrderServiceImpl implements OrderService {
     public OrderAddResponseDto add(OrderAddRequestDto requestDto) {
         Flight flight = flightDao.get(requestDto.getFlightId());
         if (!flight.getDates().contains(requestDto.getDate())) {
-            throw new BaseException(ErrorCode.INVALID_DATE.getErrorCodeString(), "Date", ErrorCode.INVALID_DATE);
+            throw new BaseException(ErrorCode.INVALID_DATE.getErrorCodeString(), "date", ErrorCode.INVALID_DATE);
         }
         if (!flight.isApproved()) {
-            throw new BaseException(ErrorCode.UNAPPROVED_FLIGHT.getErrorCodeString(), "", ErrorCode.UNAPPROVED_FLIGHT);
+            throw new BaseException(ErrorCode.UNAPPROVED_FLIGHT.getErrorCodeString(), "flight", ErrorCode.UNAPPROVED_FLIGHT);
         }
         Map<String, String> citizen = new HashMap<>();
         List<Passenger> passengers = new ArrayList<>();
@@ -75,7 +75,6 @@ public class OrderServiceImpl implements OrderService {
                     c.getOrderClass(),
                     currentPrice
             ));
-            logger.error("--- PASSENGER: "+c.toString());
             totalPrice += currentPrice;
         }
         Order order = new Order(
@@ -93,15 +92,15 @@ public class OrderServiceImpl implements OrderService {
         orderDao.add(order);
         List<PassengerResponseDto> passengerResponseDtos = new ArrayList<>(passengers.size());
         order.getPassengers().forEach(passenger ->
-            passengerResponseDtos.add(new PassengerResponseDto(
-                    passenger.getFirstName(),
-                    passenger.getLastName(),
-                    passenger.getNationality(),
-                    passenger.getPassport(),
-                    passenger.getOrderClass(),
-                    passenger.getTicket(),
-                    passenger.getPrice()
-            ))
+                passengerResponseDtos.add(new PassengerResponseDto(
+                        passenger.getFirstName(),
+                        passenger.getLastName(),
+                        passenger.getNationality(),
+                        passenger.getPassport(),
+                        passenger.getOrderClass(),
+                        passenger.getTicket(),
+                        passenger.getPrice()
+                ))
         );
         return new OrderAddResponseDto(
                 order.getFlightId(),

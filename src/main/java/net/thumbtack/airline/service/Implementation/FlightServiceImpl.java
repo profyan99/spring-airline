@@ -33,7 +33,7 @@ public class FlightServiceImpl implements FlightService {
 
     private FlightDao flightDao;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(FlightServiceImpl.class);
 
     @Autowired
     public void setFlightDao(FlightDao flightDao) {
@@ -43,7 +43,7 @@ public class FlightServiceImpl implements FlightService {
     @Override
     public FlightAddResponseDto add(FlightAddRequestDto request) {
         if (flightDao.exists(request.getFlightName())) {
-            throw new BaseException(ErrorCode.FLIGHT_EXIST_ERROR.getErrorCodeString(), this.getClass().getSimpleName(),
+            throw new BaseException(ErrorCode.FLIGHT_EXIST_ERROR.getErrorCodeString(), "flight",
                     ErrorCode.FLIGHT_EXIST_ERROR);
         }
         List<String> dates = request.getDates();
@@ -82,7 +82,7 @@ public class FlightServiceImpl implements FlightService {
         );
     }
 
-    private void setDays(List<String> dates, FlightPeriod dayOfWeek, LocalDate from, LocalDate to) {
+    private static void setDays(List<String> dates, FlightPeriod dayOfWeek, LocalDate from, LocalDate to) {
         LocalDate localDate = LocalDate.now();
         for (int i = from.getMonthValue(); i <= to.getMonthValue(); i++) {
             localDate = localDate
@@ -96,7 +96,7 @@ public class FlightServiceImpl implements FlightService {
         }
     }
 
-    private List<String> setDates(String getFromDate, String getToDate, String schedulePeriod) {
+    private static List<String> setDates(String getFromDate, String getToDate, String schedulePeriod) {
         List<String> dates;
         LocalDate dateFrom, dateTo;
         dateFrom = LocalDate.parse(getFromDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -108,57 +108,65 @@ public class FlightServiceImpl implements FlightService {
         dates = new ArrayList<>(dateTo.getDayOfYear() -  dateFrom.getDayOfYear() + 1);
         String period = schedulePeriod.toUpperCase();
 
-        if (period.equals(FlightPeriod.DAILY.toString())) {
-            for (int i = dateFrom.getDayOfYear(), length = dateTo.getDayOfYear(); i <= length; i++) {
-                dates.add(dateFrom.withDayOfYear(i).toString());
-            }
-        } else if (period.equals(FlightPeriod.EVEN.toString())) {
-            for (int i = dateFrom.getDayOfYear(), length = dateTo.getDayOfYear(); i <= length; i++) {
-                dateFrom = dateFrom.withDayOfYear(i);
-                if (dateFrom.getDayOfMonth() % 2 == 0) {
-                    dates.add(dateFrom.toString());
+        switch (FlightPeriod.valueOf(period)) {
+            case DAILY: {
+                for (int i = dateFrom.getDayOfYear(), length = dateTo.getDayOfYear(); i <= length; i++) {
+                    dates.add(dateFrom.withDayOfYear(i).toString());
                 }
+                break;
             }
-        } else if (period.equals(FlightPeriod.ODD.toString())) {
-            for (int i = dateFrom.getDayOfYear(), length = dateTo.getDayOfYear(); i <= length; i++) {
-                dateFrom = dateFrom.withDayOfYear(i);
-                if (dateFrom.getDayOfMonth() % 2 != 0) {
-                    dates.add(dateFrom.toString());
-                }
-            }
-        } else {
-            String[] days;
-            try {
-                days = period.split(",");
-            } catch (PatternSyntaxException e) {
-                logger.error("Error while parsing days of period");
-                throw new BaseException(ErrorCode.INVALID_DATE.getErrorCodeString(),
-                        period, ErrorCode.INVALID_DATE);
-            }
-
-            boolean dayOfWeek;
-
-            for (String s : days) {
-                dayOfWeek = false;
-                for (FlightPeriod p : FlightPeriod.values()) { // if the day of the week is specified
-                    if (s.equals(p.toString())) {
-                        setDays(dates, p, dateFrom, dateTo);
-                        dayOfWeek = true;
+            case EVEN: {
+                for (int i = dateFrom.getDayOfYear(), length = dateTo.getDayOfYear(); i <= length; i++) {
+                    dateFrom = dateFrom.withDayOfYear(i);
+                    if (dateFrom.getDayOfMonth() % 2 == 0) {
+                        dates.add(dateFrom.toString());
                     }
                 }
-                if (!dayOfWeek) { // if the day of the month is specified
-                    int dayNumber;
-                    try {
-                        dayNumber = Integer.parseInt(s);
-                    } catch (NumberFormatException e) {
-                        logger.error("Error while parsing integer of day: " + s);
-                        throw new BaseException(ErrorCode.INVALID_DATE.getErrorCodeString(),
-                                this.getClass().getSimpleName(), ErrorCode.INVALID_DATE_FORMAT);
+                break;
+            }
+            case ODD: {
+                for (int i = dateFrom.getDayOfYear(), length = dateTo.getDayOfYear(); i <= length; i++) {
+                    dateFrom = dateFrom.withDayOfYear(i);
+                    if (dateFrom.getDayOfMonth() % 2 != 0) {
+                        dates.add(dateFrom.toString());
                     }
-                    for (int i = dateFrom.getMonthValue(), months = dateTo.getMonthValue(); i <= months; i++) {
-                        dateFrom = dateFrom.withMonth(i);
-                        if (dayNumber <= dateFrom.lengthOfMonth()) {
-                            dates.add(dateFrom.withDayOfMonth(dayNumber).toString());
+                }
+                break;
+            }
+            default: {
+                String[] days;
+                try {
+                    days = period.split(",");
+                } catch (PatternSyntaxException e) {
+                    logger.error("Error while parsing days of period");
+                    throw new BaseException(ErrorCode.INVALID_DATE.getErrorCodeString(),
+                            "date", ErrorCode.INVALID_DATE);
+                }
+
+                boolean dayOfWeek;
+
+                for (String s : days) {
+                    dayOfWeek = false;
+                    for (FlightPeriod p : FlightPeriod.values()) { // if the day of the week is specified
+                        if (s.equals(p.toString())) {
+                            setDays(dates, p, dateFrom, dateTo);
+                            dayOfWeek = true;
+                        }
+                    }
+                    if (!dayOfWeek) { // if the day of the month is specified
+                        int dayNumber;
+                        try {
+                            dayNumber = Integer.parseInt(s);
+                        } catch (NumberFormatException e) {
+                            logger.error("Error while parsing integer of day: " + s);
+                            throw new BaseException(ErrorCode.INVALID_DATE.getErrorCodeString(),
+                                    "date", ErrorCode.INVALID_DATE_FORMAT);
+                        }
+                        for (int i = dateFrom.getMonthValue(), months = dateTo.getMonthValue(); i <= months; i++) {
+                            dateFrom = dateFrom.withMonth(i);
+                            if (dayNumber <= dateFrom.lengthOfMonth()) {
+                                dates.add(dateFrom.withDayOfMonth(dayNumber).toString());
+                            }
                         }
                     }
                 }
@@ -169,7 +177,7 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     public FlightUpdateResponseDto update(FlightUpdateRequestDto request) {
-        checkForApprove(request.getId());
+        checkFlightApproves(request.getId());
         List<String> dates = request.getDates();
         if (dates == null) {
             dates = setDates(request.getSchedule().getFromDate(), request.getSchedule().getToDate(), request.getSchedule().getPeriod());
@@ -208,13 +216,13 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     public void delete(int id) {
-        checkForApprove(id);
+        checkFlightApproves(id);
         flightDao.delete(id);
     }
 
     @Override
     public FlightAddResponseDto get(int id) {
-        checkFlightToExist(id);
+        checkFlightExists(id);
         Flight flight = flightDao.get(id);
         return new FlightAddResponseDto(
                 flight.getFlightName(),
@@ -234,7 +242,7 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     public FlightAddResponseDto approve(int id) {
-        checkForApprove(id);
+        checkFlightApproves(id);
         Flight flight = flightDao.approve(id);
         return new FlightAddResponseDto(
                 flight.getFlightName(),
@@ -260,7 +268,7 @@ public class FlightServiceImpl implements FlightService {
             params.setFromTown(null);
         } else if (params.getFromTown().isEmpty() && params.getToTown().isEmpty()) { // не указан город
             throw new BaseException(ErrorCode.INVALID_REQUEST_DATA.getErrorCodeString(),
-                    "Get flights", ErrorCode.INVALID_REQUEST_DATA);
+                    "date", ErrorCode.INVALID_REQUEST_DATA);
         }
         if (params.getFlightName().isEmpty()) {
             params.setFlightName(null);
@@ -331,17 +339,17 @@ public class FlightServiceImpl implements FlightService {
         return response;
     }
 
-    private void checkFlightToExist(int id) {
+    private void checkFlightExists(int id) {
         if (!flightDao.exists(id)) {
-            throw new BaseException(ErrorCode.FLIGHT_NOT_FOUND.getErrorCodeString(), this.getClass().getSimpleName(),
+            throw new BaseException(ErrorCode.FLIGHT_NOT_FOUND.getErrorCodeString(), "flight",
                     ErrorCode.FLIGHT_NOT_FOUND);
         }
     }
 
-    private void checkForApprove(int id) {
-        checkFlightToExist(id);
+    private void checkFlightApproves(int id) {
+        checkFlightExists(id);
         if(flightDao.get(id).isApproved()) {
-            throw new BaseException(ErrorCode.ALREADY_APPROVED_FLIGHT.getErrorCodeString(), this.getClass().getSimpleName(),
+            throw new BaseException(ErrorCode.ALREADY_APPROVED_FLIGHT.getErrorCodeString(), "flight",
                     ErrorCode.ALREADY_APPROVED_FLIGHT);
         }
     }

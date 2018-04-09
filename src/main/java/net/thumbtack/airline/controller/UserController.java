@@ -3,8 +3,6 @@ package net.thumbtack.airline.controller;
 import net.thumbtack.airline.dto.UserCookieDto;
 import net.thumbtack.airline.dto.request.LoginRequestDto;
 import net.thumbtack.airline.dto.response.BaseLoginDto;
-import net.thumbtack.airline.exception.BaseException;
-import net.thumbtack.airline.exception.ErrorCode;
 import net.thumbtack.airline.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +21,7 @@ public class UserController {
 
     private UserService userService;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Value(value = "${cookie}")
     private String COOKIE;
@@ -37,10 +35,7 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto,
                                    @CookieValue(value = "${cookie}", defaultValue = "") String uuid, HttpServletResponse response) {
 
-        if (userService.exists(uuid)) {
-            throw new BaseException(ErrorCode.ALREADY_LOGIN.getErrorCodeString(), "", ErrorCode.ALREADY_LOGIN);
-        }
-        BaseLoginDto userResponse = userService.login(loginRequestDto);
+        BaseLoginDto userResponse = userService.login(loginRequestDto, uuid);
         String cookieValue = userService.setUserCookie(new UserCookieDto(userResponse.getId(), userResponse.getUserType()));
         response.addCookie(new Cookie(COOKIE, cookieValue));
         return ResponseEntity.ok(userResponse);
@@ -48,9 +43,6 @@ public class UserController {
 
     @DeleteMapping(path = "/session")
     public ResponseEntity<?> logout(@CookieValue(value = "${cookie}", defaultValue = "") String uuid, HttpServletResponse response) {
-        if (!userService.exists(uuid)) {
-            throw new BaseException(ErrorCode.UNAUTHORISED_ERROR.getErrorCodeString(), "", ErrorCode.UNAUTHORISED_ERROR);
-        }
         userService.deleteUserCookie(uuid);
         Cookie cookie = new Cookie(COOKIE, null);
         cookie.setMaxAge(0);

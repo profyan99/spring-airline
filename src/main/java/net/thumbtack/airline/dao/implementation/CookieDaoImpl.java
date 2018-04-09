@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class CookieDaoImpl extends BaseDaoImpl implements CookieDao {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(CookieDaoImpl.class);
 
     private SqlSessionFactory sessionFactory;
 

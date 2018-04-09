@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ClientDaoImpl extends BaseDaoImpl implements ClientDao {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(ClientDaoImpl.class);
 
     private SqlSessionFactory sessionFactory;
 

@@ -19,7 +19,7 @@ import java.util.List;
 @Repository
 public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(AdminDaoImpl.class);
 
     private SqlSessionFactory sessionFactory;
 
@@ -33,7 +33,6 @@ public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
         try (SqlSession session = sessionFactory.openSession()) {
             getUserMapper(session).register(admin);
             getAdminMapper(session).register(admin);
-
             session.commit();
             return admin;
         } catch (RuntimeException e) {

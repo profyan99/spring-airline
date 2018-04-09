@@ -7,6 +7,8 @@ import net.thumbtack.airline.dto.response.ClientResponseDto;
 import net.thumbtack.airline.model.UserRole;
 import net.thumbtack.airline.service.ClientService;
 import net.thumbtack.airline.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -20,6 +22,8 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/api/client", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 public class ClientController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ClientController.class);
 
     private ClientService clientService;
 

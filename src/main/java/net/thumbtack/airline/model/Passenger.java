@@ -1,26 +1,16 @@
 package net.thumbtack.airline.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import net.thumbtack.airline.ConstantsSetting;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 public class Passenger {
     private int ticket;
 
-    @NotNull(message = ConstantsSetting.BAD_FIRSTNAME)
-    @NotBlank(message = ConstantsSetting.BAD_FIRSTNAME)
     private String firstName;
 
-    @NotNull(message = ConstantsSetting.BAD_LASTNAME)
-    @NotBlank(message = ConstantsSetting.BAD_LASTNAME)
     private String lastName;
 
     private String nationality;
 
-    @NotNull(message = ConstantsSetting.BAD_PASSPORT)
-    @NotBlank(message = ConstantsSetting.BAD_PASSPORT)
     private String passport;
 
     private OrderClass orderClass;

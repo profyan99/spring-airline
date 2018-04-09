@@ -18,7 +18,7 @@ import java.util.List;
 @Repository
 public class UserDaoImpl extends BaseDaoImpl implements UserDao {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(UserDaoImpl.class);
 
     private SqlSessionFactory sessionFactory;
 
