@@ -34,7 +34,7 @@ public class AdminControllerTests {
     ObjectMapper objectMapper;
 
     @Autowired
-    ConstantsSetting constantsSetting;
+    Utils utils;
 
     @Autowired
     AdminDao adminDao;

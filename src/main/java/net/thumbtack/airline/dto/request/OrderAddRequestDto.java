@@ -7,10 +7,12 @@ import java.util.List;
 
 public class OrderAddRequestDto extends OrderDto {
     private List<PassengerDto> passengers;
+    private int userId;
 
-    public OrderAddRequestDto(int flightId, String date, List<PassengerDto> passengers) {
+    public OrderAddRequestDto(int flightId, int userId, String date, List<PassengerDto> passengers) {
         super(flightId, date);
         this.passengers = passengers;
+        this.userId = userId;
     }
 
     public OrderAddRequestDto() {
@@ -23,5 +25,13 @@ public class OrderAddRequestDto extends OrderDto {
 
     public void setPassengers(List<PassengerDto> passengers) {
         this.passengers = passengers;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

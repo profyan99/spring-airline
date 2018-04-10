@@ -5,6 +5,7 @@ import java.util.List;
 public class Order {
     private int orderId;
     private int flightId;
+    private int userId;
     private String date;
     private int totalPrice;
     private String flightName;
@@ -15,10 +16,11 @@ public class Order {
     private String duration;
     private List<Passenger> passengers;
 
-    public Order(int orderId, int flightId, String date, int totalPrice, String flightName, String planeName,
+    public Order(int orderId, int flightId, int userId, String date, int totalPrice, String flightName, String planeName,
                  String fromTown, String toTown, String start, String duration, List<Passenger> passengers) {
         this.orderId = orderId;
         this.flightId = flightId;
+        this.userId = userId;
         this.date = date;
         this.totalPrice = totalPrice;
         this.flightName = flightName;
@@ -30,13 +32,9 @@ public class Order {
         this.passengers = passengers;
     }
 
-    public Order(int flightId, String date, List<Passenger> passengers) {
-        this(0, flightId, date, 0, "", "", "", "", "", "", passengers);
-    }
-
-    public Order(int flightId, String date, int totalPrice, String flightName, String planeName, String fromTown,
+    public Order(int flightId, int userId, String date, int totalPrice, String flightName, String planeName, String fromTown,
                  String toTown, String start, String duration, List<Passenger> passengers) {
-        this(0, flightId, date, totalPrice, flightName, planeName, fromTown, toTown, start, duration, passengers);
+        this(0, flightId, userId, date, totalPrice, flightName, planeName, fromTown, toTown, start, duration, passengers);
     }
 
     public Order() {
@@ -129,5 +127,13 @@ public class Order {
 
     public void setPassengers(List<Passenger> passengers) {
         this.passengers = passengers;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

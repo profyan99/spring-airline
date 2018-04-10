@@ -1,6 +1,6 @@
 package net.thumbtack.airline.dto.request;
 
-import net.thumbtack.airline.ConstantsSetting;
+import net.thumbtack.airline.Utils;
 import net.thumbtack.airline.dto.UserDto;
 import net.thumbtack.airline.dto.validator.annotation.LoginValid;
 import net.thumbtack.airline.dto.validator.annotation.PasswordValid;
@@ -10,17 +10,17 @@ import javax.validation.constraints.Email;
 
 public class ClientRegistrationRequestDto extends UserDto {
 
-    @Email(message = ConstantsSetting.BAD_EMAIL,
-    regexp = ConstantsSetting.EMAIL_REGEX)
+    @Email(message = Utils.BAD_EMAIL,
+    regexp = Utils.EMAIL_REGEX)
     private String email;
 
-    @PhoneValid(message = ConstantsSetting.BAD_PHONE)
+    @PhoneValid(message = Utils.BAD_PHONE)
     private String phone;
 
-    @LoginValid(message = ConstantsSetting.BAD_LOGIN)
+    @LoginValid(message = Utils.BAD_LOGIN)
     private String login;
 
-    @PasswordValid(message = ConstantsSetting.BAD_PASSWORD)
+    @PasswordValid(message = Utils.BAD_PASSWORD)
     private String password;
 
     public ClientRegistrationRequestDto(String firstName, String lastName, String patronymic, String email,

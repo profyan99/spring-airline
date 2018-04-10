@@ -44,7 +44,7 @@ public class AdminServiceImpl implements AdminService {
         AdminResponseDto responseDTO;
         if (userDao.exists(request.getLogin())) {
             throw new BaseException(ErrorCode.ACCOUNT_EXIST_ERROR.getErrorCodeString(),
-                    "registration", ErrorCode.ACCOUNT_EXIST_ERROR);
+                    ErrorCode.ACCOUNT_EXIST_ERROR.getErrorFieldString(), ErrorCode.ACCOUNT_EXIST_ERROR);
         }
         Admin admin = new Admin(
                 request.getFirstName(),
@@ -88,7 +88,7 @@ public class AdminServiceImpl implements AdminService {
         Admin admin = adminDao.findAdminById(request.getId());
         if (!admin.getPassword().equals(request.getOldPassword())) {
             throw new BaseException(ErrorCode.INVALID_PASSWORD.getErrorCodeString(),
-                    "password", ErrorCode.INVALID_PASSWORD);
+                    ErrorCode.INVALID_PASSWORD.getErrorFieldString(), ErrorCode.INVALID_PASSWORD);
         }
         admin.setFirstName(request.getFirstName());
         admin.setLastName(request.getLastName());

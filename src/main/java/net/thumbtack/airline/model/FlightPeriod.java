@@ -13,5 +13,17 @@ public enum FlightPeriod {
     // types
     DAILY,
     ODD,
-    EVEN
+    EVEN,
+    ANOTHER;
+
+    public static FlightPeriod getValue(String value) {
+        FlightPeriod period;
+        try {
+            period = FlightPeriod.valueOf(value);
+        } catch (IllegalArgumentException e) {
+            period = ANOTHER;
+        }
+        return period;
+    }
+
 }

@@ -1,25 +1,25 @@
 package net.thumbtack.airline.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import net.thumbtack.airline.ConstantsSetting;
+import net.thumbtack.airline.Utils;
 import net.thumbtack.airline.model.OrderClass;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public class PassengerDto {
-    @NotNull(message = ConstantsSetting.BAD_FIRSTNAME)
-    @NotBlank(message = ConstantsSetting.BAD_FIRSTNAME)
+    @NotNull(message = Utils.BAD_FIRSTNAME)
+    @NotBlank(message = Utils.BAD_FIRSTNAME)
     private String firstName;
 
-    @NotNull(message = ConstantsSetting.BAD_LASTNAME)
-    @NotBlank(message = ConstantsSetting.BAD_LASTNAME)
+    @NotNull(message = Utils.BAD_LASTNAME)
+    @NotBlank(message = Utils.BAD_LASTNAME)
     private String lastName;
 
     private String nationality;
 
-    @NotNull(message = ConstantsSetting.BAD_PASSPORT)
-    @NotBlank(message = ConstantsSetting.BAD_PASSPORT)
+    @NotNull(message = Utils.BAD_PASSPORT)
+    @NotBlank(message = Utils.BAD_PASSPORT)
     private String passport;
 
     private OrderClass orderClass;

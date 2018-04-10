@@ -1,6 +1,6 @@
 package net.thumbtack.airline.dto.validator;
 
-import net.thumbtack.airline.ConstantsSetting;
+import net.thumbtack.airline.Utils;
 import net.thumbtack.airline.dto.validator.annotation.NameValid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,11 +11,11 @@ import javax.validation.ConstraintValidatorContext;
 @Component
 public class NameValidator implements ConstraintValidator<NameValid, String> {
 
-    private ConstantsSetting constantsSetting;
+    private Utils utils;
 
     @Autowired
-    public void setConstantsSetting(ConstantsSetting constantsSetting) {
-        this.constantsSetting = constantsSetting;
+    public void setUtils(Utils utils) {
+        this.utils = utils;
     }
 
     @Override
@@ -25,6 +25,6 @@ public class NameValidator implements ConstraintValidator<NameValid, String> {
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        return s != null && !s.isEmpty() && s.matches(ConstantsSetting.NAME_REGEX) && s.length() < constantsSetting.getMaxNameLength();
+        return s != null && !s.isEmpty() && s.matches(Utils.NAME_REGEX) && s.length() < utils.getMaxNameLength();
     }
 }

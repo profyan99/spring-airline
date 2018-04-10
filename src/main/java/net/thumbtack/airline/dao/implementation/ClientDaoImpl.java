@@ -35,7 +35,7 @@ public class ClientDaoImpl extends BaseDaoImpl implements ClientDao {
         } catch (RuntimeException e) {
             logger.error("Couldn't create client: " + e.toString());
             throw new BaseException(ErrorCode.REGISTRATION_ERROR.getErrorCodeString(),
-                    this.getClass().getSimpleName(), ErrorCode.REGISTRATION_ERROR);
+                    ErrorCode.REGISTRATION_ERROR.getErrorFieldString(), ErrorCode.REGISTRATION_ERROR);
         }
     }
 
@@ -47,7 +47,7 @@ public class ClientDaoImpl extends BaseDaoImpl implements ClientDao {
         } catch (RuntimeException e) {
             logger.error("Couldn't get client: " + e.toString());
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "get client",
-                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
         return client;
     }
@@ -62,7 +62,7 @@ public class ClientDaoImpl extends BaseDaoImpl implements ClientDao {
         } catch (RuntimeException e) {
             logger.error("Couldn't update client: " + e.toString());
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "updating client",
-                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
 
@@ -74,7 +74,7 @@ public class ClientDaoImpl extends BaseDaoImpl implements ClientDao {
         } catch (RuntimeException e) {
             logger.error("Couldn't find by id client: " + e.toString());
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " find client by id",
-                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
         return client;
     }

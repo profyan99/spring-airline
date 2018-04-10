@@ -1,6 +1,6 @@
 package net.thumbtack.airline.dto.request;
 
-import net.thumbtack.airline.ConstantsSetting;
+import net.thumbtack.airline.Utils;
 import net.thumbtack.airline.dto.UserDto;
 import net.thumbtack.airline.dto.validator.annotation.PasswordValid;
 import net.thumbtack.airline.dto.validator.annotation.PhoneValid;
@@ -11,16 +11,16 @@ public class ClientUpdateRequestDto extends UserDto {
 
     private int id;
 
-    @Email(message = ConstantsSetting.BAD_EMAIL,
-    regexp = ConstantsSetting.EMAIL_REGEX)
+    @Email(message = Utils.BAD_EMAIL,
+    regexp = Utils.EMAIL_REGEX)
     private String email;
 
-    @PhoneValid(message = ConstantsSetting.BAD_PHONE)
+    @PhoneValid(message = Utils.BAD_PHONE)
     private String phone;
 
     private String oldPassword;
 
-    @PasswordValid(message = ConstantsSetting.BAD_PASSWORD)
+    @PasswordValid(message = Utils.BAD_PASSWORD)
     private String newPassword;
 
     public ClientUpdateRequestDto(String firstName, String lastName, String patronymic, String email,

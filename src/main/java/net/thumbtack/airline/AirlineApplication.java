@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Import;
 import java.io.InputStream;
 
 @SpringBootApplication
-@Import(ConstantsSetting.class)
+@Import(Utils.class)
 public class AirlineApplication {
 
 	private static final Logger logger = LoggerFactory.getLogger(AirlineApplication.class);

@@ -44,7 +44,6 @@ public class AdminController {
 
     @PostMapping("/admin")
     public ResponseEntity<?> registration(@RequestBody @Valid AdminRegistrationRequestDto reg, HttpServletResponse response) {
-    	// REVU may be, after register simply login ?
         AdminResponseDto adminResponse = adminService.register(reg);
         String cookieValue = userService.setUserCookie(new UserCookieDto(adminResponse.getId(), adminResponse.getUserType()));
         response.addCookie(new Cookie(COOKIE, cookieValue));

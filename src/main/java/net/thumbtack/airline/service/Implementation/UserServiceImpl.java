@@ -54,13 +54,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public BaseLoginDto login(LoginRequestDto loginRequestDto, String uuid) {
-        checkCookieExists(uuid);
+        if (exists(uuid)) {
+            throw new BaseException(ErrorCode.ALREADY_LOGIN.getErrorCodeString(),
+                    ErrorCode.ALREADY_LOGIN.getErrorFieldString(), ErrorCode.ALREADY_LOGIN);
+        }
         BaseLoginDto baseLoginDTO;
         BaseUser user = userDao.login(loginRequestDto.getLogin());
         checkUserExists(user);
         if (!user.getPassword().equals(loginRequestDto.getPassword())) {
             throw new BaseException(ErrorCode.INVALID_PASSWORD.getErrorCodeString(),
-                    "password", ErrorCode.INVALID_PASSWORD);
+                    ErrorCode.INVALID_PASSWORD.getErrorFieldString(), ErrorCode.INVALID_PASSWORD);
         }
         if (user.getUserType().equals(UserRole.ADMIN)) {
             baseLoginDTO = new AdminResponseDto(
@@ -128,13 +131,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserCookieDto authorizeUser(String uuid) {
         if (uuid.isEmpty()) {
-            throw new BaseException(ErrorCode.UNAUTHORISED_ERROR.getErrorCodeString(), "authorization",
-                    ErrorCode.UNAUTHORISED_ERROR);
+            throw new BaseException(ErrorCode.UNAUTHORISED_ERROR.getErrorCodeString(),
+                    ErrorCode.UNAUTHORISED_ERROR.getErrorFieldString(), ErrorCode.UNAUTHORISED_ERROR);
         }
         UserCookie cookie = cookieDao.get(uuid);
         if (cookie == null) {
-            throw new BaseException(ErrorCode.UNAUTHORISED_ERROR.getErrorCodeString(), "authorization",
-                    ErrorCode.UNAUTHORISED_ERROR);
+            throw new BaseException(ErrorCode.UNAUTHORISED_ERROR.getErrorCodeString(),
+                    ErrorCode.UNAUTHORISED_ERROR.getErrorFieldString(), ErrorCode.UNAUTHORISED_ERROR);
         }
         return new UserCookieDto(cookie.getId(), cookie.getUserType());
     }
@@ -143,7 +146,7 @@ public class UserServiceImpl implements UserService {
     public UserCookieDto authorizeUser(String uuid, UserRole role) {
         UserCookieDto cookieDTO = authorizeUser(uuid);
         if (!cookieDTO.getUserType().equals(role)) {
-            throw new BaseException(ErrorCode.NO_ACCESS.getErrorCodeString(), "authorization",
+            throw new BaseException(ErrorCode.NO_ACCESS.getErrorCodeString(), ErrorCode.NO_ACCESS.getErrorFieldString(),
                     ErrorCode.NO_ACCESS);
         }
         return cookieDTO;
@@ -158,20 +161,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUserCookie(String uuid) {
-        checkCookieExists(uuid);
+        if (!exists(uuid)) {
+            throw new BaseException(ErrorCode.UNAUTHORISED_ERROR.getErrorCodeString(),
+                    ErrorCode.UNAUTHORISED_ERROR.getErrorFieldString(), ErrorCode.UNAUTHORISED_ERROR);
+        }
         cookieDao.delete(uuid);
     }
 
     private static void checkUserExists(BaseUser user) {
         if (user == null) {
             throw new BaseException(ErrorCode.ACCOUNT_NOT_FOUND.getErrorCodeString(),
-                    "user", ErrorCode.ACCOUNT_NOT_FOUND);
-        }
-    }
-
-    private void checkCookieExists(String uuid) {
-        if (!exists(uuid)) {
-            throw new BaseException(ErrorCode.ALREADY_LOGIN.getErrorCodeString(), "user", ErrorCode.ALREADY_LOGIN);
+                    ErrorCode.ACCOUNT_NOT_FOUND.getErrorFieldString(), ErrorCode.ACCOUNT_NOT_FOUND);
         }
     }
 }

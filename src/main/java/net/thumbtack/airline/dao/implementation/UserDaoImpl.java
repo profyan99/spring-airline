@@ -34,7 +34,7 @@ public class UserDaoImpl extends BaseDaoImpl implements UserDao {
         } catch (RuntimeException e) {
             logger.error("Couldn't check for exist user: " + e.toString());
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "exist user",
-                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
 
@@ -46,7 +46,7 @@ public class UserDaoImpl extends BaseDaoImpl implements UserDao {
         } catch (RuntimeException e) {
             logger.error("Couldn't getAdmin user by getAdmin: " + e.toString());
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "getAdmin",
-                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
         return user;
     }
@@ -59,7 +59,7 @@ public class UserDaoImpl extends BaseDaoImpl implements UserDao {
         } catch (RuntimeException e) {
             logger.error("Couldn't get user by id: " + e.toString());
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "get user",
-                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
         return user;
     }
@@ -71,7 +71,7 @@ public class UserDaoImpl extends BaseDaoImpl implements UserDao {
         } catch (RuntimeException e) {
             logger.error("Couldn't get countries for citizenship: " + e.toString());
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "get countries",
-                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
 }

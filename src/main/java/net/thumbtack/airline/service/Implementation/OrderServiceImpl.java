@@ -1,18 +1,17 @@
 package net.thumbtack.airline.service.Implementation;
 
+import net.thumbtack.airline.Utils;
 import net.thumbtack.airline.dao.FlightDao;
 import net.thumbtack.airline.dao.OrderDao;
 import net.thumbtack.airline.dao.UserDao;
 import net.thumbtack.airline.dto.PassengerDto;
 import net.thumbtack.airline.dto.request.OrderAddRequestDto;
-import net.thumbtack.airline.dto.response.OrderAddResponseDto;
+import net.thumbtack.airline.dto.request.OrderGetParamsRequestDto;
+import net.thumbtack.airline.dto.response.OrderResponseDto;
 import net.thumbtack.airline.dto.response.PassengerResponseDto;
 import net.thumbtack.airline.exception.BaseException;
 import net.thumbtack.airline.exception.ErrorCode;
-import net.thumbtack.airline.model.Flight;
-import net.thumbtack.airline.model.Order;
-import net.thumbtack.airline.model.OrderClass;
-import net.thumbtack.airline.model.Passenger;
+import net.thumbtack.airline.model.*;
 import net.thumbtack.airline.service.OrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,14 +50,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderAddResponseDto add(OrderAddRequestDto requestDto) {
+    public OrderResponseDto add(OrderAddRequestDto requestDto) {
         Flight flight = flightDao.get(requestDto.getFlightId());
         if (!flight.getDates().contains(requestDto.getDate())) {
-            throw new BaseException(ErrorCode.INVALID_DATE.getErrorCodeString(), "date", ErrorCode.INVALID_DATE);
+            throw new BaseException(ErrorCode.INVALID_DATE.getErrorCodeString(),
+                    ErrorCode.INVALID_DATE.getErrorFieldString(), ErrorCode.INVALID_DATE);
         }
         if (!flight.isApproved()) {
-            throw new BaseException(ErrorCode.UNAPPROVED_FLIGHT.getErrorCodeString(), "flight", ErrorCode.UNAPPROVED_FLIGHT);
+            throw new BaseException(ErrorCode.UNAPPROVED_FLIGHT.getErrorCodeString(),
+                    ErrorCode.UNAPPROVED_FLIGHT.getErrorFieldString(), ErrorCode.UNAPPROVED_FLIGHT);
         }
+        //TODO check for free places
         Map<String, String> citizen = new HashMap<>();
         List<Passenger> passengers = new ArrayList<>();
         int totalPrice = 0;
@@ -79,6 +81,7 @@ public class OrderServiceImpl implements OrderService {
         }
         Order order = new Order(
                 requestDto.getFlightId(),
+                requestDto.getUserId(),
                 requestDto.getDate(),
                 totalPrice,
                 flight.getFlightName(),
@@ -102,7 +105,7 @@ public class OrderServiceImpl implements OrderService {
                         passenger.getPrice()
                 ))
         );
-        return new OrderAddResponseDto(
+        return new OrderResponseDto(
                 order.getFlightId(),
                 order.getDate(),
                 order.getOrderId(),
@@ -115,5 +118,52 @@ public class OrderServiceImpl implements OrderService {
                 order.getDuration(),
                 passengerResponseDtos
         );
+    }
+
+    @Override
+    public List<OrderResponseDto> get(OrderGetParamsRequestDto params) {
+        Utils.validateRequestParams(params);
+        if(params.getUserType() == UserRole.CLIENT) {
+            params.setClientId(params.getUserId());
+        }
+        List<Order> orders = orderDao.get(
+                params.getFromTown(),
+                params.getToTown(),
+                params.getFlightName(),
+                params.getPlaneName(),
+                params.getFromDate(),
+                params.getToDate(),
+                params.getClientId()
+        );
+        List<PassengerResponseDto> passengerResponseDtos;
+        List<OrderResponseDto> responseDtos = new ArrayList<>(orders.size());
+        for(Order o:orders) {
+            passengerResponseDtos  = new ArrayList<>((o.getPassengers().size()));
+            for(Passenger p:o.getPassengers()) {
+                passengerResponseDtos.add(new PassengerResponseDto(
+                        p.getFirstName(),
+                        p.getLastName(),
+                        p.getNationality(),
+                        p.getPassport(),
+                        p.getOrderClass(),
+                        p.getTicket(),
+                        p.getPrice()
+                ));
+            }
+            responseDtos.add(new OrderResponseDto(
+                    o.getFlightId(),
+                    o.getDate(),
+                    o.getOrderId(),
+                    o.getTotalPrice(),
+                    o.getFlightName(),
+                    o.getPlaneName(),
+                    o.getFromTown(),
+                    o.getToTown(),
+                    o.getStart(),
+                    o.getDuration(),
+                    passengerResponseDtos
+            ));
+        }
+        return responseDtos;
     }
 }

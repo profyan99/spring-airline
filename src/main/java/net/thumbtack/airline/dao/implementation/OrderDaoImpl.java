@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class OrderDaoImpl extends BaseDaoImpl implements OrderDao {
 
@@ -34,8 +36,20 @@ public class OrderDaoImpl extends BaseDaoImpl implements OrderDao {
             return order;
         } catch (RuntimeException e) {
             logger.error("Couldn't add order: " + e.toString());
-            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " adding order", this.getClass().getSimpleName(),
-                    ErrorCode.ERROR_WITH_DATABASE);
+            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " adding order",
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
+        }
+    }
+
+    @Override
+    public List<Order> get(String fromTown, String toTown, String flightName, String planeName, String fromDate, String toDate,
+                           int clientId) {
+        try (SqlSession session = sessionFactory.openSession()) {
+            return getOrderMapper(session).get(fromTown, toTown, flightName, planeName, fromDate, toDate, clientId);
+        } catch (RuntimeException e) {
+            logger.error("Couldn't get orders: " + e.toString());
+            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " getting orders",
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
 }

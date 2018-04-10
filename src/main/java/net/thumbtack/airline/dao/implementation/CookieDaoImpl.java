@@ -30,10 +30,8 @@ public class CookieDaoImpl extends BaseDaoImpl implements CookieDao {
             return getCookieMapper(session).exists(uuid);
         } catch (RuntimeException e) {
             logger.error("Couldn't check for exist cookie: "+e.toString());
-            // REVU you do not need to pass ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString()
-            // if you pass ErrorCode.ERROR_WITH_DATABASE
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "exist cookie",
-                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
 
@@ -46,7 +44,7 @@ public class CookieDaoImpl extends BaseDaoImpl implements CookieDao {
         } catch (RuntimeException e) {
             logger.error("Couldn't get cookie: " + e.toString());
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "get cookie",
-                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
         return cookie;
     }
@@ -60,7 +58,7 @@ public class CookieDaoImpl extends BaseDaoImpl implements CookieDao {
         } catch (RuntimeException e) {
             logger.error("Couldn't set cookie: " + e.toString());
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "set cookie",
-                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
 
@@ -75,7 +73,7 @@ public class CookieDaoImpl extends BaseDaoImpl implements CookieDao {
             logger.error("Couldn't delete cookie: " + e.toString());
             session.rollback();
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "delete cookie",
-                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         } finally {
             session.close();
         }

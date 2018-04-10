@@ -37,7 +37,7 @@ public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
             return admin;
         } catch (RuntimeException e) {
             logger.error("Couldn't create admin: " + e.toString());
-            throw new BaseException(ErrorCode.REGISTRATION_ERROR.getErrorCodeString(), this.getClass().getName(),
+            throw new BaseException(ErrorCode.REGISTRATION_ERROR.getErrorCodeString(), ErrorCode.REGISTRATION_ERROR.getErrorFieldString(),
                     ErrorCode.REGISTRATION_ERROR);
         }
     }
@@ -50,7 +50,7 @@ public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
         } catch (RuntimeException e) {
             logger.error("Couldn't getAdmin admin: " + e.toString());
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " get admin",
-                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
         return admin;
     }
@@ -63,7 +63,7 @@ public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
         } catch (RuntimeException e) {
             logger.error("Couldn't find by id admin: " + e.toString());
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " find admin by id",
-                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
         return admin;
     }
@@ -78,7 +78,7 @@ public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
         } catch (RuntimeException e) {
             logger.error("Couldn't update admin: " + e.toString());
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "updating admin",
-                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
 
@@ -90,7 +90,7 @@ public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
         } catch (RuntimeException e) {
             logger.error("Couldn't find all clients: " + e.toString());
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " get clients",
-                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
         return clients;
     }
@@ -103,7 +103,7 @@ public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
         } catch (RuntimeException e) {
             logger.error("Couldn't find all planes: " + e.toString());
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " get planes",
-                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
         return planes;
     }
@@ -116,7 +116,7 @@ public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
         } catch (RuntimeException e) {
             logger.error("Couldn't clear data base: " + e.toString());
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " clearing DB",
-                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
 }

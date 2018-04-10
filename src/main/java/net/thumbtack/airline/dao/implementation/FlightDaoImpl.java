@@ -36,8 +36,8 @@ public class FlightDaoImpl extends BaseDaoImpl implements FlightDao {
             return flight;
         } catch (RuntimeException e) {
             logger.error("Couldn't add flight: " + e.toString());
-            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " adding flight", this.getClass().getSimpleName(),
-                    ErrorCode.ERROR_WITH_DATABASE);
+            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " adding flight",
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
 
@@ -48,7 +48,7 @@ public class FlightDaoImpl extends BaseDaoImpl implements FlightDao {
         } catch (RuntimeException e) {
             logger.error("Couldn't check for exist flight: " + e.toString());
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "exist flight",
-                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
 
@@ -59,7 +59,7 @@ public class FlightDaoImpl extends BaseDaoImpl implements FlightDao {
         } catch (RuntimeException e) {
             logger.error("Couldn't check for exist flight: " + e.toString());
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "exist flight",
-                    this.getClass().getSimpleName(), ErrorCode.ERROR_WITH_DATABASE);
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
 
@@ -69,8 +69,8 @@ public class FlightDaoImpl extends BaseDaoImpl implements FlightDao {
             return getFlightMapper(session).get(flightId);
         } catch (RuntimeException e) {
             logger.error("Couldn't get flight: " + e.toString());
-            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " getting flight", this.getClass().getSimpleName(),
-                    ErrorCode.ERROR_WITH_DATABASE);
+            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " getting flight",
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
 
@@ -83,8 +83,8 @@ public class FlightDaoImpl extends BaseDaoImpl implements FlightDao {
             return flight;
         } catch (RuntimeException e) {
             logger.error("Couldn't update flight: " + e.toString());
-            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " updating flight", this.getClass().getSimpleName(),
-                    ErrorCode.ERROR_WITH_DATABASE);
+            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " updating flight",
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
 
@@ -95,8 +95,8 @@ public class FlightDaoImpl extends BaseDaoImpl implements FlightDao {
             session.commit();
         } catch (RuntimeException e) {
             logger.error("Couldn't delete flight: " + e.toString());
-            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " deleting flight", this.getClass().getSimpleName(),
-                    ErrorCode.ERROR_WITH_DATABASE);
+            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " deleting flight",
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
 
@@ -108,8 +108,8 @@ public class FlightDaoImpl extends BaseDaoImpl implements FlightDao {
             return getFlightMapper(session).get(flightId);
         } catch (RuntimeException e) {
             logger.error("Couldn't approve flight: " + e.toString());
-            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " approving flight", this.getClass().getSimpleName(),
-                    ErrorCode.ERROR_WITH_DATABASE);
+            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " approving flight",
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
 
@@ -119,8 +119,8 @@ public class FlightDaoImpl extends BaseDaoImpl implements FlightDao {
             return getFlightMapper(session).getAll(flightName, PlaneName, FromTown, ToTown, FromDate, ToDate);
         } catch (RuntimeException e) {
             logger.error("Couldn't get all flights: " + e.toString());
-            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " getting all flights", this.getClass().getSimpleName(),
-                    ErrorCode.ERROR_WITH_DATABASE);
+            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " getting all flights",
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
 }

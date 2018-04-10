@@ -22,6 +22,10 @@ public class FlightGetParamsRequestDto {
         this.userType = userType;
     }
 
+    public FlightGetParamsRequestDto() {
+
+    }
+
     public UserRole getUserType() {
         return userType;
     }

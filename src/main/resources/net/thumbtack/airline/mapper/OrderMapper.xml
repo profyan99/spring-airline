@@ -8,10 +8,17 @@
     <resultMap id="OrderResult" type="Order">
         <id property="orderId" column="orderId"/>
         <result property="flightId" column="flightId"/>
+        <result property="userId" column="userId"/>
         <result property="totalPrice" column="totalPrice"/>
+        <result property="date" column="date"/>
+        <result property="fromTown" column="fromTown"/>
+        <result property="toTown" column="toTown"/>
+        <result property="flightName" column="flightName"/>
+        <result property="planeName" column="planeName"/>
+        <result property="start" column="start"/>
+        <result property="duration" column="duration"/>
         <collection property="passengers" ofType="Passenger">
             <id property="ticket" column="ticket"/>
-            <result property="orderId" column="orderId"/>
             <result property="firstName" column="firstName"/>
             <result property="lastName" column="lastName"/>
             <result property="nationality" column="nationality"/>
@@ -23,7 +30,7 @@
     </resultMap>
 
     <insert id="addOrder" useGeneratedKeys="true" keyProperty="orderId" keyColumn="orderId">
-        INSERT INTO orders (flightId, totalPrice) VALUES (#{flightId}, #{totalPrice})
+        INSERT INTO orders (flightId, userId, totalPrice, date) VALUES (#{flightId}, #{userId}, #{totalPrice}, #{date})
     </insert>
 
     <insert id="addPassenger">
@@ -41,6 +48,57 @@
     </insert>
 
     <select id="getPassenger" resultType="Passenger">
-        SELECT * FROM passenger WHERE orderId=#{orderId}
+        SELECT *
+        FROM passenger
+        WHERE orderId = #{orderId}
+    </select>
+
+    <select id="get" resultMap="OrderResult">
+        SELECT
+            o.orderId,
+            o.flightId,
+            o.userId,
+            o.totalPrice,
+            o.date,
+            f.fromTown,
+            f.toTown,
+            f.flightName,
+            f.planeName,
+            f.start,
+            f.duration,
+            p.ticket,
+            p.firstName,
+            p.lastName,
+            p.nationality,
+            p.passport,
+            p.orderClass,
+            p.price,
+            p.place
+        FROM orders o
+            RIGHT JOIN flight f ON o.flightId = f.id
+            RIGHT JOIN passenger p ON o.orderId = p.orderId
+        <where>
+            <if test="flightName != null">
+                f.flightName=#{flightName}
+            </if>
+            <if test="planeName != null">
+                AND f.planeName = #{planeName}
+            </if>
+            <if test="fromTown != null">
+                AND f.fromTown = #{fromTown}
+            </if>
+            <if test="toTown != null">
+                AND f.toTown = #{toTown}
+            </if>
+            <if test="fromDate != null">
+                AND #{fromDate} BETWEEN s.fromDate AND s.toDate
+            </if>
+            <if test="toDate != null">
+                AND #{toDate} BETWEEN s.fromDate AND s.toDate
+            </if>
+            <if test="clientId != 0">
+                AND o.userId = #{clientId}
+            </if>
+        </where>
     </select>
 </mapper>
