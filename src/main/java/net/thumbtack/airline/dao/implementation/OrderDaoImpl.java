@@ -52,4 +52,15 @@ public class OrderDaoImpl extends BaseDaoImpl implements OrderDao {
                     ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
+
+    @Override
+    public Order get(int orderId) {
+        try (SqlSession session = sessionFactory.openSession()) {
+            return getOrderMapper(session).getById(orderId);
+        } catch (RuntimeException e) {
+            logger.error("Couldn't get order by id: " + e.toString());
+            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " getting order",
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package net.thumbtack.airline.controller;
 
+import net.thumbtack.airline.dto.OrderPlaceRegisterDto;
 import net.thumbtack.airline.dto.UserCookieDto;
 import net.thumbtack.airline.dto.request.OrderAddRequestDto;
 import net.thumbtack.airline.dto.request.OrderGetParamsRequestDto;
@@ -59,5 +60,21 @@ public class OrderController {
                 fromTown, toTown, flightName, planeName, fromDate, toDate, cookieDto.getUserType(), clientId, cookieDto.getId()
         ));
         return ResponseEntity.ok(orderResponse);
+    }
+
+    @GetMapping(path = "/places/{orderId}")
+    public ResponseEntity<?> getPlaces(@CookieValue(value = "${cookie}", defaultValue = "") String uuid,
+                                       @PathVariable("orderId") int orderId) {
+
+        return ResponseEntity.ok(orderService.getPlaces(orderId, userService.authorizeUser(uuid, UserRole.CLIENT).getId()));
+    }
+
+    @PostMapping(path = "/places")
+    public ResponseEntity<?> registry(
+            @RequestBody OrderPlaceRegisterDto request,
+            @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
+
+        userService.authorizeUser(uuid, UserRole.CLIENT);
+        return ResponseEntity.ok(orderService.placeRegister(request));
     }
 }

@@ -21,4 +21,6 @@ public interface OrderMapper {
                     @Param("fromDate") String fromDate,
                     @Param("toDate") String toDate,
                     @Param("clientId") int clientId);
+
+    Order getById(int orderId);
 }

@@ -28,4 +28,11 @@ public interface OrderDao {
      */
     List<Order> get(String fromTown, String toTown, String flightName, String planeName, String fromDate, String toDate,
                     int clientId);
+
+    /**
+     * Get single {@link Order}
+     * @param orderId id of the order
+     * @return {@link Order}
+     */
+    Order get(int orderId);
 }

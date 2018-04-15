@@ -4,6 +4,8 @@ import net.thumbtack.airline.dao.FlightDao;
 import net.thumbtack.airline.exception.BaseException;
 import net.thumbtack.airline.exception.ErrorCode;
 import net.thumbtack.airline.model.Flight;
+import net.thumbtack.airline.model.Place;
+import net.thumbtack.airline.model.Plane;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.slf4j.Logger;
@@ -27,10 +29,11 @@ public class FlightDaoImpl extends BaseDaoImpl implements FlightDao {
     }
 
     @Override
-    public Flight add(Flight flight) {
+    public Flight add(Flight flight, List<Place> places) {
         try (SqlSession session = sessionFactory.openSession()) {
             getFlightMapper(session).addFlight(flight);
             getFlightMapper(session).addDateAndSchedule(flight);
+            getFlightMapper(session).addPlaces(flight, places);
             flight.setPlane(getPlaneMapper(session).get(flight.getPlaneName()));
             session.commit();
             return flight;
@@ -75,9 +78,9 @@ public class FlightDaoImpl extends BaseDaoImpl implements FlightDao {
     }
 
     @Override
-    public Flight update(Flight flight) {
+    public Flight update(Flight flight, List<Place> places) {
         try (SqlSession session = sessionFactory.openSession()) {
-            getFlightMapper(session).update(flight);
+            getFlightMapper(session).update(flight, places);
             flight.setPlane(getPlaneMapper(session).get(flight.getPlaneName()));
             session.commit();
             return flight;
@@ -120,6 +123,39 @@ public class FlightDaoImpl extends BaseDaoImpl implements FlightDao {
         } catch (RuntimeException e) {
             logger.error("Couldn't get all flights: " + e.toString());
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " getting all flights",
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
+        }
+    }
+
+    @Override
+    public List<Place> getPlaces(String date, int flightId) {
+        try (SqlSession session = sessionFactory.openSession()) {
+            return getFlightMapper(session).getPlaces(date, flightId);
+        } catch (RuntimeException e) {
+            logger.error("Couldn't get places: " + e.toString());
+            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " getting places",
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
+        }
+    }
+
+    @Override
+    public Place getPlace(String date, int flightId, String place, int row) {
+        try (SqlSession session = sessionFactory.openSession()) {
+            return getFlightMapper(session).getPlace(date, flightId, place, row);
+        } catch (RuntimeException e) {
+            logger.error("Couldn't get place: " + e.toString());
+            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " getting place",
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
+        }
+    }
+
+    @Override
+    public Plane getPlane(String planeName) {
+        try (SqlSession session = sessionFactory.openSession()) {
+            return getPlaneMapper(session).get(planeName);
+        } catch (RuntimeException e) {
+            logger.error("Couldn't get plane: " + e.toString());
+            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " getting plane",
                     ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }

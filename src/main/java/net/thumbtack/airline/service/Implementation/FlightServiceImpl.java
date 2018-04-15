@@ -11,9 +11,7 @@ import net.thumbtack.airline.dto.response.FlightGetResponseDto;
 import net.thumbtack.airline.dto.response.FlightUpdateResponseDto;
 import net.thumbtack.airline.exception.BaseException;
 import net.thumbtack.airline.exception.ErrorCode;
-import net.thumbtack.airline.model.Flight;
-import net.thumbtack.airline.model.FlightPeriod;
-import net.thumbtack.airline.model.UserRole;
+import net.thumbtack.airline.model.*;
 import net.thumbtack.airline.service.FlightService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +48,9 @@ public class FlightServiceImpl implements FlightService {
         if (dates == null) {
             dates = setDates(request.getSchedule().getFromDate(), request.getSchedule().getToDate(), request.getSchedule().getPeriod());
         }
+        Plane plane = flightDao.getPlane(request.getPlaneName());
+        List<Place> places = new ArrayList<>();
+        setPlaces(plane, places);
 
         Flight flight = new Flight(
                 request.getFlightName(),
@@ -65,7 +66,8 @@ public class FlightServiceImpl implements FlightService {
                 false,
                 null
         );
-        flightDao.add(flight);
+        flightDao.add(flight, places);
+
         return new FlightAddResponseDto(
                 flight.getFlightName(),
                 flight.getFromTown(),
@@ -80,6 +82,21 @@ public class FlightServiceImpl implements FlightService {
                 flight.getPlane(),
                 flight.isApproved()
         );
+    }
+
+    private static void setPlaces(Plane plane, List<Place> places) {
+        PlaceName[] placeNames = PlaceName.values();
+
+        for (int i = 1; i <= plane.getBussinesRows(); i++) {
+            for (int j = 0; j < plane.getPlacesInBusinessRow(); j++) {
+                places.add(new Place(i, placeNames[j].name(), OrderClass.BUSINESS));
+            }
+        }
+        for (int i = plane.getBussinesRows()+1; i <= plane.getBussinesRows() + plane.getEconomyRows(); i++) {
+            for (int j = 0; j < plane.getPlacesInEconomyRow(); j++) {
+                places.add(new Place(i, placeNames[j].name(), OrderClass.ECONOMY));
+            }
+        }
     }
 
     private static void setDays(List<String> dates, FlightPeriod dayOfWeek, LocalDate from, LocalDate to) {
@@ -184,6 +201,10 @@ public class FlightServiceImpl implements FlightService {
         if (dates == null) {
             dates = setDates(request.getSchedule().getFromDate(), request.getSchedule().getToDate(), request.getSchedule().getPeriod());
         }
+        Plane plane = flightDao.getPlane(request.getPlaneName());
+        List<Place> places = new ArrayList<>();
+        setPlaces(plane, places);
+
         Flight flight = new Flight(
                 request.getFlightName(),
                 request.getPlaneName(),
@@ -199,7 +220,7 @@ public class FlightServiceImpl implements FlightService {
                 null,
                 request.getId()
         );
-        flightDao.update(flight);
+        flightDao.update(flight, places);
         return new FlightUpdateResponseDto(
                 flight.getFlightName(),
                 flight.getFromTown(),

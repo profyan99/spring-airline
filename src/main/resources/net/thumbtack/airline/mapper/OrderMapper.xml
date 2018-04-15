@@ -101,4 +101,31 @@
             </if>
         </where>
     </select>
+
+    <select id="getById" resultMap="OrderResult">
+        SELECT
+        o.orderId,
+        o.flightId,
+        o.userId,
+        o.totalPrice,
+        o.date,
+        f.fromTown,
+        f.toTown,
+        f.flightName,
+        f.planeName,
+        f.start,
+        f.duration,
+        p.ticket,
+        p.firstName,
+        p.lastName,
+        p.nationality,
+        p.passport,
+        p.orderClass,
+        p.price,
+        p.place
+        FROM orders o
+        RIGHT JOIN flight f ON o.flightId = f.id
+        RIGHT JOIN passenger p ON o.orderId = p.orderId
+        WHERE o.orderId = #{orderId}
+    </select>
 </mapper>

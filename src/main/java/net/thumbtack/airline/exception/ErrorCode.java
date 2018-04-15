@@ -16,6 +16,8 @@ public enum ErrorCode {
     NO_ACCESS("You haven't got permissions to get this resource.", ""),
     UNAPPROVED_FLIGHT("Flight didn't approved.", "Flight"),
     ALREADY_APPROVED_FLIGHT("You can't vary flight, because it approved.", "Flight"),
+    PASSENGER_NOT_FOUND("Passenger not found", "Passenger"),
+    INVALID_PLACE("Invalid value of place", "Place"),
     INVALID_DATE_FORMAT("Invalid date format. Please check and send again.", "Date");
 
     private final String

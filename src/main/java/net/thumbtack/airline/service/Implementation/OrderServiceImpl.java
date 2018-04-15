@@ -4,6 +4,7 @@ import net.thumbtack.airline.Utils;
 import net.thumbtack.airline.dao.FlightDao;
 import net.thumbtack.airline.dao.OrderDao;
 import net.thumbtack.airline.dao.UserDao;
+import net.thumbtack.airline.dto.OrderPlaceRegisterDto;
 import net.thumbtack.airline.dto.PassengerDto;
 import net.thumbtack.airline.dto.request.OrderAddRequestDto;
 import net.thumbtack.airline.dto.request.OrderGetParamsRequestDto;
@@ -123,7 +124,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderResponseDto> get(OrderGetParamsRequestDto params) {
         Utils.validateRequestParams(params);
-        if(params.getUserType() == UserRole.CLIENT) {
+        if (params.getUserType() == UserRole.CLIENT) {
             params.setClientId(params.getUserId());
         }
         List<Order> orders = orderDao.get(
@@ -137,9 +138,9 @@ public class OrderServiceImpl implements OrderService {
         );
         List<PassengerResponseDto> passengerResponseDtos;
         List<OrderResponseDto> responseDtos = new ArrayList<>(orders.size());
-        for(Order o:orders) {
-            passengerResponseDtos  = new ArrayList<>((o.getPassengers().size()));
-            for(Passenger p:o.getPassengers()) {
+        for (Order o : orders) {
+            passengerResponseDtos = new ArrayList<>((o.getPassengers().size()));
+            for (Passenger p : o.getPassengers()) {
                 passengerResponseDtos.add(new PassengerResponseDto(
                         p.getFirstName(),
                         p.getLastName(),
@@ -165,5 +166,98 @@ public class OrderServiceImpl implements OrderService {
             ));
         }
         return responseDtos;
+    }
+
+    @Override
+    public List<String> getPlaces(int orderId, int userId) {
+        Order order = orderDao.get(orderId);
+        if (order.getUserId() != userId) {
+            throw new BaseException(ErrorCode.NO_ACCESS.getErrorCodeString(),
+                    "Places", ErrorCode.NO_ACCESS);
+        }
+        List<String> places = new ArrayList<>();
+        /*
+         * 0 - nothing
+         * 1- economy
+         * 2- business
+         * 3- all
+         */
+        int placeType = 0;
+        for (Passenger p : order.getPassengers()) {
+            if (p.getOrderClass() == OrderClass.BUSINESS) {
+                if (placeType == 1) {
+                    placeType = 3;
+                } else {
+                    placeType = 2;
+                }
+            } else {
+                if (placeType == 2) {
+                    placeType = 3;
+                } else {
+                    placeType = 1;
+                }
+            }
+        }
+        int finalPlaceType = placeType;
+        flightDao.getPlaces(order.getDate(), order.getFlightId()).forEach((p) ->
+                {
+                    String place = "";
+                    switch (finalPlaceType) {
+                        case 1: {
+                            if (p.getType() == OrderClass.ECONOMY) {
+                                place = p.getRow() + p.getPlace();
+                            }
+                            break;
+                        }
+                        case 2: {
+                            if (p.getType() == OrderClass.BUSINESS) {
+                                place = p.getRow() + p.getPlace();
+                            }
+                            break;
+                        }
+                        default: {
+                            place = p.getRow() + p.getPlace();
+                            break;
+                        }
+                    }
+                    places.add(place);
+                }
+        );
+        return places;
+    }
+
+    @Override
+    public OrderPlaceRegisterDto placeRegister(OrderPlaceRegisterDto registerDto) {
+        Order order = orderDao.get(registerDto.getOrderId());
+        boolean isTicketValid = false;
+        Passenger passenger = null;
+        for(Passenger p : order.getPassengers()) {
+            if(p.getTicket() == registerDto.getTicket()
+                    && p.getFirstName().equals(registerDto.getFirstName())
+                    && p.getLastName().equals(registerDto.getLastName())) {
+                isTicketValid = true;
+                passenger = p;
+            }
+        }
+        if(!isTicketValid) {
+            throw new BaseException(ErrorCode.PASSENGER_NOT_FOUND.getErrorCodeString(),
+                    ErrorCode.PASSENGER_NOT_FOUND.getErrorFieldString(), ErrorCode.PASSENGER_NOT_FOUND);
+        }
+        String reqPlace = registerDto.getPlace();
+        String placeStr = reqPlace.substring(reqPlace.length() - 1);
+        int row;
+        try {
+            row = Integer.parseInt(reqPlace.substring(0, reqPlace.length() - 1));
+        } catch (NumberFormatException e) {
+            logger.error("Error while parsing integer of place: " + reqPlace);
+            throw new BaseException(ErrorCode.INVALID_PLACE.getErrorCodeString(),
+                    ErrorCode.INVALID_PLACE.getErrorFieldString(), ErrorCode.INVALID_PLACE);
+        }
+        Place place = flightDao.getPlace(order.getDate(), order.getFlightId(), placeStr, row);
+        if(place.getType() != passenger.getOrderClass()) {
+            throw new BaseException(ErrorCode.INVALID_PLACE.getErrorCodeString(),
+                    ErrorCode.INVALID_PLACE.getErrorFieldString(), ErrorCode.INVALID_PLACE);
+        }
+        return registerDto;
     }
 }
