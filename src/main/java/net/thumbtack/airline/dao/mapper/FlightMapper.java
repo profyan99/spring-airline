@@ -35,5 +35,7 @@ public interface FlightMapper {
     Place getPlace(@Param("date") String date, @Param("flightId") int flightId,
                    @Param("place") String place, @Param("row") int row);
 
+    void updatePlace(Place place);
+
     void addPlaces(@Param("flight") Flight flight, @Param("places") List<Place> places);
 }

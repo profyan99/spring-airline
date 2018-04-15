@@ -4,6 +4,7 @@ import net.thumbtack.airline.model.BaseUser;
 import net.thumbtack.airline.model.Country;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserDao {
 
@@ -21,7 +22,7 @@ public interface UserDao {
      * @param login User getAdmin
      * @return {@link BaseUser}
      */
-    BaseUser login(String login);
+    Optional<BaseUser> login(String login);
 
     /**
      * Get {@link BaseUser} by {@link BaseUser#id}
@@ -29,7 +30,7 @@ public interface UserDao {
      * @param id User id
      * @return {@link BaseUser}
      */
-    BaseUser get(int id);
+    Optional<BaseUser> get(int id);
 
     /**
      * Get countries' names and iso3166 codes for citizenship

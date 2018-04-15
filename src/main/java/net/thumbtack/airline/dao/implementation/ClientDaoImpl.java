@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public class ClientDaoImpl extends BaseDaoImpl implements ClientDao {
 
@@ -40,7 +42,7 @@ public class ClientDaoImpl extends BaseDaoImpl implements ClientDao {
     }
 
     @Override
-    public Client getClient(int id) {
+    public Optional<Client> getClient(int id) {
         Client client;
         try (SqlSession session = sessionFactory.openSession()) {
             client = getClientMapper(session).getClient(id);
@@ -49,7 +51,7 @@ public class ClientDaoImpl extends BaseDaoImpl implements ClientDao {
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "get client",
                     ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
-        return client;
+        return Optional.ofNullable(client);
     }
 
     @Override
@@ -67,7 +69,7 @@ public class ClientDaoImpl extends BaseDaoImpl implements ClientDao {
     }
 
     @Override
-    public Client findClientById(int id) {
+    public Optional<Client> findClientById(int id) {
         Client client;
         try (SqlSession session = sessionFactory.openSession()) {
             client = getClientMapper(session).findClientById(id);
@@ -76,6 +78,6 @@ public class ClientDaoImpl extends BaseDaoImpl implements ClientDao {
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " find client by id",
                     ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
-        return client;
+        return Optional.ofNullable(client);
     }
 }

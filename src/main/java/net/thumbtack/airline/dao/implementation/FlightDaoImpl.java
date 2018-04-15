@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class FlightDaoImpl extends BaseDaoImpl implements FlightDao {
@@ -67,9 +68,9 @@ public class FlightDaoImpl extends BaseDaoImpl implements FlightDao {
     }
 
     @Override
-    public Flight get(int flightId) {
+    public Optional<Flight> get(int flightId) {
         try (SqlSession session = sessionFactory.openSession()) {
-            return getFlightMapper(session).get(flightId);
+            return Optional.ofNullable(getFlightMapper(session).get(flightId));
         } catch (RuntimeException e) {
             logger.error("Couldn't get flight: " + e.toString());
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " getting flight",
@@ -139,9 +140,9 @@ public class FlightDaoImpl extends BaseDaoImpl implements FlightDao {
     }
 
     @Override
-    public Place getPlace(String date, int flightId, String place, int row) {
+    public Optional<Place> getPlace(String date, int flightId, String place, int row) {
         try (SqlSession session = sessionFactory.openSession()) {
-            return getFlightMapper(session).getPlace(date, flightId, place, row);
+            return Optional.ofNullable(getFlightMapper(session).getPlace(date, flightId, place, row));
         } catch (RuntimeException e) {
             logger.error("Couldn't get place: " + e.toString());
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " getting place",
@@ -150,9 +151,21 @@ public class FlightDaoImpl extends BaseDaoImpl implements FlightDao {
     }
 
     @Override
-    public Plane getPlane(String planeName) {
+    public void updatePlace(Place place) {
         try (SqlSession session = sessionFactory.openSession()) {
-            return getPlaneMapper(session).get(planeName);
+            getFlightMapper(session).updatePlace(place);
+            session.commit();
+        } catch (RuntimeException e) {
+            logger.error("Couldn't update place: " + e.toString());
+            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " updating place",
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
+        }
+    }
+
+    @Override
+    public Optional<Plane> getPlane(String planeName) {
+        try (SqlSession session = sessionFactory.openSession()) {
+            return Optional.ofNullable(getPlaneMapper(session).get(planeName));
         } catch (RuntimeException e) {
             logger.error("Couldn't get plane: " + e.toString());
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " getting plane",

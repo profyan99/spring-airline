@@ -67,7 +67,12 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public ClientUpdateResponseDto update(ClientUpdateRequestDto request) {
         ClientUpdateResponseDto response;
-        Client client = clientDao.findClientById(request.getId());
+        Client client = clientDao.findClientById(request.getId()).orElseThrow(() ->
+            new BaseException(
+                    ErrorCode.ACCOUNT_NOT_FOUND.getErrorCodeString(),
+                    ErrorCode.ACCOUNT_NOT_FOUND.getErrorFieldString(),
+                    ErrorCode.ACCOUNT_NOT_FOUND)
+        );
         if (!client.getPassword().equals(request.getOldPassword())) {
             throw new BaseException(ErrorCode.INVALID_PASSWORD.getErrorCodeString(),
                     ErrorCode.INVALID_PASSWORD.getErrorFieldString(), ErrorCode.INVALID_PASSWORD);

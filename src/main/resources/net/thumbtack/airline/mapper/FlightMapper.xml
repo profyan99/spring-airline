@@ -37,6 +37,9 @@
         <result property="place" column="place"/>
         <result property="row" column="row"/>
         <result property="type" column="type"/>
+        <result property="free" column="free"/>
+        <result property="date" column="date"/>
+        <result property="flightId" column="flightId"/>
     </resultMap>
 
     <select id="get" resultMap="FlightResult" parameterType="_int">
@@ -115,9 +118,11 @@
     </insert>
 
     <update id="update" parameterType="Flight">
-        UPDATE flight SET flightName = #{flight.flightName}, planeName = #{flight.planeName}, fromTown = #{flight.fromTown}, toTown =
+        UPDATE flight SET flightName = #{flight.flightName}, planeName = #{flight.planeName}, fromTown =
+        #{flight.fromTown}, toTown =
         #{flight.toTown},
-        start = #{flight.start}, duration = #{flight.duration}, priceBusiness = #{flight.priceBusiness}, priceEconomy = #{flight.priceEconomy},
+        start = #{flight.start}, duration = #{flight.duration}, priceBusiness = #{flight.priceBusiness}, priceEconomy =
+        #{flight.priceEconomy},
         approved = #{approved} WHERE id = #{id};
 
         <if test="schedule != null">
@@ -146,7 +151,8 @@
                 TRUE,
                 #{p.type}
             </foreach>
-        </foreach>;
+        </foreach>
+        ;
 
     </update>
 
@@ -209,22 +215,21 @@
     </select>
 
     <select id="getPlaces" resultMap="PlaceResult">
-        SELECT
-            place,
-            row,
-            type
+        SELECT *
         FROM places
         WHERE free = TRUE AND date = #{date} AND flightId = #{flightId}
     </select>
 
     <select id="getPlace" resultMap="PlaceResult">
-        SELECT
-        place,
-        row,
-        type,
-        free
+        SELECT *
         FROM places
-        WHERE free = TRUE AND date = #{date} AND flightId = #{flightId} AND place=#{place} AND row=#{row}
+        WHERE date = #{date} AND flightId = #{flightId} AND place = #{place} AND row = #{row}
     </select>
+
+    <update id="updatePlace">
+        UPDATE places
+        SET free = #{free}
+        WHERE date = #{date} AND flightId = #{flightId} AND place = #{place} AND row = #{row}
+    </update>
 
 </mapper>

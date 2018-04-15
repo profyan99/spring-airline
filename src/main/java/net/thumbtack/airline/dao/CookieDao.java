@@ -2,6 +2,8 @@ package net.thumbtack.airline.dao;
 
 import net.thumbtack.airline.model.UserCookie;
 
+import java.util.Optional;
+
 public interface CookieDao {
 
     /**
@@ -18,7 +20,7 @@ public interface CookieDao {
      * @param uuid unique value, matches cookie
      * @return {@link UserCookie}
      */
-    UserCookie get(String uuid);
+    Optional<UserCookie> get(String uuid);
 
     /**
      * Add {@link UserCookie} for {@link net.thumbtack.airline.model.BaseUser}

@@ -85,7 +85,12 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public AdminUpdateResponseDto update(AdminUpdateRequestDto request) {
         AdminUpdateResponseDto response;
-        Admin admin = adminDao.findAdminById(request.getId());
+        Admin admin = adminDao.findAdminById(request.getId()).orElseThrow(() ->
+            new BaseException(
+                    ErrorCode.ACCOUNT_NOT_FOUND.getErrorCodeString(),
+                    ErrorCode.ACCOUNT_NOT_FOUND.getErrorFieldString(),
+                    ErrorCode.ACCOUNT_NOT_FOUND)
+        );
         if (!admin.getPassword().equals(request.getOldPassword())) {
             throw new BaseException(ErrorCode.INVALID_PASSWORD.getErrorCodeString(),
                     ErrorCode.INVALID_PASSWORD.getErrorFieldString(), ErrorCode.INVALID_PASSWORD);

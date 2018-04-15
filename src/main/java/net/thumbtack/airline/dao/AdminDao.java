@@ -5,6 +5,7 @@ import net.thumbtack.airline.model.Client;
 import net.thumbtack.airline.model.Plane;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AdminDao {
 
@@ -22,7 +23,7 @@ public interface AdminDao {
      * @param id user id
      * @return {@link Admin}
      */
-    Admin findAdminById(int id);
+    Optional<Admin> findAdminById(int id);
 
     /**
      * Get only {@link Admin} object without {@link net.thumbtack.airline.model.BaseUser}
@@ -30,7 +31,7 @@ public interface AdminDao {
      * @param id user id
      * @return {@link Admin} filled only Admin's fields
      */
-    Admin getAdmin(int id);
+    Optional<Admin> getAdmin(int id);
 
     /**
      * Update {@link Admin}

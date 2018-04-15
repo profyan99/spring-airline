@@ -5,6 +5,7 @@ import net.thumbtack.airline.model.Place;
 import net.thumbtack.airline.model.Plane;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FlightDao {
 
@@ -39,7 +40,7 @@ public interface FlightDao {
      * @param flightId id of the flight
      * @return {@link Flight}
      */
-    Flight get(int flightId);
+    Optional<Flight> get(int flightId);
 
     /**
      * Update {@link Flight}
@@ -80,7 +81,8 @@ public interface FlightDao {
 
     /**
      * Get free {@link List<Place>} for certain {@link Flight} with certain date
-     * @param date date of the order
+     *
+     * @param date     date of the order
      * @param flightId id of the flight
      * @return {@link List<Place>}
      */
@@ -88,18 +90,27 @@ public interface FlightDao {
 
     /**
      * Get {@link Place}
-     * @param date date of the order
+     *
+     * @param date     date of the order
      * @param flightId id of the flight
-     * @param place string literal of place (A, B, ...)
-     * @param row integer value of row (1, 2, ...)
+     * @param place    string literal of place (A, B, ...)
+     * @param row      integer value of row (1, 2, ...)
      * @return {@link Place}
      */
-    Place getPlace(String date, int flightId, String place, int row);
+    Optional<Place> getPlace(String date, int flightId, String place, int row);
+
+    /**
+     * Update place free status to busy
+     *
+     * @param place {@link Place}
+     */
+    void updatePlace(Place place);
 
     /**
      * Get {@link Plane} by name
+     *
      * @param planeName name of the plane
      * @return {@link Plane}
      */
-    Plane getPlane(String planeName);
+    Optional<Plane> getPlane(String planeName);
 }

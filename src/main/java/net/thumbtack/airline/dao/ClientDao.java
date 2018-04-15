@@ -2,6 +2,8 @@ package net.thumbtack.airline.dao;
 
 import net.thumbtack.airline.model.Client;
 
+import java.util.Optional;
+
 public interface ClientDao {
 
     /**
@@ -18,7 +20,7 @@ public interface ClientDao {
      * @param id user id
      * @return {@link Client}
      */
-    Client findClientById(int id);
+    Optional<Client> findClientById(int id);
 
     /**
      * Update {@link Client}
@@ -33,5 +35,5 @@ public interface ClientDao {
      * @param id user id
      * @return {@link Client} filled only Client's fields
      */
-    Client getClient(int id);
+    Optional<Client> getClient(int id);
 }

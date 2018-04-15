@@ -3,6 +3,7 @@ package net.thumbtack.airline.dao;
 import net.thumbtack.airline.model.Order;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OrderDao {
 
@@ -34,5 +35,5 @@ public interface OrderDao {
      * @param orderId id of the order
      * @return {@link Order}
      */
-    Order get(int orderId);
+    Optional<Order> get(int orderId);
 }

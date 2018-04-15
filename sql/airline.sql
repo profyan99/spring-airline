@@ -1,11 +1,4 @@
--- phpMyAdmin SQL Dump
--- version 4.7.7
--- https://www.phpmyadmin.net/
---
--- Хост: 127.0.0.1:3306
--- Время создания: Апр 10 2018 г., 14:12
--- Версия сервера: 5.6.38
--- Версия PHP: 5.5.38
+
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -47,7 +40,6 @@ CREATE TABLE `client` (
   `foreignKey` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 -- --------------------------------------------------------
 
 --
@@ -59,7 +51,6 @@ CREATE TABLE `cookies` (
   `id` int(11) NOT NULL,
   `userType` enum('ADMIN','CLIENT','','') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 -- --------------------------------------------------------
 
@@ -398,6 +389,22 @@ CREATE TABLE `passenger` (
 -- --------------------------------------------------------
 
 --
+-- Структура таблицы `places`
+--
+
+CREATE TABLE `places` (
+  `place` varchar(10) NOT NULL,
+  `row` int(10) NOT NULL,
+  `date` date NOT NULL,
+  `flightId` int(11) NOT NULL,
+  `free` tinyint(1) NOT NULL DEFAULT '1',
+  `type` enum('BUSINESS','ECONOMY','','') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблицы `plane`
 --
 
@@ -430,7 +437,6 @@ CREATE TABLE `schedule` (
   `period` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 -- --------------------------------------------------------
 
 --
@@ -446,7 +452,6 @@ CREATE TABLE `user` (
   `login` varchar(30) NOT NULL,
   `password` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 --
 -- Индексы сохранённых таблиц
@@ -510,6 +515,12 @@ ALTER TABLE `passenger`
   ADD KEY `passenger_ibfk_1` (`orderId`);
 
 --
+-- Индексы таблицы `places`
+--
+ALTER TABLE `places`
+  ADD KEY `flightId` (`flightId`);
+
+--
 -- Индексы таблицы `plane`
 --
 ALTER TABLE `plane`
@@ -548,31 +559,31 @@ ALTER TABLE `client`
 -- AUTO_INCREMENT для таблицы `day_flight`
 --
 ALTER TABLE `day_flight`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT для таблицы `flight`
 --
 ALTER TABLE `flight`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT для таблицы `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `orderId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `orderId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT для таблицы `passenger`
 --
 ALTER TABLE `passenger`
-  MODIFY `ticket` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `ticket` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT для таблицы `schedule`
 --
 ALTER TABLE `schedule`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT для таблицы `user`
@@ -626,6 +637,12 @@ ALTER TABLE `orders`
 --
 ALTER TABLE `passenger`
   ADD CONSTRAINT `passenger_ibfk_1` FOREIGN KEY (`orderId`) REFERENCES `orders` (`orderId`) ON DELETE CASCADE;
+
+--
+-- Ограничения внешнего ключа таблицы `places`
+--
+ALTER TABLE `places`
+  ADD CONSTRAINT `places_ibfk_1` FOREIGN KEY (`flightId`) REFERENCES `flight` (`id`) ON DELETE CASCADE;
 
 --
 -- Ограничения внешнего ключа таблицы `schedule`

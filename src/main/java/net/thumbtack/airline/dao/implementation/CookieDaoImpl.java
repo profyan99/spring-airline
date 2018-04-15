@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public class CookieDaoImpl extends BaseDaoImpl implements CookieDao {
 
@@ -26,32 +28,31 @@ public class CookieDaoImpl extends BaseDaoImpl implements CookieDao {
 
     @Override
     public boolean exists(String uuid) {
-        try(SqlSession session = sessionFactory.openSession()) {
+        try (SqlSession session = sessionFactory.openSession()) {
             return getCookieMapper(session).exists(uuid);
         } catch (RuntimeException e) {
-            logger.error("Couldn't check for exist cookie: "+e.toString());
+            logger.error("Couldn't check for exist cookie: " + e.toString());
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "exist cookie",
                     ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
 
     @Override
-    public UserCookie get(String uuid) {
+    public Optional<UserCookie> get(String uuid) {
         UserCookie cookie;
         try (SqlSession session = sessionFactory.openSession()) {
             cookie = getCookieMapper(session).get(uuid);
-
         } catch (RuntimeException e) {
             logger.error("Couldn't get cookie: " + e.toString());
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "get cookie",
                     ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
-        return cookie;
+        return Optional.ofNullable(cookie);
     }
 
     @Override
     public void set(UserCookie cookie) {
-        try(SqlSession session = sessionFactory.openSession()) {
+        try (SqlSession session = sessionFactory.openSession()) {
             getCookieMapper(session).set(cookie);
 
             session.commit();

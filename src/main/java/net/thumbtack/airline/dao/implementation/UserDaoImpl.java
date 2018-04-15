@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class UserDaoImpl extends BaseDaoImpl implements UserDao {
@@ -39,7 +40,7 @@ public class UserDaoImpl extends BaseDaoImpl implements UserDao {
     }
 
     @Override
-    public BaseUser login(String login) {
+    public Optional<BaseUser> login(String login) {
         BaseUser user;
         try (SqlSession session = sessionFactory.openSession()) {
             user = getUserMapper(session).login(login);
@@ -48,11 +49,11 @@ public class UserDaoImpl extends BaseDaoImpl implements UserDao {
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "getAdmin",
                     ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
-        return user;
+        return Optional.ofNullable(user);
     }
 
     @Override
-    public BaseUser get(int id) {
+    public Optional<BaseUser> get(int id) {
         BaseUser user;
         try (SqlSession session = sessionFactory.openSession()) {
             user = getUserMapper(session).get(id);
@@ -61,7 +62,7 @@ public class UserDaoImpl extends BaseDaoImpl implements UserDao {
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "get user",
                     ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
-        return user;
+        return Optional.ofNullable(user);
     }
 
     @Override

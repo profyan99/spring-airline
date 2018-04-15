@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -31,6 +32,12 @@ public class UserServiceImpl implements UserService {
     private CookieDao cookieDao;
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
+    private final Supplier<? extends RuntimeException> accountNotFoundException = () ->
+        new BaseException(
+                ErrorCode.ACCOUNT_NOT_FOUND.getErrorCodeString(),
+                ErrorCode.ACCOUNT_NOT_FOUND.getErrorFieldString(),
+                ErrorCode.ACCOUNT_NOT_FOUND);
 
     @Autowired
     public void setAdminDao(AdminDao adminDao) {
@@ -59,7 +66,7 @@ public class UserServiceImpl implements UserService {
                     ErrorCode.ALREADY_LOGIN.getErrorFieldString(), ErrorCode.ALREADY_LOGIN);
         }
         BaseLoginDto baseLoginDTO;
-        BaseUser user = userDao.login(loginRequestDto.getLogin());
+        BaseUser user = userDao.login(loginRequestDto.getLogin()).orElseThrow(accountNotFoundException);
         checkUserExists(user);
         if (!user.getPassword().equals(loginRequestDto.getPassword())) {
             throw new BaseException(ErrorCode.INVALID_PASSWORD.getErrorCodeString(),
@@ -72,10 +79,10 @@ public class UserServiceImpl implements UserService {
                     user.getPatronymic(),
                     user.getId(),
                     user.getUserType(),
-                    adminDao.getAdmin(user.getId()).getPosition()
+                    adminDao.getAdmin(user.getId()).orElseThrow(accountNotFoundException).getPosition()
             );
         } else {
-            Client client = clientDao.getClient(user.getId());
+            Client client = clientDao.getClient(user.getId()).orElseThrow(accountNotFoundException);
             baseLoginDTO = new ClientResponseDto(
                     user.getFirstName(),
                     user.getLastName(),
@@ -92,7 +99,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto get(int id) {
         UserDto userDto;
-        BaseUser user = userDao.get(id);
+        BaseUser user = userDao.get(id).orElseThrow(accountNotFoundException);
         checkUserExists(user);
         if (user.getUserType().equals(UserRole.ADMIN)) {
             userDto = new AdminResponseDto(
@@ -101,10 +108,10 @@ public class UserServiceImpl implements UserService {
                     user.getPatronymic(),
                     user.getId(),
                     user.getUserType(),
-                    adminDao.getAdmin(user.getId()).getPosition()
+                    adminDao.getAdmin(user.getId()).orElseThrow(accountNotFoundException).getPosition()
             );
         } else {
-            Client client = clientDao.getClient(user.getId());
+            Client client = clientDao.getClient(user.getId()).orElseThrow(accountNotFoundException);
             userDto = new ClientResponseDto(
                     user.getFirstName(),
                     user.getLastName(),
@@ -134,11 +141,10 @@ public class UserServiceImpl implements UserService {
             throw new BaseException(ErrorCode.UNAUTHORISED_ERROR.getErrorCodeString(),
                     ErrorCode.UNAUTHORISED_ERROR.getErrorFieldString(), ErrorCode.UNAUTHORISED_ERROR);
         }
-        UserCookie cookie = cookieDao.get(uuid);
-        if (cookie == null) {
-            throw new BaseException(ErrorCode.UNAUTHORISED_ERROR.getErrorCodeString(),
-                    ErrorCode.UNAUTHORISED_ERROR.getErrorFieldString(), ErrorCode.UNAUTHORISED_ERROR);
-        }
+        UserCookie cookie = cookieDao.get(uuid).orElseThrow(
+                () -> new BaseException(ErrorCode.UNAUTHORISED_ERROR.getErrorCodeString(),
+                    ErrorCode.UNAUTHORISED_ERROR.getErrorFieldString(), ErrorCode.UNAUTHORISED_ERROR)
+        );
         return new UserCookieDto(cookie.getId(), cookie.getUserType());
     }
 
@@ -174,4 +180,5 @@ public class UserServiceImpl implements UserService {
                     ErrorCode.ACCOUNT_NOT_FOUND.getErrorFieldString(), ErrorCode.ACCOUNT_NOT_FOUND);
         }
     }
+
 }

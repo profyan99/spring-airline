@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class OrderDaoImpl extends BaseDaoImpl implements OrderDao {
@@ -54,9 +55,9 @@ public class OrderDaoImpl extends BaseDaoImpl implements OrderDao {
     }
 
     @Override
-    public Order get(int orderId) {
+    public Optional<Order> get(int orderId) {
         try (SqlSession session = sessionFactory.openSession()) {
-            return getOrderMapper(session).getById(orderId);
+            return Optional.ofNullable(getOrderMapper(session).getById(orderId));
         } catch (RuntimeException e) {
             logger.error("Couldn't get order by id: " + e.toString());
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " getting order",

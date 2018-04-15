@@ -48,7 +48,12 @@ public class FlightServiceImpl implements FlightService {
         if (dates == null) {
             dates = setDates(request.getSchedule().getFromDate(), request.getSchedule().getToDate(), request.getSchedule().getPeriod());
         }
-        Plane plane = flightDao.getPlane(request.getPlaneName());
+        Plane plane = flightDao.getPlane(request.getPlaneName()).orElseThrow(() ->
+            new BaseException(
+                    ErrorCode.PLANE_NOT_FOUND.getErrorCodeString(),
+                    ErrorCode.PLANE_NOT_FOUND.getErrorFieldString(),
+                    ErrorCode.PLANE_NOT_FOUND)
+        );
         List<Place> places = new ArrayList<>();
         setPlaces(plane, places);
 
@@ -85,16 +90,15 @@ public class FlightServiceImpl implements FlightService {
     }
 
     private static void setPlaces(Plane plane, List<Place> places) {
-        PlaceName[] placeNames = PlaceName.values();
 
         for (int i = 1; i <= plane.getBussinesRows(); i++) {
             for (int j = 0; j < plane.getPlacesInBusinessRow(); j++) {
-                places.add(new Place(i, placeNames[j].name(), OrderClass.BUSINESS));
+                places.add(new Place(i, String.valueOf('A'+j), OrderClass.BUSINESS));
             }
         }
         for (int i = plane.getBussinesRows()+1; i <= plane.getBussinesRows() + plane.getEconomyRows(); i++) {
             for (int j = 0; j < plane.getPlacesInEconomyRow(); j++) {
-                places.add(new Place(i, placeNames[j].name(), OrderClass.ECONOMY));
+                places.add(new Place(i, String.valueOf('A'+j), OrderClass.ECONOMY));
             }
         }
     }
@@ -201,7 +205,12 @@ public class FlightServiceImpl implements FlightService {
         if (dates == null) {
             dates = setDates(request.getSchedule().getFromDate(), request.getSchedule().getToDate(), request.getSchedule().getPeriod());
         }
-        Plane plane = flightDao.getPlane(request.getPlaneName());
+        Plane plane = flightDao.getPlane(request.getPlaneName()).orElseThrow(() ->
+            new BaseException(
+                    ErrorCode.PLANE_NOT_FOUND.getErrorCodeString(),
+                    ErrorCode.PLANE_NOT_FOUND.getErrorFieldString(),
+                    ErrorCode.PLANE_NOT_FOUND)
+        );
         List<Place> places = new ArrayList<>();
         setPlaces(plane, places);
 
@@ -246,7 +255,12 @@ public class FlightServiceImpl implements FlightService {
     @Override
     public FlightAddResponseDto get(int id) {
         checkFlightExists(id);
-        Flight flight = flightDao.get(id);
+        Flight flight = flightDao.get(id).orElseThrow(() ->
+            new BaseException(
+                    ErrorCode.FLIGHT_NOT_FOUND.getErrorCodeString(),
+                    ErrorCode.FLIGHT_NOT_FOUND.getErrorFieldString(),
+                    ErrorCode.FLIGHT_NOT_FOUND)
+        );
         return new FlightAddResponseDto(
                 flight.getFlightName(),
                 flight.getFromTown(),
@@ -340,7 +354,13 @@ public class FlightServiceImpl implements FlightService {
 
     private void checkFlightApproves(int id) {
         checkFlightExists(id);
-        if (flightDao.get(id).isApproved()) {
+        Flight flight = flightDao.get(id).orElseThrow(() ->
+            new BaseException(
+                    ErrorCode.FLIGHT_NOT_FOUND.getErrorCodeString(),
+                    ErrorCode.FLIGHT_NOT_FOUND.getErrorFieldString(),
+                    ErrorCode.FLIGHT_NOT_FOUND)
+        );
+        if (flight.isApproved()) {
             throw new BaseException(ErrorCode.ALREADY_APPROVED_FLIGHT.getErrorCodeString(),
                     ErrorCode.ALREADY_APPROVED_FLIGHT.getErrorFieldString(), ErrorCode.ALREADY_APPROVED_FLIGHT);
         }

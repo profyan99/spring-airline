@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
@@ -43,7 +44,7 @@ public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
     }
 
     @Override
-    public Admin getAdmin(int id) {
+    public Optional<Admin> getAdmin(int id) {
         Admin admin;
         try (SqlSession session = sessionFactory.openSession()) {
             admin = getAdminMapper(session).getAdmin(id);
@@ -52,11 +53,11 @@ public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " get admin",
                     ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
-        return admin;
+        return Optional.ofNullable(admin);
     }
 
     @Override
-    public Admin findAdminById(int id) {
+    public Optional<Admin> findAdminById(int id) {
         Admin admin;
         try (SqlSession session = sessionFactory.openSession()) {
             admin = getAdminMapper(session).findAdminById(id);
@@ -65,7 +66,7 @@ public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " find admin by id",
                     ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
-        return admin;
+        return Optional.ofNullable(admin);
     }
 
     @Override
