@@ -53,12 +53,13 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderResponseDto add(OrderAddRequestDto requestDto) {
         Flight flight = flightDao.get(requestDto.getFlightId()).orElseThrow(() ->
-            new BaseException(
-                    ErrorCode.FLIGHT_NOT_FOUND.getErrorCodeString(),
-                    ErrorCode.FLIGHT_NOT_FOUND.getErrorFieldString(),
-                    ErrorCode.FLIGHT_NOT_FOUND)
+                new BaseException(
+                        ErrorCode.FLIGHT_NOT_FOUND.getErrorCodeString(),
+                        ErrorCode.FLIGHT_NOT_FOUND.getErrorFieldString(),
+                        ErrorCode.FLIGHT_NOT_FOUND)
         );
-        if (!flight.getDates().contains(requestDto.getDate())) {
+        if (!flight.getDates().contains(requestDto.getDate())
+                || flight.getSchedule().getToDate().isBefore(requestDto.getDate())) {
             throw new BaseException(ErrorCode.INVALID_DATE.getErrorCodeString(),
                     ErrorCode.INVALID_DATE.getErrorFieldString(), ErrorCode.INVALID_DATE);
         }
@@ -66,11 +67,15 @@ public class OrderServiceImpl implements OrderService {
             throw new BaseException(ErrorCode.UNAPPROVED_FLIGHT.getErrorCodeString(),
                     ErrorCode.UNAPPROVED_FLIGHT.getErrorFieldString(), ErrorCode.UNAPPROVED_FLIGHT);
         }
-        if(requestDto.getPassengers().isEmpty()) {
+        if (requestDto.getPassengers().isEmpty()) {
             throw new BaseException(ErrorCode.PASSENGER_NOT_FOUND.getErrorCodeString(),
                     ErrorCode.PASSENGER_NOT_FOUND.getErrorFieldString(), ErrorCode.PASSENGER_NOT_FOUND);
         }
-        //TODO check for free places
+        int upd = flightDao.reservePlaces(requestDto.getDate().toString(), flight.getId(), requestDto.getPassengers().size());
+        if (upd == 0) {
+            throw new BaseException(ErrorCode.NO_AVAILABLE_PLACES.getErrorCodeString(),
+                    ErrorCode.NO_AVAILABLE_PLACES.getErrorFieldString(), ErrorCode.NO_AVAILABLE_PLACES);
+        }
         Map<String, String> citizen = new HashMap<>();
         List<Passenger> passengers = new ArrayList<>();
         int totalPrice = 0;
@@ -213,28 +218,31 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         int finalPlaceType = placeType;
-        flightDao.getPlaces(order.getDate(), order.getFlightId()).forEach((p) ->
+        flightDao.getFlightDate(order.getDate().toString(), order.getFlightId()).getPlaces().forEach((p) ->
                 {
-                    String place = "";
-                    switch (finalPlaceType) {
-                        case 1: {
-                            if (p.getType() == OrderClass.ECONOMY) {
-                                place = p.getRow() + p.getPlace();
+                    if (p.isFree()) {
+                        String place = "";
+                        switch (finalPlaceType) {
+                            case 1: {
+                                if (p.getType() == OrderClass.ECONOMY) {
+                                    place = p.getRow() + p.getPlace();
+                                }
+                                break;
                             }
-                            break;
-                        }
-                        case 2: {
-                            if (p.getType() == OrderClass.BUSINESS) {
-                                place = p.getRow() + p.getPlace();
+                            case 2: {
+                                if (p.getType() == OrderClass.BUSINESS) {
+                                    place = p.getRow() + p.getPlace();
+                                }
+                                break;
                             }
-                            break;
+                            default: {
+                                place = p.getRow() + p.getPlace();
+                                break;
+                            }
                         }
-                        default: {
-                            place = p.getRow() + p.getPlace();
-                            break;
-                        }
+                        places.add(place);
                     }
-                    places.add(place);
+
                 }
         );
         return places;
@@ -261,7 +269,7 @@ public class OrderServiceImpl implements OrderService {
                     ErrorCode.PASSENGER_NOT_FOUND.getErrorFieldString(), ErrorCode.PASSENGER_NOT_FOUND);
         }
         String reqPlace = registerDto.getPlace();
-        if(reqPlace.length() < 2) {
+        if (reqPlace.length() < 2) {
             throw new BaseException(ErrorCode.INVALID_PLACE.getErrorCodeString(),
                     ErrorCode.INVALID_PLACE.getErrorFieldString(), ErrorCode.INVALID_PLACE);
         }
@@ -274,22 +282,21 @@ public class OrderServiceImpl implements OrderService {
             throw new BaseException(ErrorCode.INVALID_PLACE.getErrorCodeString(),
                     ErrorCode.INVALID_PLACE.getErrorFieldString(), ErrorCode.INVALID_PLACE);
         }
-        Place place = flightDao.getPlace(order.getDate(), order.getFlightId(), placeStr, row).orElseThrow(() ->
+        Place place = flightDao.getPlace(order.getDate().toString(), order.getFlightId(), placeStr, row).orElseThrow(() ->
                 new BaseException(
-                    ErrorCode.PLACE_NOT_FOUND.getErrorCodeString(),
-                    ErrorCode.PLACE_NOT_FOUND.getErrorFieldString(),
-                    ErrorCode.PLACE_NOT_FOUND)
+                        ErrorCode.PLACE_NOT_FOUND.getErrorCodeString(),
+                        ErrorCode.PLACE_NOT_FOUND.getErrorFieldString(),
+                        ErrorCode.PLACE_NOT_FOUND)
         );
         if (place.getType() != passenger.getOrderClass()) {
             throw new BaseException(ErrorCode.INVALID_PLACE.getErrorCodeString(),
                     ErrorCode.INVALID_PLACE.getErrorFieldString(), ErrorCode.INVALID_PLACE);
         }
-        if(!place.isFree()) {
+        if (!place.isFree()) {
             throw new BaseException(ErrorCode.PLACE_OCCUPIED.getErrorCodeString(),
                     ErrorCode.PLACE_OCCUPIED.getErrorFieldString(), ErrorCode.PLACE_OCCUPIED);
         }
-        place.setFree(false);
-        flightDao.updatePlace(place);
+        flightDao.updatePlace(order.getDate().toString(), order.getFlightId(), placeStr, row);
         return registerDto;
     }
 }

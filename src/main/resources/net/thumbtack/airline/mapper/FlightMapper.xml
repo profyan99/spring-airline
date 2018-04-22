@@ -33,13 +33,26 @@
         </collection>
     </resultMap>
 
-    <resultMap id="PlaceResult" type="Place">
-        <result property="place" column="place"/>
-        <result property="row" column="row"/>
-        <result property="type" column="type"/>
-        <result property="free" column="free"/>
+    <resultMap id="FlightDateResult" type="FlightDate">
+        <id property="id" column="id"/>
         <result property="date" column="date"/>
         <result property="flightId" column="flightId"/>
+        <result property="freePlaces" column="freePlaces"/>
+        <collection property="places" ofType="Place">
+            <result property="place" column="place"/>
+            <result property="row" column="row"/>
+            <result property="type" column="type"/>
+            <result property="free" column="free"/>
+            <result property="date" column="date"/>
+            <result property="flightId" column="flightId"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="FlightDateWithoutPlacesResult" type="FlightDate">
+        <id property="id" column="id"/>
+        <result property="date" column="date"/>
+        <result property="flightId" column="flightId"/>
+        <result property="freePlaces" column="freePlaces"/>
     </resultMap>
 
     <select id="get" resultMap="FlightResult" parameterType="_int">
@@ -103,21 +116,35 @@
         </if>;
     </insert>
 
+    <insert id="addFlightDates">
+        INSERT INTO flight_date(date, flightId, freePlaces) VALUES
+        <foreach collection="flightDates" item="e" index="index" open="(" separator="),(" close=")">
+            #{e.date},
+            #{flight.id},
+            #{e.freePlaces}
+        </foreach>
+    </insert>
+
     <insert id="addPlaces">
-        INSERT INTO places VALUES
-        <foreach collection="flight.dates" item="d" index="id" separator=",">
+        INSERT INTO flight_date_place VALUES
+        <foreach collection="flightDates" item="d" index="id" separator=",">
             <foreach collection="places" item="p" index="ip" open="(" separator="),(" close=")">
+                #{d.id},
                 #{p.place},
                 #{p.row},
-                #{d},
-                #{flight.id},
                 TRUE,
                 #{p.type}
             </foreach>
         </foreach>
     </insert>
 
-    <update id="update" parameterType="Flight">
+    <select id="getFlightDatesWithoutPlaces" parameterType="_int" resultMap="FlightDateWithoutPlacesResult">
+        SELECT *
+        FROM flight_date
+        WHERE flightId = #{flightId}
+    </select>
+
+    <update id="update">
         UPDATE flight SET flightName = #{flight.flightName}, planeName = #{flight.planeName}, fromTown =
         #{flight.fromTown}, toTown =
         #{flight.toTown},
@@ -139,21 +166,16 @@
             #{flight.id}
         </foreach>;
 
-        DELETE FROM places WHERE flightId = #{flight.id};
+        DELETE FROM flight_date_place WHERE flightDateId IN (SELECT id FROM flight_date WHERE flightId=#{flightId});
 
-        INSERT INTO places VALUES
-        <foreach collection="flight.dates" item="d" index="id">
-            <foreach collection="places" item="p" index="ip" open="(" separator="),(" close=")">
-                #{p.place},
-                #{p.row},
-                #{d},
-                #{flight.id},
-                TRUE,
-                #{p.type}
-            </foreach>
-        </foreach>
-        ;
+        DELETE FROM flight_date WHERE flightId = #{flight.id};
 
+        INSERT INTO flight_date(date, flightId, freePlaces) VALUES
+        <foreach collection="flightDates" item="e" index="index" open="(" separator="),(" close=")">
+            #{e.date},
+            #{flight.id},
+            #{e.freePlaces}
+        </foreach>;
     </update>
 
     <update id="approve">
@@ -214,22 +236,33 @@
         </where>
     </select>
 
-    <select id="getPlaces" resultMap="PlaceResult">
+    <select id="getFlightDate" resultMap="FlightDateResult">
         SELECT *
-        FROM places
-        WHERE free = TRUE AND date = #{date} AND flightId = #{flightId}
+        FROM flight_date
+        WHERE date = #{date} AND flightId = #{flightId}
     </select>
 
     <select id="getPlace" resultMap="PlaceResult">
         SELECT *
-        FROM places
-        WHERE date = #{date} AND flightId = #{flightId} AND place = #{place} AND row = #{row}
+        FROM flight_date_place
+        WHERE flightDateId IN (SELECT id
+                               FROM flight_date
+                               WHERE date = #{date} AND flightId = #{flightId}) AND place = #{place} AND row = #{row}
     </select>
 
     <update id="updatePlace">
-        UPDATE places
-        SET free = #{free}
-        WHERE date = #{date} AND flightId = #{flightId} AND place = #{place} AND row = #{row}
+        UPDATE flight_date_place
+        SET free = TRUE
+        WHERE flightDateId IN (SELECT id
+                               FROM flight_date
+                               WHERE date = #{date} AND flightId = #{flightId}) AND place = #{place} AND row = #{row}
+    </update>
+
+    <update id="reservePlaces">
+        UPDATE flight_date
+        SET freePlaces = freePlaces - #{amountPassengers}
+        WHERE date = #{date} AND flightId = #{flightId}
+              AND freePlaces &gt;= #{amountPassengers}
     </update>
 
 </mapper>

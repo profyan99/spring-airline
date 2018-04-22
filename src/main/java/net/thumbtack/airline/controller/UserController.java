@@ -3,6 +3,7 @@ package net.thumbtack.airline.controller;
 import net.thumbtack.airline.dto.UserCookieDto;
 import net.thumbtack.airline.dto.request.LoginRequestDto;
 import net.thumbtack.airline.dto.response.BaseLoginDto;
+import net.thumbtack.airline.dto.response.ServerSettingsResponseDto;
 import net.thumbtack.airline.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,5 +60,16 @@ public class UserController {
     public ResponseEntity<?> countries(@CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
         userService.authorizeUser(uuid);
         return ResponseEntity.ok(userService.getCountries());
+    }
+
+    @GetMapping(path = "/settings")
+    public ResponseEntity<?> settings(@CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
+        ServerSettingsResponseDto responseDto;
+        if (!uuid.isEmpty()) {
+            responseDto = userService.getSettings(userService.authorizeUser(uuid).getUserType());
+        } else {
+            responseDto = userService.getSettings();
+        }
+        return ResponseEntity.ok(responseDto);
     }
 }

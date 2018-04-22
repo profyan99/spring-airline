@@ -2,6 +2,7 @@ package net.thumbtack.airline.dto.request;
 
 import net.thumbtack.airline.model.Schedule;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class FlightUpdateRequestDto extends FlightAddRequestDto {
@@ -17,14 +18,14 @@ public class FlightUpdateRequestDto extends FlightAddRequestDto {
         this.id = id;
     }
 
-    public FlightUpdateRequestDto(String flightName, String fromTown, String toTown, String start, String duration, 
-                                  int priceBusiness, int priceEconomy, Schedule schedule, List<String> dates, String planeName, int id) {
+    public FlightUpdateRequestDto(String flightName, String fromTown, String toTown, String start, String duration,
+                                  int priceBusiness, int priceEconomy, Schedule schedule, List<LocalDate> dates, String planeName, int id) {
         super(flightName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, schedule, dates, planeName);
         this.id = id;
     }
 
     public FlightUpdateRequestDto(String flightName, String fromTown, String toTown, String start, String duration,
-                                  int priceBusiness, int priceEconomy, List<String> dates, String planeName, int id) {
+                                  int priceBusiness, int priceEconomy, List<LocalDate> dates, String planeName, int id) {
         super(flightName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, dates, planeName);
         this.id = id;
     }

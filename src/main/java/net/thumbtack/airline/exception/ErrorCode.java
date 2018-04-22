@@ -22,6 +22,7 @@ public enum ErrorCode {
     PLACE_OCCUPIED("Place has already occupied. Please choose another one.", "Place"),
     PLANE_NOT_FOUND("Plane not found.", "Plane"),
     PLACE_NOT_FOUND("Place not found.", "Place"),
+    NO_AVAILABLE_PLACES("There are no free seats on this flight.", "Place"),
     INVALID_DATE_FORMAT("Invalid date format. Please check and send again.", "Date");
 
     private final String

@@ -69,6 +69,7 @@ public class AdminController {
         return ResponseEntity.ok(adminService.getPlanes());
     }
 
+    //TODO switch off in production
     @DeleteMapping("/debug/clear")
     public ResponseEntity<?> clear(@CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
         userService.authorizeUser(uuid, UserRole.ADMIN);

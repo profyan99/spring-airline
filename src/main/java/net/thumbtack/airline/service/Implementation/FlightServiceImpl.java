@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +43,7 @@ public class FlightServiceImpl implements FlightService {
             throw new BaseException(ErrorCode.FLIGHT_EXIST_ERROR.getErrorCodeString(),
                     ErrorCode.FLIGHT_EXIST_ERROR.getErrorFieldString(), ErrorCode.FLIGHT_EXIST_ERROR);
         }
-        List<String> dates = request.getDates();
+        List<LocalDate> dates = request.getDates();
         if (dates == null) {
             dates = setDates(request.getSchedule().getFromDate(), request.getSchedule().getToDate(), request.getSchedule().getPeriod());
         }
@@ -56,6 +55,14 @@ public class FlightServiceImpl implements FlightService {
         );
         List<Place> places = new ArrayList<>();
         setPlaces(plane, places);
+        List<FlightDate> flightDates = new ArrayList<>(dates.size());
+        for (LocalDate date:dates) {
+            flightDates.add(new FlightDate(
+                    date,
+                    places.size(),
+                    places
+            ));
+        }
 
         Flight flight = new Flight(
                 request.getFlightName(),
@@ -71,7 +78,7 @@ public class FlightServiceImpl implements FlightService {
                 false,
                 null
         );
-        flightDao.add(flight, places);
+        flightDao.add(flight, flightDates);
 
         return new FlightAddResponseDto(
                 flight.getFlightName(),
@@ -90,7 +97,6 @@ public class FlightServiceImpl implements FlightService {
     }
 
     private static void setPlaces(Plane plane, List<Place> places) {
-
         for (int i = 1; i <= plane.getBussinesRows(); i++) {
             for (int j = 0; j < plane.getPlacesInBusinessRow(); j++) {
                 places.add(new Place(i, String.valueOf('A'+j), OrderClass.BUSINESS));
@@ -103,7 +109,7 @@ public class FlightServiceImpl implements FlightService {
         }
     }
 
-    private static void setDays(List<String> dates, FlightPeriod dayOfWeek, LocalDate from, LocalDate to) {
+    private static void setDays(List<LocalDate> dates, FlightPeriod dayOfWeek, LocalDate from, LocalDate to) {
         LocalDate localDate = LocalDate.from(from);
         for (int i = from.getMonthValue(); i <= to.getMonthValue(); i++) {
             localDate = localDate
@@ -113,16 +119,16 @@ public class FlightServiceImpl implements FlightService {
             while ((i != to.getMonthValue() && localDate.getMonthValue() == i) ||
                     (i == to.getMonthValue() && localDate.getDayOfMonth() <= to.getDayOfMonth())) {
                 localDate = localDate.plusWeeks(1);
-                dates.add(localDate.toString());
+                dates.add(localDate);
             }
         }
     }
 
-    private static List<String> setDates(String getFromDate, String getToDate, String schedulePeriod) {
-        List<String> dates;
+    private static List<LocalDate> setDates(LocalDate getFromDate, LocalDate getToDate, String schedulePeriod) {
+        List<LocalDate> dates;
         LocalDate dateFrom, dateTo;
-        dateFrom = LocalDate.parse(getFromDate, DateTimeFormatter.ofPattern(Utils.DATE_PATTERN));
-        dateTo = LocalDate.parse(getToDate, DateTimeFormatter.ofPattern(Utils.DATE_PATTERN));
+        dateFrom = LocalDate.from(getFromDate);
+        dateTo = LocalDate.from(getToDate);
         if (!dateFrom.isBefore(dateTo)) {
             throw new BaseException(ErrorCode.INVALID_DATE.getErrorCodeString(),
                     dateFrom.toString() + " and " + dateTo.toString(), ErrorCode.INVALID_DATE);
@@ -133,7 +139,7 @@ public class FlightServiceImpl implements FlightService {
         switch (FlightPeriod.getValue(period)) {
             case DAILY: {
                 for (int i = dateFrom.getDayOfYear(), length = dateTo.getDayOfYear(); i <= length; i++) {
-                    dates.add(dateFrom.withDayOfYear(i).toString());
+                    dates.add(dateFrom.withDayOfYear(i));
                 }
                 break;
             }
@@ -141,7 +147,7 @@ public class FlightServiceImpl implements FlightService {
                 for (int i = dateFrom.getDayOfYear(), length = dateTo.getDayOfYear(); i <= length; i++) {
                     dateFrom = dateFrom.withDayOfYear(i);
                     if (dateFrom.getDayOfMonth() % 2 == 0) {
-                        dates.add(dateFrom.toString());
+                        dates.add(dateFrom);
                     }
                 }
                 break;
@@ -150,7 +156,7 @@ public class FlightServiceImpl implements FlightService {
                 for (int i = dateFrom.getDayOfYear(), length = dateTo.getDayOfYear(); i <= length; i++) {
                     dateFrom = dateFrom.withDayOfYear(i);
                     if (dateFrom.getDayOfMonth() % 2 != 0) {
-                        dates.add(dateFrom.toString());
+                        dates.add(dateFrom);
                     }
                 }
                 break;
@@ -188,7 +194,7 @@ public class FlightServiceImpl implements FlightService {
                             dateFrom = dateFrom.withMonth(i);
                             if ((i == dateTo.getMonthValue() && dayNumber <= dateTo.getDayOfMonth())
                                     || (i != dateTo.getMonthValue() && dayNumber <= dateFrom.lengthOfMonth())) {
-                                dates.add(dateFrom.withDayOfMonth(dayNumber).toString());
+                                dates.add(dateFrom.withDayOfMonth(dayNumber));
                             }
                         }
                     }
@@ -201,7 +207,7 @@ public class FlightServiceImpl implements FlightService {
     @Override
     public FlightUpdateResponseDto update(FlightUpdateRequestDto request) {
         checkFlightApproves(request.getId());
-        List<String> dates = request.getDates();
+        List<LocalDate> dates = request.getDates();
         if (dates == null) {
             dates = setDates(request.getSchedule().getFromDate(), request.getSchedule().getToDate(), request.getSchedule().getPeriod());
         }
@@ -213,6 +219,14 @@ public class FlightServiceImpl implements FlightService {
         );
         List<Place> places = new ArrayList<>();
         setPlaces(plane, places);
+        List<FlightDate> flightDates = new ArrayList<>(dates.size());
+        for (LocalDate date:dates) {
+            flightDates.add(new FlightDate(
+                    date,
+                    places.size(),
+                    places
+            ));
+        }
 
         Flight flight = new Flight(
                 request.getFlightName(),
@@ -229,7 +243,7 @@ public class FlightServiceImpl implements FlightService {
                 null,
                 request.getId()
         );
-        flightDao.update(flight, places);
+        flightDao.update(flight, flightDates);
         return new FlightUpdateResponseDto(
                 flight.getFlightName(),
                 flight.getFromTown(),

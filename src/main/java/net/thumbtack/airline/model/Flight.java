@@ -1,5 +1,6 @@
 package net.thumbtack.airline.model;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class Flight {
@@ -13,17 +14,17 @@ public class Flight {
     private int priceBusiness;
     private int priceEconomy;
     private Schedule schedule;
-    private List<String> dates;
+    private List<LocalDate> dates;
     private boolean approved;
     private Plane plane;
 
     public Flight(String flightName, String planeName, String fromTown, String toTown, String start, String duration,
-                  int priceBusiness, int priceEconomy, Schedule schedule, List<String> dates, boolean approved, Plane plane) {
+                  int priceBusiness, int priceEconomy, Schedule schedule, List<LocalDate> dates, boolean approved, Plane plane) {
         this(flightName, planeName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, schedule, dates, approved, plane, 0);
     }
 
     public Flight(String flightName, String planeName, String fromTown, String toTown, String start, String duration,
-                  int priceBusiness, int priceEconomy, Schedule schedule, List<String> dates, boolean approved, Plane plane,
+                  int priceBusiness, int priceEconomy, Schedule schedule, List<LocalDate> dates, boolean approved, Plane plane,
                   int id) {
         this.flightName = flightName;
         this.planeName = planeName;
@@ -124,11 +125,11 @@ public class Flight {
         this.schedule = schedule;
     }
 
-    public List<String> getDates() {
+    public List<LocalDate> getDates() {
         return dates;
     }
 
-    public void setDates(List<String> dates) {
+    public void setDates(List<LocalDate> dates) {
         this.dates = dates;
     }
 
@@ -146,24 +147,5 @@ public class Flight {
 
     public void setPlane(Plane plane) {
         this.plane = plane;
-    }
-
-    @Override
-    public String toString() {
-        return "Flight{" +
-                "id=" + id +
-                ", flightName='" + flightName + '\'' +
-                ", planeName='" + planeName + '\'' +
-                ", fromTown='" + fromTown + '\'' +
-                ", toTown='" + toTown + '\'' +
-                ", start='" + start + '\'' +
-                ", duration='" + duration + '\'' +
-                ", priceBusiness=" + priceBusiness +
-                ", priceEconomy=" + priceEconomy +
-                ", schedule=" + schedule +
-                ", dates=" + dates +
-                ", approved=" + approved +
-                ", plane=" + plane +
-                '}';
     }
 }

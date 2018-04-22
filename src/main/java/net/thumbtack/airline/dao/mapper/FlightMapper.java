@@ -1,6 +1,7 @@
 package net.thumbtack.airline.dao.mapper;
 
 import net.thumbtack.airline.model.Flight;
+import net.thumbtack.airline.model.FlightDate;
 import net.thumbtack.airline.model.Place;
 import org.apache.ibatis.annotations.Param;
 
@@ -17,7 +18,7 @@ public interface FlightMapper {
 
     Flight get(int flightId);
 
-    void update(@Param("flight") Flight flight, @Param("places") List<Place> places);
+    void update(@Param("flight") Flight flight, @Param("flightDates") List<FlightDate> flightDates);
 
     void delete(int flightId);
 
@@ -30,12 +31,19 @@ public interface FlightMapper {
                         @Param("fromDate") String fromDate,
                         @Param("toDate") String toDate);
 
-    List<Place> getPlaces(@Param("date") String date, @Param("flightId") int flightId);
+    FlightDate getFlightDate(@Param("date") String date, @Param("flightId") int flightId);
 
     Place getPlace(@Param("date") String date, @Param("flightId") int flightId,
                    @Param("place") String place, @Param("row") int row);
 
-    void updatePlace(Place place);
+    void updatePlace(@Param("date") String date, @Param("flightId") int flightId,
+                     @Param("place") String place, @Param("row") int row);
 
-    void addPlaces(@Param("flight") Flight flight, @Param("places") List<Place> places);
+    void addPlaces(List<FlightDate> flightDates);
+
+    void addFlightDates(@Param("flight") Flight flight, @Param("flightDates") List<FlightDate> flightDates);
+
+    List<FlightDate> getFlightDatesWithoutPlaces(int flightId);
+
+    int reservePlaces(@Param("date") String date, @Param("flightId") int flightId, @Param("amountPassengers") int amountPassengers);
 }

@@ -4,6 +4,7 @@ import net.thumbtack.airline.dto.UserCookieDto;
 import net.thumbtack.airline.dto.UserDto;
 import net.thumbtack.airline.dto.request.LoginRequestDto;
 import net.thumbtack.airline.dto.response.BaseLoginDto;
+import net.thumbtack.airline.dto.response.ServerSettingsResponseDto;
 import net.thumbtack.airline.model.Country;
 import net.thumbtack.airline.model.UserRole;
 
@@ -26,4 +27,7 @@ public interface UserService {
 
     boolean exists(String uuid);
 
+    ServerSettingsResponseDto getSettings();
+
+    ServerSettingsResponseDto getSettings(UserRole role);
 }

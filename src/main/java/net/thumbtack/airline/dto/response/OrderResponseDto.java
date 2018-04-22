@@ -2,6 +2,7 @@ package net.thumbtack.airline.dto.response;
 
 import net.thumbtack.airline.dto.OrderDto;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class OrderResponseDto extends OrderDto {
@@ -15,7 +16,7 @@ public class OrderResponseDto extends OrderDto {
     private String duration;
     private List<PassengerResponseDto> passengers;
 
-    public OrderResponseDto(int flightId, String date, int orderId, int totalPrice, String flightName,
+    public OrderResponseDto(int flightId, LocalDate date, int orderId, int totalPrice, String flightName,
                             String planeName, String fromTown, String toTown, String start, String duration, List<PassengerResponseDto> passengers) {
         super(flightId, date);
         this.orderId = orderId;

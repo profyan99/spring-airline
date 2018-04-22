@@ -1,8 +1,13 @@
 package net.thumbtack.airline.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.StringSerializer;
+import net.thumbtack.airline.Utils;
 import net.thumbtack.airline.dto.validator.annotation.TimeValid;
 import net.thumbtack.airline.model.Schedule;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class FlightDto {
@@ -18,7 +23,10 @@ public class FlightDto {
     private int priceBusiness;
     private int priceEconomy;
     private Schedule schedule;
-    private List<String> dates;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Utils.DATE_PATTERN)
+    @JsonSerialize(contentUsing = StringSerializer.class, contentAs = LocalDate.class)
+    private List<LocalDate> dates;
 
     public FlightDto(String flightName, String fromTown, String toTown, String start,
                      String duration, int priceBusiness, int priceEconomy, Schedule schedule) {
@@ -36,7 +44,7 @@ public class FlightDto {
 
     // For FlightAddResponseDto, because we need schedule and dates together
     public FlightDto(String flightName, String fromTown, String toTown, String start,
-                     String duration, int priceBusiness, int priceEconomy, Schedule schedule, List<String> dates) {
+                     String duration, int priceBusiness, int priceEconomy, Schedule schedule, List<LocalDate> dates) {
         this.flightName = flightName;
         this.fromTown = fromTown;
         this.toTown = toTown;
@@ -49,7 +57,7 @@ public class FlightDto {
     }
 
     public FlightDto(String flightName, String fromTown, String toTown, String start,
-                     String duration, int priceBusiness, int priceEconomy, List<String> dates) {
+                     String duration, int priceBusiness, int priceEconomy, List<LocalDate> dates) {
 
         this.flightName = flightName;
         this.fromTown = fromTown;
@@ -130,11 +138,11 @@ public class FlightDto {
         this.schedule = schedule;
     }
 
-    public List<String> getDates() {
+    public List<LocalDate> getDates() {
         return dates;
     }
 
-    public void setDates(List<String> dates) {
+    public void setDates(List<LocalDate> dates) {
         this.dates = dates;
     }
 }

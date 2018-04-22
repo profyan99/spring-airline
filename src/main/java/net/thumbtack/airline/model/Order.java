@@ -1,12 +1,13 @@
 package net.thumbtack.airline.model;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class Order {
     private int orderId;
     private int flightId;
     private int userId;
-    private String date;
+    private LocalDate date;
     private int totalPrice;
     private String flightName;
     private String planeName;
@@ -16,7 +17,7 @@ public class Order {
     private String duration;
     private List<Passenger> passengers;
 
-    public Order(int orderId, int flightId, int userId, String date, int totalPrice, String flightName, String planeName,
+    public Order(int orderId, int flightId, int userId, LocalDate date, int totalPrice, String flightName, String planeName,
                  String fromTown, String toTown, String start, String duration, List<Passenger> passengers) {
         this.orderId = orderId;
         this.flightId = flightId;
@@ -32,7 +33,7 @@ public class Order {
         this.passengers = passengers;
     }
 
-    public Order(int flightId, int userId, String date, int totalPrice, String flightName, String planeName, String fromTown,
+    public Order(int flightId, int userId, LocalDate date, int totalPrice, String flightName, String planeName, String fromTown,
                  String toTown, String start, String duration, List<Passenger> passengers) {
         this(0, flightId, userId, date, totalPrice, flightName, planeName, fromTown, toTown, start, duration, passengers);
     }
@@ -57,11 +58,11 @@ public class Order {
         this.flightId = flightId;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

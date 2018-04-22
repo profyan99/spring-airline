@@ -3,6 +3,7 @@ package net.thumbtack.airline.dto.response;
 import net.thumbtack.airline.model.Plane;
 import net.thumbtack.airline.model.Schedule;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class FlightGetResponseAdminDto extends FlightGetResponseDto {
@@ -10,7 +11,7 @@ public class FlightGetResponseAdminDto extends FlightGetResponseDto {
     private boolean approved;
 
     public FlightGetResponseAdminDto(String flightName, String fromTown, String toTown, String start,
-                                     String duration, int priceBusiness, int priceEconomy, Schedule schedule, List<String> dates,
+                                     String duration, int priceBusiness, int priceEconomy, Schedule schedule, List<LocalDate> dates,
                                      int flightId, Plane plane, boolean approved) {
         super(flightName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, schedule, dates, flightId);
         this.plane = plane;
@@ -18,7 +19,7 @@ public class FlightGetResponseAdminDto extends FlightGetResponseDto {
     }
 
     public FlightGetResponseAdminDto(String flightName, String fromTown, String toTown, String start,
-                                     String duration, int priceBusiness, int priceEconomy, List<String> dates, int flightId,
+                                     String duration, int priceBusiness, int priceEconomy, List<LocalDate> dates, int flightId,
                                      Plane plane, boolean approved) {
         super(flightName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, dates, flightId);
         this.plane = plane;

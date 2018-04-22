@@ -1,5 +1,6 @@
 package net.thumbtack.airline.service.Implementation;
 
+import net.thumbtack.airline.Utils;
 import net.thumbtack.airline.dao.AdminDao;
 import net.thumbtack.airline.dao.ClientDao;
 import net.thumbtack.airline.dao.CookieDao;
@@ -10,6 +11,7 @@ import net.thumbtack.airline.dto.request.LoginRequestDto;
 import net.thumbtack.airline.dto.response.AdminResponseDto;
 import net.thumbtack.airline.dto.response.BaseLoginDto;
 import net.thumbtack.airline.dto.response.ClientResponseDto;
+import net.thumbtack.airline.dto.response.ServerSettingsResponseDto;
 import net.thumbtack.airline.exception.BaseException;
 import net.thumbtack.airline.exception.ErrorCode;
 import net.thumbtack.airline.model.*;
@@ -30,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private AdminDao adminDao;
     private ClientDao clientDao;
     private CookieDao cookieDao;
+    private Utils utils;
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -57,6 +60,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     public void setCookieDao(CookieDao cookieDao) {
         this.cookieDao = cookieDao;
+    }
+
+    @Autowired
+    public void setUtils(Utils utils) {
+        this.utils = utils;
     }
 
     @Override
@@ -181,4 +189,17 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public ServerSettingsResponseDto getSettings() {
+        return new ServerSettingsResponseDto(
+                utils.getMaxNameLength(),
+                utils.getMinPasswordLength()
+        );
+    }
+
+    @Override
+    public ServerSettingsResponseDto getSettings(UserRole role) {
+        // Role not used
+        return getSettings();
+    }
 }

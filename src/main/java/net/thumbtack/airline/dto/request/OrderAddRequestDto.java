@@ -3,13 +3,14 @@ package net.thumbtack.airline.dto.request;
 import net.thumbtack.airline.dto.OrderDto;
 import net.thumbtack.airline.dto.PassengerDto;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class OrderAddRequestDto extends OrderDto {
     private List<PassengerDto> passengers;
     private int userId;
 
-    public OrderAddRequestDto(int flightId, int userId, String date, List<PassengerDto> passengers) {
+    public OrderAddRequestDto(int flightId, int userId, LocalDate date, List<PassengerDto> passengers) {
         super(flightId, date);
         this.passengers = passengers;
         this.userId = userId;

@@ -4,6 +4,7 @@ import net.thumbtack.airline.dao.FlightDao;
 import net.thumbtack.airline.exception.BaseException;
 import net.thumbtack.airline.exception.ErrorCode;
 import net.thumbtack.airline.model.Flight;
+import net.thumbtack.airline.model.FlightDate;
 import net.thumbtack.airline.model.Place;
 import net.thumbtack.airline.model.Plane;
 import org.apache.ibatis.session.SqlSession;
@@ -30,11 +31,13 @@ public class FlightDaoImpl extends BaseDaoImpl implements FlightDao {
     }
 
     @Override
-    public Flight add(Flight flight, List<Place> places) {
+    public Flight add(Flight flight, List<FlightDate> flightDates) {
         try (SqlSession session = sessionFactory.openSession()) {
             getFlightMapper(session).addFlight(flight);
             getFlightMapper(session).addDateAndSchedule(flight);
-            getFlightMapper(session).addPlaces(flight, places);
+            getFlightMapper(session).addFlightDates(flight, flightDates);
+            flightDates = getFlightMapper(session).getFlightDatesWithoutPlaces(flight.getId());
+            getFlightMapper(session).addPlaces(flightDates);
             flight.setPlane(getPlaneMapper(session).get(flight.getPlaneName()));
             session.commit();
             return flight;
@@ -79,9 +82,11 @@ public class FlightDaoImpl extends BaseDaoImpl implements FlightDao {
     }
 
     @Override
-    public Flight update(Flight flight, List<Place> places) {
+    public Flight update(Flight flight, List<FlightDate> flightDates) {
         try (SqlSession session = sessionFactory.openSession()) {
-            getFlightMapper(session).update(flight, places);
+            getFlightMapper(session).update(flight, flightDates);
+            flightDates = getFlightMapper(session).getFlightDatesWithoutPlaces(flight.getId());
+            getFlightMapper(session).addPlaces(flightDates);
             flight.setPlane(getPlaneMapper(session).get(flight.getPlaneName()));
             session.commit();
             return flight;
@@ -129,12 +134,12 @@ public class FlightDaoImpl extends BaseDaoImpl implements FlightDao {
     }
 
     @Override
-    public List<Place> getPlaces(String date, int flightId) {
+    public FlightDate getFlightDate(String date, int flightId) {
         try (SqlSession session = sessionFactory.openSession()) {
-            return getFlightMapper(session).getPlaces(date, flightId);
+            return getFlightMapper(session).getFlightDate(date, flightId);
         } catch (RuntimeException e) {
             logger.error("Couldn't get places: " + e.toString());
-            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " getting places",
+            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString(),
                     ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
@@ -151,9 +156,9 @@ public class FlightDaoImpl extends BaseDaoImpl implements FlightDao {
     }
 
     @Override
-    public void updatePlace(Place place) {
+    public void updatePlace(String date, int flightId, String place, int row) {
         try (SqlSession session = sessionFactory.openSession()) {
-            getFlightMapper(session).updatePlace(place);
+            getFlightMapper(session).updatePlace(date, flightId, place, row);
             session.commit();
         } catch (RuntimeException e) {
             logger.error("Couldn't update place: " + e.toString());
@@ -169,6 +174,19 @@ public class FlightDaoImpl extends BaseDaoImpl implements FlightDao {
         } catch (RuntimeException e) {
             logger.error("Couldn't get plane: " + e.toString());
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " getting plane",
+                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
+        }
+    }
+
+    @Override
+    public int reservePlaces(String date, int flightId, int passengersAmount) {
+        try (SqlSession session = sessionFactory.openSession()) {
+            int amount = getFlightMapper(session).reservePlaces(date, flightId, passengersAmount);
+            session.commit();
+            return amount;
+        } catch (RuntimeException e) {
+            logger.error("Couldn't reserve places: " + e.toString());
+            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " reserving places",
                     ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }
     }
