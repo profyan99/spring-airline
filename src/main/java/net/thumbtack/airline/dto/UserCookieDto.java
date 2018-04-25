@@ -30,4 +30,21 @@ public class UserCookieDto {
     public void setUserType(UserRole userType) {
         this.userType = userType;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserCookieDto)) return false;
+
+        UserCookieDto that = (UserCookieDto) o;
+
+        return getId() == that.getId() && getUserType() == that.getUserType();
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getId();
+        result = 31 * result + (getUserType() != null ? getUserType().hashCode() : 0);
+        return result;
+    }
 }

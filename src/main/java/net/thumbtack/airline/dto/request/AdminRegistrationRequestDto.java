@@ -51,4 +51,17 @@ public class AdminRegistrationRequestDto extends UserDto {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AdminRegistrationRequestDto)) return false;
+
+        AdminRegistrationRequestDto that = (AdminRegistrationRequestDto) o;
+
+        return (getPosition() != null ? getPosition().equals(that.getPosition()) : that.getPosition() == null)
+                && (getLogin() != null ? getLogin().equals(that.getLogin()) : that.getLogin() == null)
+                && (getPassword() != null ? getPassword().equals(that.getPassword()) : that.getPassword() == null);
+    }
+
 }

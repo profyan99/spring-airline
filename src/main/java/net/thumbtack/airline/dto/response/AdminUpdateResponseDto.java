@@ -34,4 +34,23 @@ public class AdminUpdateResponseDto extends UserDto {
     public void setUserType(UserRole userType) {
         this.userType = userType;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AdminUpdateResponseDto)) return false;
+
+        AdminUpdateResponseDto that = (AdminUpdateResponseDto) o;
+
+        if (getPosition() != null ? !getPosition().equals(that.getPosition()) : that.getPosition() != null)
+            return false;
+        return getUserType() == that.getUserType();
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getPosition() != null ? getPosition().hashCode() : 0;
+        result = 31 * result + (getUserType() != null ? getUserType().hashCode() : 0);
+        return result;
+    }
 }

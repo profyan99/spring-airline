@@ -74,7 +74,7 @@ public class AdminController {
     public ResponseEntity<?> clear(@CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
         userService.authorizeUser(uuid, UserRole.ADMIN);
         adminService.clearDataBase();
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body("{}");
     }
 
 }
