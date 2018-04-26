@@ -428,7 +428,7 @@ CREATE TABLE `passenger` (
 
 CREATE TABLE `plane` (
   `name` varchar(40) NOT NULL,
-  `bussinesRows` int(11) NOT NULL,
+  `businessRows` int(11) NOT NULL,
   `economyRows` int(11) NOT NULL,
   `placesInBusinessRow` int(11) NOT NULL,
   `placesInEconomyRow` int(11) NOT NULL
@@ -438,7 +438,7 @@ CREATE TABLE `plane` (
 -- Дамп данных таблицы `plane`
 --
 
-INSERT INTO `plane` (`name`, `bussinesRows`, `economyRows`, `placesInBusinessRow`, `placesInEconomyRow`) VALUES
+INSERT INTO `plane` (`name`, `businessRows`, `economyRows`, `placesInBusinessRow`, `placesInEconomyRow`) VALUES
 ('Airbus  A319', 5, 16, 4, 6);
 
 -- --------------------------------------------------------

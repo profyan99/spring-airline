@@ -2,14 +2,14 @@ package net.thumbtack.airline.model;
 
 public class Plane {
     private String name;
-    private int bussinesRows;
+    private int businessRows;
     private int economyRows;
     private int placesInBusinessRow;
     private int placesInEconomyRow;
 
-    public Plane(String name, int bussinesRows, int economyRows, int placesInBusinessRow, int placesInEconomyRow) {
+    public Plane(String name, int businessRows, int economyRows, int placesInBusinessRow, int placesInEconomyRow) {
         this.name = name;
-        this.bussinesRows = bussinesRows;
+        this.businessRows = businessRows;
         this.economyRows = economyRows;
         this.placesInBusinessRow = placesInBusinessRow;
         this.placesInEconomyRow = placesInEconomyRow;
@@ -27,12 +27,12 @@ public class Plane {
         this.name = name;
     }
 
-    public int getBussinesRows() {
-        return bussinesRows;
+    public int getBusinessRows() {
+        return businessRows;
     }
 
-    public void setBussinesRows(int bussinesRows) {
-        this.bussinesRows = bussinesRows;
+    public void setBusinessRows(int businessRows) {
+        this.businessRows = businessRows;
     }
 
     public int getEconomyRows() {

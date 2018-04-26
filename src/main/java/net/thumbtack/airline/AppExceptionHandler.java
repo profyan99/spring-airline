@@ -1,5 +1,6 @@
 package net.thumbtack.airline;
 
+import net.thumbtack.airline.dto.ErrorResponseDto;
 import net.thumbtack.airline.dto.response.ErrorDto;
 import net.thumbtack.airline.exception.BaseException;
 import net.thumbtack.airline.exception.ErrorCode;
@@ -24,7 +25,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<?> handleSimpleException(BaseException ex) {
         List<ErrorDto> errors = new ArrayList<>();
         errors.add(new ErrorDto(ex.getErrorCode().name(), ex.getField(), ex.getMessage()));
-        return ResponseEntity.badRequest().body(errors);
+        return ResponseEntity.badRequest().body(new ErrorResponseDto(errors));
     }
 
     @Override
@@ -34,7 +35,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         List<ErrorDto> errors = new ArrayList<>();
         result.getFieldErrors().forEach((e) ->
                 errors.add(new ErrorDto(e.getCode() + ": " + e.getRejectedValue(), e.getField(), e.getDefaultMessage())));
-        return ResponseEntity.badRequest().body(errors);
+        return ResponseEntity.badRequest().body(new ErrorResponseDto(errors));
     }
 
     @Override
@@ -43,6 +44,6 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         List<ErrorDto> errors = new ArrayList<>();
         errors.add(new ErrorDto(ErrorCode.INVALID_JSON_FORMAT.name(), request.getContextPath(),
                 ErrorCode.INVALID_JSON_FORMAT.getErrorCodeString()));
-        return ResponseEntity.badRequest().body(errors);
+        return ResponseEntity.badRequest().body(new ErrorResponseDto(errors));
     }
 }

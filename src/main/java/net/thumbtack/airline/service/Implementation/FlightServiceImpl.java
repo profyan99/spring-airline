@@ -97,12 +97,12 @@ public class FlightServiceImpl implements FlightService {
     }
 
     private static void setPlaces(Plane plane, List<Place> places) {
-        for (int i = 1; i <= plane.getBussinesRows(); i++) {
+        for (int i = 1; i <= plane.getBusinessRows(); i++) {
             for (int j = 0; j < plane.getPlacesInBusinessRow(); j++) {
                 places.add(new Place(i, String.valueOf('A'+j), OrderClass.BUSINESS));
             }
         }
-        for (int i = plane.getBussinesRows()+1; i <= plane.getBussinesRows() + plane.getEconomyRows(); i++) {
+        for (int i = plane.getBusinessRows()+1; i <= plane.getBusinessRows() + plane.getEconomyRows(); i++) {
             for (int j = 0; j < plane.getPlacesInEconomyRow(); j++) {
                 places.add(new Place(i, String.valueOf('A'+j), OrderClass.ECONOMY));
             }

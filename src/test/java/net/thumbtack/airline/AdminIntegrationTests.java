@@ -81,7 +81,7 @@ public class AdminIntegrationTests {
         )
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$[0].errorCode").exists());
+                .andExpect(jsonPath("$.errors[0].errorCode").exists());
 
         requestDTO.setPassword("");
         requestDTO.setFirstName("Дмитрий");
@@ -92,7 +92,7 @@ public class AdminIntegrationTests {
         )
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$[0].errorCode").exists());
+                .andExpect(jsonPath("$.errors[0].errorCode").exists());
 
         requestDTO.setPassword("SimplePassword");
         this.mvc.perform(post("/api/admin")
@@ -101,7 +101,7 @@ public class AdminIntegrationTests {
         )
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$[0].errorCode", is(ErrorCode.ACCOUNT_EXIST_ERROR.name())));
+                .andExpect(jsonPath("$.errors[0].errorCode", is(ErrorCode.ACCOUNT_EXIST_ERROR.name())));
     }
 
     /*@Test

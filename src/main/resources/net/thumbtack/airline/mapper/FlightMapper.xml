@@ -23,7 +23,7 @@
         </association>
         <association property="plane" javaType="Plane">
             <result column="name" property="name"/>
-            <result column="bussinesRows" property="bussinesRows"/>
+            <result column="businessRows" property="businessRows"/>
             <result column="economyRows" property="economyRows"/>
             <result column="placesInBusinessRow" property="placesInBusinessRow"/>
             <result column="placesInEconomyRow" property="placesInEconomyRow"/>
@@ -71,7 +71,7 @@
             s.toDate,
             s.period,
             p.name,
-            p.bussinesRows,
+            p.businessRows,
             p.economyRows,
             p.placesInBusinessRow,
             p.placesInEconomyRow,
@@ -205,7 +205,7 @@
         s.toDate,
         s.period,
         p.name,
-        p.bussinesRows,
+        p.businessRows,
         p.economyRows,
         p.placesInBusinessRow,
         p.placesInEconomyRow,
@@ -242,7 +242,7 @@
         WHERE date = #{date} AND flightId = #{flightId}
     </select>
 
-    <select id="getPlace" resultMap="PlaceResult">
+    <select id="getPlace" resultType="Place">
         SELECT *
         FROM flight_date_place
         WHERE flightDateId IN (SELECT id

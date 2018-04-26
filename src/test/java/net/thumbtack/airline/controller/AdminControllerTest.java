@@ -123,9 +123,9 @@ public class AdminControllerTest {
                 .cookie(new Cookie(this.cookieName, this.uuid))
         )
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$[0].errorCode").value(ErrorCode.ACCOUNT_NOT_FOUND.name()))
-                .andExpect(jsonPath("$[0].field").value(ErrorCode.ACCOUNT_NOT_FOUND.getErrorFieldString()))
-                .andExpect(jsonPath("$[0].message").value(ErrorCode.ACCOUNT_NOT_FOUND.getErrorCodeString()));
+                .andExpect(jsonPath("$.errors[0].errorCode").value(ErrorCode.ACCOUNT_NOT_FOUND.name()))
+                .andExpect(jsonPath("$.errors[0].field").value(ErrorCode.ACCOUNT_NOT_FOUND.getErrorFieldString()))
+                .andExpect(jsonPath("$.errors[0].message").value(ErrorCode.ACCOUNT_NOT_FOUND.getErrorCodeString()));
 
         verify(adminServiceMock, times(2)).update(adminUpdateRequestDto);
     }
@@ -181,7 +181,7 @@ public class AdminControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("Airbus 319"))
-                .andExpect(jsonPath("$[0].bussinesRows").value(12));
+                .andExpect(jsonPath("$[0].businessRows").value(12));
 
         planes.clear();
         this.mvc.perform(get("/api/planes")
@@ -219,9 +219,9 @@ public class AdminControllerTest {
         )
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$[0].errorCode").value(ErrorCode.NO_ACCESS.name()))
-                .andExpect(jsonPath("$[0].field").value(ErrorCode.NO_ACCESS.getErrorFieldString()))
-                .andExpect(jsonPath("$[0].message").value(ErrorCode.NO_ACCESS.getErrorCodeString()));
+                .andExpect(jsonPath("$.errors[0].errorCode").value(ErrorCode.NO_ACCESS.name()))
+                .andExpect(jsonPath("$.errors[0].field").value(ErrorCode.NO_ACCESS.getErrorFieldString()))
+                .andExpect(jsonPath("$.errors[0].message").value(ErrorCode.NO_ACCESS.getErrorCodeString()));
 
         verify(adminServiceMock, times(1)).clearDataBase();
     }
