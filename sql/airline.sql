@@ -21,7 +21,9 @@ SET time_zone = "+00:00";
 --
 -- База данных: `airline`
 --
-
+DROP DATABASE IF EXISTS airline;
+CREATE DATABASE airline;
+USE airline;
 -- --------------------------------------------------------
 
 --
