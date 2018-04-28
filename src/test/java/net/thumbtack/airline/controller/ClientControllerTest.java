@@ -129,7 +129,7 @@ public class ClientControllerTest {
                 clientUpdateRequestDto.getLastName(),
                 clientUpdateRequestDto.getPatronymic(),
                 UserRole.CLIENT,
-                clientUpdateRequestDto.getPhone(),
+                clientUpdateRequestDto.getPhone().replace("-",""),
                 clientUpdateRequestDto.getEmail()
         );
         when(clientServiceMock.update(any(ClientUpdateRequestDto.class))).thenReturn(clientUpdateResponseDto);
@@ -143,6 +143,7 @@ public class ClientControllerTest {
         )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName").value(clientUpdateRequestDto.getFirstName()))
+                .andExpect(jsonPath("$.phone").value("89659810144"))
                 .andExpect(jsonPath("$.userType").value(UserRole.CLIENT.toString()));
 
         verify(clientServiceMock, times(1)).update(any(ClientUpdateRequestDto.class));
