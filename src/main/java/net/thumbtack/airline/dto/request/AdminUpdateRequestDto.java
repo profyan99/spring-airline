@@ -60,16 +60,4 @@ public class AdminUpdateRequestDto extends UserDto {
         this.newPassword = newPassword;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AdminUpdateRequestDto)) return false;
-
-        AdminUpdateRequestDto that = (AdminUpdateRequestDto) o;
-
-        return getId() == that.getId() && (getPosition() != null ? getPosition().equals(that.getPosition()) : that.getPosition() == null)
-                && (getOldPassword() != null ? getOldPassword().equals(that.getOldPassword()) : that.getOldPassword() == null)
-                && (getNewPassword() != null ? getNewPassword().equals(that.getNewPassword()) : that.getNewPassword() == null);
-    }
-
 }

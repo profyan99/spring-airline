@@ -9,7 +9,6 @@ import net.thumbtack.airline.dto.response.AdminUpdateResponseDto;
 import net.thumbtack.airline.dto.response.ClientResponseDto;
 import net.thumbtack.airline.exception.BaseException;
 import net.thumbtack.airline.exception.ErrorCode;
-import net.thumbtack.airline.model.Plane;
 import net.thumbtack.airline.model.UserRole;
 import net.thumbtack.airline.service.AdminService;
 import net.thumbtack.airline.service.UserService;
@@ -51,7 +50,7 @@ public class AdminControllerTest {
     ObjectMapper objectMapper;
 
     @Test
-    public void registrationAdminTest() throws Exception {
+    public void registrationAdmin_ShouldReturnAdminResponseDto() throws Exception {
         AdminRegistrationRequestDto adminRegistrationRequestDto = new AdminRegistrationRequestDto(
                 "Левонтий", "Брежнев", "Васильев", "Главный администратор",
                 "levontiy1133", "bestpassword"
@@ -64,12 +63,8 @@ public class AdminControllerTest {
                 UserRole.ADMIN,
                 adminRegistrationRequestDto.getPosition()
         );
-        UserCookieDto userCookieDto = new UserCookieDto(adminResponseDto.getId(), adminResponseDto.getUserType());
-
-
-        when(adminServiceMock.register(adminRegistrationRequestDto)).thenReturn(adminResponseDto);
-        when(userServiceMock.setUserCookie(userCookieDto)).thenReturn(uuid);
-
+        when(adminServiceMock.register(any(AdminRegistrationRequestDto.class))).thenReturn(adminResponseDto);
+        when(userServiceMock.setUserCookie(any(UserCookieDto.class))).thenReturn(uuid);
 
         this.mvc.perform(post("/api/admin")
                 .contentType(mediaType)
@@ -82,12 +77,13 @@ public class AdminControllerTest {
                 .andExpect(jsonPath("$.position").value(adminResponseDto.getPosition()));
 
 
-        verify(adminServiceMock, times(1)).register(adminRegistrationRequestDto);
-
+        verify(adminServiceMock, times(1)).register(any(AdminRegistrationRequestDto.class));
+        verify(userServiceMock, times(1)).setUserCookie(any(UserCookieDto.class));
+        verifyNoMoreInteractions(adminServiceMock, userServiceMock);
     }
 
     @Test
-    public void updateAdminTest() throws Exception {
+    public void updateAdmin_ShouldReturnAdminUpdateResponseDto() throws Exception {
         AdminUpdateRequestDto adminUpdateRequestDto = new AdminUpdateRequestDto(
                 "Левонтий", "Брежнев", "Васильев", "Главный администратор",
                 "badpassword", "bestpassword"
@@ -99,9 +95,8 @@ public class AdminControllerTest {
                 adminUpdateRequestDto.getPatronymic(), adminUpdateRequestDto.getPosition(),
                 UserRole.ADMIN
         );
-        when(adminServiceMock.update(adminUpdateRequestDto)).thenReturn(adminUpdateResponseDto);
+        when(adminServiceMock.update(any(AdminUpdateRequestDto.class))).thenReturn(adminUpdateResponseDto);
         when(userServiceMock.authorizeUser(uuid, UserRole.ADMIN)).thenReturn(new UserCookieDto(1, UserRole.ADMIN));
-
 
         this.mvc.perform(put("/api/admin")
                 .contentType(this.mediaType)
@@ -112,7 +107,21 @@ public class AdminControllerTest {
                 .andExpect(jsonPath("$.firstName").value(adminUpdateRequestDto.getFirstName()))
                 .andExpect(jsonPath("$.userType").value(UserRole.ADMIN.toString()));
 
-        when(adminServiceMock.update(adminUpdateRequestDto)).thenThrow(new BaseException(
+        verify(adminServiceMock, times(1)).update(any(AdminUpdateRequestDto.class));
+        verify(userServiceMock, times(1)).authorizeUser(uuid, UserRole.ADMIN);
+        verifyNoMoreInteractions(adminServiceMock, userServiceMock);
+    }
+
+    @Test
+    public void updateAdmin_AccountNotFound_ShouldThrowException() throws Exception {
+        AdminUpdateRequestDto adminUpdateRequestDto = new AdminUpdateRequestDto(
+                "Левонтий", "Брежнев", "Васильев", "Главный администратор",
+                "badpassword", "bestpassword"
+        );
+        adminUpdateRequestDto.setId(1);
+
+        when(userServiceMock.authorizeUser(uuid, UserRole.ADMIN)).thenReturn(new UserCookieDto(1, UserRole.ADMIN));
+        when(adminServiceMock.update(any(AdminUpdateRequestDto.class))).thenThrow(new BaseException(
                 ErrorCode.ACCOUNT_NOT_FOUND.getErrorCodeString(),
                 ErrorCode.ACCOUNT_NOT_FOUND.getErrorFieldString(),
                 ErrorCode.ACCOUNT_NOT_FOUND
@@ -127,11 +136,13 @@ public class AdminControllerTest {
                 .andExpect(jsonPath("$.errors[0].field").value(ErrorCode.ACCOUNT_NOT_FOUND.getErrorFieldString()))
                 .andExpect(jsonPath("$.errors[0].message").value(ErrorCode.ACCOUNT_NOT_FOUND.getErrorCodeString()));
 
-        verify(adminServiceMock, times(2)).update(adminUpdateRequestDto);
+        verify(adminServiceMock, times(1)).update(any(AdminUpdateRequestDto.class));
+        verify(userServiceMock, times(1)).authorizeUser(uuid, UserRole.ADMIN);
+        verifyNoMoreInteractions(adminServiceMock, userServiceMock);
     }
 
     @Test
-    public void getClientsAdminTest() throws Exception {
+    public void getClientsAdmin_ShouldReturnListOfClientResponseDto() throws Exception {
         List<ClientResponseDto> clientResponseDtos = new ArrayList<>();
         clientResponseDtos.add(new ClientResponseDto(
                 "Левонтий", "Брежнев", "Васильев", 1, UserRole.CLIENT,
@@ -139,7 +150,6 @@ public class AdminControllerTest {
         ));
         when(adminServiceMock.getClients()).thenReturn(clientResponseDtos);
         when(userServiceMock.authorizeUser(uuid, UserRole.ADMIN)).thenReturn(new UserCookieDto(1, UserRole.ADMIN));
-
 
         this.mvc.perform(get("/api/clients")
                 .contentType(this.mediaType)
@@ -150,9 +160,17 @@ public class AdminControllerTest {
                 .andExpect(jsonPath("$[0].firstName").value("Левонтий"))
                 .andExpect(jsonPath("$[0].userType").value(UserRole.CLIENT.toString()));
 
-        clientResponseDtos.clear();
+        verify(adminServiceMock, times(1)).getClients();
+        verify(userServiceMock, times(1)).authorizeUser(uuid, UserRole.ADMIN);
+        verifyNoMoreInteractions(adminServiceMock, userServiceMock);
+    }
 
+    @Test
+    public void getClientsAdmin_NoClients_ShouldReturnEmptyListOfClientResponseDto() throws Exception {
+        List<ClientResponseDto> clientResponseDtos = new ArrayList<>();
+        when(userServiceMock.authorizeUser(uuid, UserRole.ADMIN)).thenReturn(new UserCookieDto(1, UserRole.ADMIN));
         when(adminServiceMock.getClients()).thenReturn(clientResponseDtos);
+
         this.mvc.perform(get("/api/clients")
                 .contentType(this.mediaType)
                 .cookie(new Cookie(this.cookieName, this.uuid))
@@ -161,43 +179,13 @@ public class AdminControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("[]"));
 
-        verify(adminServiceMock, times(2)).getClients();
+        verify(adminServiceMock, times(1)).getClients();
+        verify(userServiceMock, times(1)).authorizeUser(uuid, UserRole.ADMIN);
+        verifyNoMoreInteractions(adminServiceMock, userServiceMock);
     }
 
     @Test
-    public void getPlanesAdminTest() throws Exception {
-        List<Plane> planes = new ArrayList<>();
-        planes.add(new Plane(
-                "Airbus 319", 12, 20, 13, 15
-        ));
-        when(adminServiceMock.getPlanes()).thenReturn(planes);
-        when(userServiceMock.authorizeUser(uuid, UserRole.ADMIN)).thenReturn(new UserCookieDto(1, UserRole.ADMIN));
-
-
-        this.mvc.perform(get("/api/planes")
-                .contentType(this.mediaType)
-                .cookie(new Cookie(this.cookieName, this.uuid))
-        )
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name").value("Airbus 319"))
-                .andExpect(jsonPath("$[0].businessRows").value(12));
-
-        planes.clear();
-        this.mvc.perform(get("/api/planes")
-                .contentType(this.mediaType)
-                .cookie(new Cookie(this.cookieName, this.uuid))
-        )
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(content().string("[]"));
-
-        verify(adminServiceMock, times(2)).getPlanes();
-    }
-
-    @Test
-    public void debugClearAdminTest() throws Exception {
-
+    public void debugClearAdmin_ShouldClearDataBase() throws Exception {
         doNothing().when(adminServiceMock).clearDataBase();
         when(userServiceMock.authorizeUser(uuid, UserRole.ADMIN)).thenReturn(new UserCookieDto(1, UserRole.ADMIN));
 
@@ -209,6 +197,14 @@ public class AdminControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("{}"));
 
+        verify(adminServiceMock, times(1)).clearDataBase();
+        verify(userServiceMock, times(1)).authorizeUser(uuid, UserRole.ADMIN);
+        verifyNoMoreInteractions(adminServiceMock, userServiceMock);
+    }
+
+    @Test
+    public void debugClearAdminTest() throws Exception {
+        doNothing().when(adminServiceMock).clearDataBase();
         when(userServiceMock.authorizeUser(uuid, UserRole.ADMIN)).thenThrow(
                 new BaseException(ErrorCode.NO_ACCESS.getErrorCodeString(), ErrorCode.NO_ACCESS.getErrorFieldString(),
                 ErrorCode.NO_ACCESS)
@@ -223,7 +219,9 @@ public class AdminControllerTest {
                 .andExpect(jsonPath("$.errors[0].field").value(ErrorCode.NO_ACCESS.getErrorFieldString()))
                 .andExpect(jsonPath("$.errors[0].message").value(ErrorCode.NO_ACCESS.getErrorCodeString()));
 
-        verify(adminServiceMock, times(1)).clearDataBase();
+        verify(adminServiceMock, times(0)).clearDataBase();
+        verify(userServiceMock, times(1)).authorizeUser(uuid, UserRole.ADMIN);
+        verifyNoMoreInteractions(adminServiceMock, userServiceMock);
     }
 
 }

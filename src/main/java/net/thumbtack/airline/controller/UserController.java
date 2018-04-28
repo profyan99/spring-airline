@@ -48,7 +48,7 @@ public class UserController {
         Cookie cookie = new Cookie(COOKIE, null);
         cookie.setMaxAge(0);
         response.addCookie(cookie);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("{}");
     }
 
     @GetMapping(path = "/account")
