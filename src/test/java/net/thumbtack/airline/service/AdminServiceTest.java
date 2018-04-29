@@ -49,7 +49,7 @@ public class AdminServiceTest {
     }
 
     @Test
-    public void register_ShouldReturnAdminEntry() {
+    public void registerAdminService_ShouldReturnAdminEntry() {
         AdminRegistrationRequestDto adminRegistrationRequestDto = new AdminRegistrationRequestDto(
                 "Левонтий", "Брежнев", "Васильев", "Главный администратор",
                 "levontiy1133", "bestpassword"
@@ -78,7 +78,7 @@ public class AdminServiceTest {
     }
 
     @Test(expected = BaseException.class)
-    public void register_AccountAlreadyExists_ShouldThrowException() throws BaseException {
+    public void registerAdminService_AccountAlreadyExists_ShouldThrowException() throws BaseException {
         AdminRegistrationRequestDto adminRegistrationRequestDto = new AdminRegistrationRequestDto(
                 "Левонтий", "Брежнев", "Васильев", "Главный администратор",
                 "levontiy1133", "bestpassword"
@@ -104,7 +104,7 @@ public class AdminServiceTest {
     }
 
     @Test
-    public void getClients_ShouldReturnListOfClients() {
+    public void getClientsAdminService_ShouldReturnListOfClients() {
         List<Client> clients = new ArrayList<>();
         clients.add(new Client("Петр", "Васюта", "Васильевич",
                 "vasyyta", "passbest", "nsadj@mail.com", "80989798703"));
@@ -122,7 +122,7 @@ public class AdminServiceTest {
     }
 
     @Test
-    public void getClients_NoClients_ShouldReturnEmptyListOfClients() {
+    public void getClientsAdminService_NoClients_ShouldReturnEmptyListOfClients() {
         List<Client> clients = new ArrayList<>();
         when(adminDaoMock.getClients()).thenReturn(clients);
 
@@ -134,7 +134,7 @@ public class AdminServiceTest {
     }
 
     @Test
-    public void update_ShouldUpdateAdmin() {
+    public void updateAdminService_ShouldReturnAdminUpdateResponseDto() {
         final int id = 1;
         AdminUpdateRequestDto adminUpdateRequestDto = new AdminUpdateRequestDto(
                 "Левонтий", "Брежнев", "Васильев", "Главный администратор",
@@ -164,7 +164,7 @@ public class AdminServiceTest {
     }
 
     @Test(expected = BaseException.class)
-    public void update_NotExist_ShouldThrowException() throws BaseException {
+    public void updateAdminService_NotExist_ShouldThrowException() throws BaseException {
         final int id = 1;
         AdminUpdateRequestDto adminUpdateRequestDto = new AdminUpdateRequestDto(
                 "Левонтий", "Брежнев", "Васильев", "Главный администратор",
@@ -183,7 +183,7 @@ public class AdminServiceTest {
     }
 
     @Test(expected = BaseException.class)
-    public void update_InvalidPassword_ShouldThrowException() throws BaseException {
+    public void updateAdminService_InvalidPassword_ShouldThrowException() throws BaseException {
         final int id = 1;
         AdminUpdateRequestDto adminUpdateRequestDto = new AdminUpdateRequestDto(
                 "Левонтий", "Брежнев", "Васильев", "Главный администратор",

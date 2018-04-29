@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
 @Service
-public class FlightServiceImpl implements FlightService {
+public class    FlightServiceImpl implements FlightService {
 
     private FlightDao flightDao;
 

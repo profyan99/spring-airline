@@ -25,7 +25,7 @@ public class ClientServiceImpl implements ClientService {
     private UserDao userDao;
 
     @Autowired
-    public void setAdminDAO(ClientDao clientDao) {
+    public void setClientDao(ClientDao clientDao) {
         this.clientDao = clientDao;
     }
 
@@ -82,7 +82,7 @@ public class ClientServiceImpl implements ClientService {
         client.setPatronymic(request.getPatronymic());
         client.setPassword(request.getNewPassword());
         client.setEmail(request.getEmail());
-        client.setPhone(request.getPhone());
+        client.setPhone(request.getPhone().replace("-", ""));
         clientDao.updateClient(client);
         response = new ClientUpdateResponseDto(
                 client.getFirstName(),

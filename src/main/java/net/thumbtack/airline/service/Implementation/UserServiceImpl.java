@@ -75,7 +75,6 @@ public class UserServiceImpl implements UserService {
         }
         BaseLoginDto baseLoginDTO;
         BaseUser user = userDao.login(loginRequestDto.getLogin()).orElseThrow(accountNotFoundException);
-        checkUserExists(user);
         if (!user.getPassword().equals(loginRequestDto.getPassword())) {
             throw new BaseException(ErrorCode.INVALID_PASSWORD.getErrorCodeString(),
                     ErrorCode.INVALID_PASSWORD.getErrorFieldString(), ErrorCode.INVALID_PASSWORD);
@@ -108,7 +107,6 @@ public class UserServiceImpl implements UserService {
     public UserDto get(int id) {
         UserDto userDto;
         BaseUser user = userDao.get(id).orElseThrow(accountNotFoundException);
-        checkUserExists(user);
         if (user.getUserType().equals(UserRole.ADMIN)) {
             userDto = new AdminResponseDto(
                     user.getFirstName(),
@@ -180,13 +178,6 @@ public class UserServiceImpl implements UserService {
                     ErrorCode.UNAUTHORISED_ERROR.getErrorFieldString(), ErrorCode.UNAUTHORISED_ERROR);
         }
         cookieDao.delete(uuid);
-    }
-
-    private static void checkUserExists(BaseUser user) {
-        if (user == null) {
-            throw new BaseException(ErrorCode.ACCOUNT_NOT_FOUND.getErrorCodeString(),
-                    ErrorCode.ACCOUNT_NOT_FOUND.getErrorFieldString(), ErrorCode.ACCOUNT_NOT_FOUND);
-        }
     }
 
     @Override
