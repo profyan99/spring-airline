@@ -6,6 +6,8 @@ import java.util.List;
 
 public class FlightDate {
     private int id;
+    // REVU instead of next field you must have Flight flight
+    // do not expose RDB structure here
     private int flightId;
     private LocalDate date;
     private int freePlaces;

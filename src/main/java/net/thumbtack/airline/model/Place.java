@@ -5,6 +5,7 @@ public class Place {
     private String place;
     private OrderClass type;
     private boolean free;
+    // REVU instead of this field you must have FlightDate flightDate
     private int flightDateId;
 
     public Place(int row, String place, OrderClass type) {

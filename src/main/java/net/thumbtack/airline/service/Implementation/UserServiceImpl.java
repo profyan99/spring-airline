@@ -104,6 +104,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    // REVU rename. get what ?
     public UserDto get(int id) {
         UserDto userDto;
         BaseUser user = userDao.get(id).orElseThrow(accountNotFoundException);
@@ -131,6 +132,7 @@ public class UserServiceImpl implements UserService {
         return userDto;
     }
 
+    // REVU why here ?
     @Override
     public List<Country> getCountries() {
         return userDao.getCountries();

@@ -5,10 +5,16 @@ import java.util.List;
 
 public class Order {
     private int orderId;
+    // REVU instead of next field you must have Flight flight
+    // do not expose RDB structure here
     private int flightId;
+    // REVU instead of next field you must have User user
+    // do not expose RDB structure here
     private int userId;
     private LocalDate date;
     private int totalPrice;
+    // REVU next 6 fields must not be here
+    // instead of them, FlightDate must be
     private String flightName;
     private String planeName;
     private String fromTown;
