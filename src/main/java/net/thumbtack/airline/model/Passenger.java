@@ -17,8 +17,10 @@ public class Passenger {
 
     private String place;
 
+    private int row;
+
     public Passenger(int ticket, String firstName, String lastName, String nationality, String passport,
-                     OrderClass orderClass, int price, String place) {
+                     OrderClass orderClass, int price, String place, int row) {
         this.ticket = ticket;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -27,10 +29,11 @@ public class Passenger {
         this.orderClass = orderClass;
         this.price = price;
         this.place = place;
+        this.row = row;
     }
 
     public Passenger(String firstName, String lastName, String nationality, String passport, OrderClass orderClass, int price) {
-        this(0, firstName, lastName, nationality, passport, orderClass, price, "");
+        this(0, firstName, lastName, nationality, passport, orderClass, price, "", 0);
     }
 
     public Passenger() {
@@ -101,4 +104,11 @@ public class Passenger {
         this.place = place;
     }
 
+    public int getRow() {
+        return row;
+    }
+
+    public void setRow(int row) {
+        this.row = row;
+    }
 }

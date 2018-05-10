@@ -2,7 +2,6 @@ package net.thumbtack.airline.dao.mapper;
 
 import net.thumbtack.airline.model.Flight;
 import net.thumbtack.airline.model.FlightDate;
-import net.thumbtack.airline.model.Place;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -33,17 +32,14 @@ public interface FlightMapper {
 
     FlightDate getFlightDate(@Param("date") String date, @Param("flightId") int flightId);
 
-    Place getPlace(@Param("date") String date, @Param("flightId") int flightId,
-                   @Param("place") String place, @Param("row") int row);
+    FlightDate getFlightDateById(int flightDateId);
 
-    void updatePlace(@Param("date") String date, @Param("flightId") int flightId,
+    void updatePlace( @Param("flightDateId") int flightDateId,
                      @Param("place") String place, @Param("row") int row);
 
-    void addPlaces(List<FlightDate> flightDates);
+    void addPlaces(@Param("flightDates") List<FlightDate> flightDates);
 
-    void addFlightDates(@Param("flight") Flight flight, @Param("flightDates") List<FlightDate> flightDates);
-
-    List<FlightDate> getFlightDatesWithoutPlaces(int flightId);
+    void addFlightDates(@Param("flight") Flight flight, @Param("list") List<FlightDate> flightDates);
 
     int reservePlaces(@Param("date") String date, @Param("flightId") int flightId, @Param("amountPassengers") int amountPassengers);
 }

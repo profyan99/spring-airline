@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
 @Service
-public class    FlightServiceImpl implements FlightService {
+public class FlightServiceImpl implements FlightService {
 
     private FlightDao flightDao;
 
@@ -48,15 +48,15 @@ public class    FlightServiceImpl implements FlightService {
             dates = setDates(request.getSchedule().getFromDate(), request.getSchedule().getToDate(), request.getSchedule().getPeriod());
         }
         Plane plane = flightDao.getPlane(request.getPlaneName()).orElseThrow(() ->
-            new BaseException(
-                    ErrorCode.PLANE_NOT_FOUND.getErrorCodeString(),
-                    ErrorCode.PLANE_NOT_FOUND.getErrorFieldString(),
-                    ErrorCode.PLANE_NOT_FOUND)
+                new BaseException(
+                        ErrorCode.PLANE_NOT_FOUND.getErrorCodeString(),
+                        ErrorCode.PLANE_NOT_FOUND.getErrorFieldString(),
+                        ErrorCode.PLANE_NOT_FOUND)
         );
         List<Place> places = new ArrayList<>();
         setPlaces(plane, places);
         List<FlightDate> flightDates = new ArrayList<>(dates.size());
-        for (LocalDate date:dates) {
+        for (LocalDate date : dates) {
             flightDates.add(new FlightDate(
                     date,
                     places.size(),
@@ -66,7 +66,6 @@ public class    FlightServiceImpl implements FlightService {
 
         Flight flight = new Flight(
                 request.getFlightName(),
-                request.getPlaneName(),
                 request.getFromTown(),
                 request.getToTown(),
                 request.getStart(),
@@ -76,7 +75,7 @@ public class    FlightServiceImpl implements FlightService {
                 request.getSchedule(),
                 dates,
                 false,
-                null
+                plane
         );
         flightDao.add(flight, flightDates);
 
@@ -99,28 +98,23 @@ public class    FlightServiceImpl implements FlightService {
     private static void setPlaces(Plane plane, List<Place> places) {
         for (int i = 1; i <= plane.getBusinessRows(); i++) {
             for (int j = 0; j < plane.getPlacesInBusinessRow(); j++) {
-                places.add(new Place(i, String.valueOf('A'+j), OrderClass.BUSINESS));
+                places.add(new Place(i, Character.toString((char)('A'+j)), OrderClass.BUSINESS));
             }
         }
-        for (int i = plane.getBusinessRows()+1; i <= plane.getBusinessRows() + plane.getEconomyRows(); i++) {
+        for (int i = plane.getBusinessRows() + 1; i <= plane.getBusinessRows() + plane.getEconomyRows(); i++) {
             for (int j = 0; j < plane.getPlacesInEconomyRow(); j++) {
-                places.add(new Place(i, String.valueOf('A'+j), OrderClass.ECONOMY));
+                places.add(new Place(i, Character.toString((char)('A'+j)), OrderClass.ECONOMY));
             }
         }
     }
 
     private static void setDays(List<LocalDate> dates, FlightPeriod dayOfWeek, LocalDate from, LocalDate to) {
-        LocalDate localDate = LocalDate.from(from);
-        for (int i = from.getMonthValue(); i <= to.getMonthValue(); i++) {
-            localDate = localDate
-                    .withMonth(i)
-                    .with(TemporalAdjusters.dayOfWeekInMonth(1, DayOfWeek.of(dayOfWeek.ordinal())));
+        DayOfWeek convertedDayOfWeek = DayOfWeek.of(dayOfWeek.ordinal() + 1);
+        LocalDate firstWeekDay = from.with(TemporalAdjusters.nextOrSame(convertedDayOfWeek));
 
-            while ((i != to.getMonthValue() && localDate.getMonthValue() == i) ||
-                    (i == to.getMonthValue() && localDate.getDayOfMonth() <= to.getDayOfMonth())) {
-                localDate = localDate.plusWeeks(1);
-                dates.add(localDate);
-            }
+        while (firstWeekDay.isBefore(to) || firstWeekDay.isEqual(to)) {
+            dates.add(firstWeekDay);
+            firstWeekDay = firstWeekDay.with(TemporalAdjusters.next(convertedDayOfWeek));
         }
     }
 
@@ -164,7 +158,7 @@ public class    FlightServiceImpl implements FlightService {
             default: {
                 String[] days;
                 try {
-                    days = period.split(",");
+                    days = period.split("\\s*,\\s*");
                 } catch (PatternSyntaxException e) {
                     logger.error("Error while parsing days of period");
                     throw new BaseException(ErrorCode.INVALID_DATE.getErrorCodeString(),
@@ -190,11 +184,15 @@ public class    FlightServiceImpl implements FlightService {
                             throw new BaseException(ErrorCode.INVALID_DATE.getErrorCodeString(),
                                     ErrorCode.INVALID_DATE_FORMAT.getErrorFieldString(), ErrorCode.INVALID_DATE_FORMAT);
                         }
+                        LocalDate tempDate = LocalDate.from(dateFrom);
                         for (int i = dateFrom.getMonthValue(), months = dateTo.getMonthValue(); i <= months; i++) {
-                            dateFrom = dateFrom.withMonth(i);
-                            if ((i == dateTo.getMonthValue() && dayNumber <= dateTo.getDayOfMonth())
-                                    || (i != dateTo.getMonthValue() && dayNumber <= dateFrom.lengthOfMonth())) {
-                                dates.add(dateFrom.withDayOfMonth(dayNumber));
+                            tempDate = LocalDate.of(tempDate.getYear(), i, 1);
+
+                            if (((i == dateTo.getMonthValue() && dayNumber <= dateTo.getDayOfMonth())
+                                    || (i == dateFrom.getMonthValue() && dayNumber >= dateFrom.getDayOfMonth())
+                                    || (i != dateTo.getMonthValue() && i != dateFrom.getMonthValue()))
+                                    && dayNumber <= tempDate.lengthOfMonth()) {
+                                dates.add(tempDate.withDayOfMonth(dayNumber));
                             }
                         }
                     }
@@ -212,15 +210,15 @@ public class    FlightServiceImpl implements FlightService {
             dates = setDates(request.getSchedule().getFromDate(), request.getSchedule().getToDate(), request.getSchedule().getPeriod());
         }
         Plane plane = flightDao.getPlane(request.getPlaneName()).orElseThrow(() ->
-            new BaseException(
-                    ErrorCode.PLANE_NOT_FOUND.getErrorCodeString(),
-                    ErrorCode.PLANE_NOT_FOUND.getErrorFieldString(),
-                    ErrorCode.PLANE_NOT_FOUND)
+                new BaseException(
+                        ErrorCode.PLANE_NOT_FOUND.getErrorCodeString(),
+                        ErrorCode.PLANE_NOT_FOUND.getErrorFieldString(),
+                        ErrorCode.PLANE_NOT_FOUND)
         );
         List<Place> places = new ArrayList<>();
         setPlaces(plane, places);
         List<FlightDate> flightDates = new ArrayList<>(dates.size());
-        for (LocalDate date:dates) {
+        for (LocalDate date : dates) {
             flightDates.add(new FlightDate(
                     date,
                     places.size(),
@@ -230,7 +228,6 @@ public class    FlightServiceImpl implements FlightService {
 
         Flight flight = new Flight(
                 request.getFlightName(),
-                request.getPlaneName(),
                 request.getFromTown(),
                 request.getToTown(),
                 request.getStart(),
@@ -270,10 +267,10 @@ public class    FlightServiceImpl implements FlightService {
     public FlightAddResponseDto get(int id) {
         checkFlightExists(id);
         Flight flight = flightDao.get(id).orElseThrow(() ->
-            new BaseException(
-                    ErrorCode.FLIGHT_NOT_FOUND.getErrorCodeString(),
-                    ErrorCode.FLIGHT_NOT_FOUND.getErrorFieldString(),
-                    ErrorCode.FLIGHT_NOT_FOUND)
+                new BaseException(
+                        ErrorCode.FLIGHT_NOT_FOUND.getErrorCodeString(),
+                        ErrorCode.FLIGHT_NOT_FOUND.getErrorFieldString(),
+                        ErrorCode.FLIGHT_NOT_FOUND)
         );
         return new FlightAddResponseDto(
                 flight.getFlightName(),
@@ -369,10 +366,10 @@ public class    FlightServiceImpl implements FlightService {
     private void checkFlightApproves(int id) {
         checkFlightExists(id);
         Flight flight = flightDao.get(id).orElseThrow(() ->
-            new BaseException(
-                    ErrorCode.FLIGHT_NOT_FOUND.getErrorCodeString(),
-                    ErrorCode.FLIGHT_NOT_FOUND.getErrorFieldString(),
-                    ErrorCode.FLIGHT_NOT_FOUND)
+                new BaseException(
+                        ErrorCode.FLIGHT_NOT_FOUND.getErrorCodeString(),
+                        ErrorCode.FLIGHT_NOT_FOUND.getErrorFieldString(),
+                        ErrorCode.FLIGHT_NOT_FOUND)
         );
         if (flight.isApproved()) {
             throw new BaseException(ErrorCode.ALREADY_APPROVED_FLIGHT.getErrorCodeString(),

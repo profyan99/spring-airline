@@ -1,9 +1,5 @@
 package net.thumbtack.airline.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.StringSerializer;
-import net.thumbtack.airline.Utils;
 import net.thumbtack.airline.dto.validator.annotation.TimeValid;
 import net.thumbtack.airline.model.Schedule;
 
@@ -24,8 +20,8 @@ public class FlightDto {
     private int priceEconomy;
     private Schedule schedule;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Utils.DATE_PATTERN)
-    @JsonSerialize(contentUsing = StringSerializer.class, contentAs = LocalDate.class)
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Utils.DATE_PATTERN)
+    //@JsonSerialize(contentUsing = StringSerializer.class)
     private List<LocalDate> dates;
 
     public FlightDto(String flightName, String fromTown, String toTown, String start,

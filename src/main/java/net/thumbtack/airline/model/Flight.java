@@ -6,7 +6,6 @@ import java.util.List;
 public class Flight {
     private int id;
     private String flightName;
-    private String planeName;
     private String fromTown;
     private String toTown;
     private String start;
@@ -18,16 +17,15 @@ public class Flight {
     private boolean approved;
     private Plane plane;
 
-    public Flight(String flightName, String planeName, String fromTown, String toTown, String start, String duration,
+    public Flight(String flightName, String fromTown, String toTown, String start, String duration,
                   int priceBusiness, int priceEconomy, Schedule schedule, List<LocalDate> dates, boolean approved, Plane plane) {
-        this(flightName, planeName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, schedule, dates, approved, plane, 0);
+        this(flightName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, schedule, dates, approved, plane, 0);
     }
 
-    public Flight(String flightName, String planeName, String fromTown, String toTown, String start, String duration,
+    public Flight(String flightName, String fromTown, String toTown, String start, String duration,
                   int priceBusiness, int priceEconomy, Schedule schedule, List<LocalDate> dates, boolean approved, Plane plane,
                   int id) {
         this.flightName = flightName;
-        this.planeName = planeName;
         this.fromTown = fromTown;
         this.toTown = toTown;
         this.start = start;
@@ -62,11 +60,11 @@ public class Flight {
     }
 
     public String getPlaneName() {
-        return planeName;
+        return plane.getName();
     }
 
     public void setPlaneName(String planeName) {
-        this.planeName = planeName;
+        this.plane.setName(planeName);
     }
 
     public String getFromTown() {
@@ -147,5 +145,23 @@ public class Flight {
 
     public void setPlane(Plane plane) {
         this.plane = plane;
+    }
+
+    @Override
+    public String toString() {
+        return "Flight{" +
+                "id=" + id +
+                ", flightName='" + flightName + '\'' +
+                ", fromTown='" + fromTown + '\'' +
+                ", toTown='" + toTown + '\'' +
+                ", start='" + start + '\'' +
+                ", duration='" + duration + '\'' +
+                ", priceBusiness=" + priceBusiness +
+                ", priceEconomy=" + priceEconomy +
+                ", schedule=" + (schedule == null) +
+                ", dates=" + (dates == null) +
+                ", approved=" + approved +
+                ", plane=" + (plane==null) +
+                '}';
     }
 }

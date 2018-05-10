@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static net.thumbtack.airline.model.OrderClass.*;
+
 @Service
 public class OrderServiceImpl implements OrderService {
 
@@ -52,14 +54,16 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderResponseDto add(OrderAddRequestDto requestDto) {
-        Flight flight = flightDao.get(requestDto.getFlightId()).orElseThrow(() ->
+
+        FlightDate flightDate = flightDao.getFlightDate(requestDto.getDate().toString(), requestDto.getFlightId()).orElseThrow(() ->
                 new BaseException(
                         ErrorCode.FLIGHT_NOT_FOUND.getErrorCodeString(),
                         ErrorCode.FLIGHT_NOT_FOUND.getErrorFieldString(),
                         ErrorCode.FLIGHT_NOT_FOUND)
         );
+        Flight flight = flightDate.getFlight();
         if (!flight.getDates().contains(requestDto.getDate())
-                || flight.getSchedule().getToDate().isBefore(requestDto.getDate())) {
+                || (flight.getSchedule() != null && flight.getSchedule().getToDate().isBefore(requestDto.getDate()))) {
             throw new BaseException(ErrorCode.INVALID_DATE.getErrorCodeString(),
                     ErrorCode.INVALID_DATE.getErrorFieldString(), ErrorCode.INVALID_DATE);
         }
@@ -94,17 +98,18 @@ public class OrderServiceImpl implements OrderService {
             ));
             totalPrice += currentPrice;
         }
+
+        BaseUser user = userDao.get(requestDto.getUserId()).orElseThrow(() ->
+                new BaseException(
+                        ErrorCode.ACCOUNT_NOT_FOUND.getErrorCodeString(),
+                        ErrorCode.ACCOUNT_NOT_FOUND.getErrorFieldString(),
+                        ErrorCode.ACCOUNT_NOT_FOUND)
+        );
+
         Order order = new Order(
-                requestDto.getFlightId(),
-                requestDto.getUserId(),
-                requestDto.getDate(),
+                flightDate,
+                user,
                 totalPrice,
-                flight.getFlightName(),
-                flight.getPlaneName(),
-                flight.getFromTown(),
-                flight.getToTown(),
-                flight.getStart(),
-                flight.getDuration(),
                 passengers
         );
         orderDao.add(order);
@@ -121,16 +126,16 @@ public class OrderServiceImpl implements OrderService {
                 ))
         );
         return new OrderResponseDto(
-                order.getFlightId(),
-                order.getDate(),
+                flight.getId(),
+                order.getFlightDate().getDate(),
                 order.getOrderId(),
                 order.getTotalPrice(),
-                order.getFlightName(),
-                order.getPlaneName(),
-                order.getFromTown(),
-                order.getToTown(),
-                order.getStart(),
-                order.getDuration(),
+                order.getFlightDate().getFlight().getFlightName(),
+                order.getFlightDate().getFlight().getPlaneName(),
+                order.getFlightDate().getFlight().getFromTown(),
+                order.getFlightDate().getFlight().getToTown(),
+                order.getFlightDate().getFlight().getStart(),
+                order.getFlightDate().getFlight().getDuration(),
                 passengerResponseDtos
         );
     }
@@ -166,16 +171,16 @@ public class OrderServiceImpl implements OrderService {
                 ));
             }
             responseDtos.add(new OrderResponseDto(
-                    o.getFlightId(),
-                    o.getDate(),
+                    o.getFlightDate().getFlight().getId(),
+                    o.getFlightDate().getDate(),
                     o.getOrderId(),
                     o.getTotalPrice(),
-                    o.getFlightName(),
-                    o.getPlaneName(),
-                    o.getFromTown(),
-                    o.getToTown(),
-                    o.getStart(),
-                    o.getDuration(),
+                    o.getFlightDate().getFlight().getFlightName(),
+                    o.getFlightDate().getFlight().getPlaneName(),
+                    o.getFlightDate().getFlight().getFromTown(),
+                    o.getFlightDate().getFlight().getToTown(),
+                    o.getFlightDate().getFlight().getStart(),
+                    o.getFlightDate().getFlight().getDuration(),
                     passengerResponseDtos
             ));
         }
@@ -190,57 +195,32 @@ public class OrderServiceImpl implements OrderService {
                         ErrorCode.ORDER_NOT_FOUND.getErrorFieldString(),
                         ErrorCode.ORDER_NOT_FOUND)
         );
-        if (order.getUserId() != userId) {
+        if (order.getUser().getId() != userId) {
             throw new BaseException(ErrorCode.NO_ACCESS.getErrorCodeString(),
                     "Places", ErrorCode.NO_ACCESS);
         }
         List<String> places = new ArrayList<>();
-        /*
-         * 0 - nothing
-         * 1- economy
-         * 2- business
-         * 3- all
-         */
-        int placeType = 0;
+        OrderClass placeType = NOT_STATED;
         for (Passenger p : order.getPassengers()) {
-            if (p.getOrderClass() == OrderClass.BUSINESS) {
-                if (placeType == 1) {
-                    placeType = 3;
+            if (p.getOrderClass() == BUSINESS) {
+                if (placeType == ECONOMY) {
+                    placeType = ALL;
                 } else {
-                    placeType = 2;
+                    placeType = BUSINESS;
                 }
             } else {
-                if (placeType == 2) {
-                    placeType = 3;
+                if (placeType == BUSINESS) {
+                    placeType = ALL;
                 } else {
-                    placeType = 1;
+                    placeType = ECONOMY;
                 }
             }
         }
-        int finalPlaceType = placeType;
-        flightDao.getFlightDate(order.getDate().toString(), order.getFlightId()).getPlaces().forEach((p) ->
+        final OrderClass finalPlaceType = placeType;
+        order.getFlightDate().getPlaces().forEach((p) ->
                 {
-                    if (p.isFree()) {
-                        String place = "";
-                        switch (finalPlaceType) {
-                            case 1: {
-                                if (p.getType() == OrderClass.ECONOMY) {
-                                    place = p.getRow() + p.getPlace();
-                                }
-                                break;
-                            }
-                            case 2: {
-                                if (p.getType() == OrderClass.BUSINESS) {
-                                    place = p.getRow() + p.getPlace();
-                                }
-                                break;
-                            }
-                            default: {
-                                place = p.getRow() + p.getPlace();
-                                break;
-                            }
-                        }
-                        places.add(place);
+                    if (p.isFree() && (p.getType() == finalPlaceType || finalPlaceType == ALL)) {
+                        places.add(p.getRow() + p.getPlace());
                     }
 
                 }
@@ -282,12 +262,19 @@ public class OrderServiceImpl implements OrderService {
             throw new BaseException(ErrorCode.INVALID_PLACE.getErrorCodeString(),
                     ErrorCode.INVALID_PLACE.getErrorFieldString(), ErrorCode.INVALID_PLACE);
         }
-        Place place = flightDao.getPlace(order.getDate().toString(), order.getFlightId(), placeStr, row).orElseThrow(() ->
-                new BaseException(
-                        ErrorCode.PLACE_NOT_FOUND.getErrorCodeString(),
-                        ErrorCode.PLACE_NOT_FOUND.getErrorFieldString(),
-                        ErrorCode.PLACE_NOT_FOUND)
-        );
+        Place place = order
+                .getFlightDate()
+                .getPlaces()
+                .stream()
+                .filter(p -> p.getPlace().equals(placeStr) && p.getRow() == row)
+                .findFirst()
+                .orElseThrow(() ->
+                        new BaseException(
+                                ErrorCode.PLACE_NOT_FOUND.getErrorCodeString(),
+                                ErrorCode.PLACE_NOT_FOUND.getErrorFieldString(),
+                                ErrorCode.PLACE_NOT_FOUND)
+                );
+
         if (place.getType() != passenger.getOrderClass()) {
             throw new BaseException(ErrorCode.INVALID_PLACE.getErrorCodeString(),
                     ErrorCode.INVALID_PLACE.getErrorFieldString(), ErrorCode.INVALID_PLACE);
@@ -296,7 +283,9 @@ public class OrderServiceImpl implements OrderService {
             throw new BaseException(ErrorCode.PLACE_OCCUPIED.getErrorCodeString(),
                     ErrorCode.PLACE_OCCUPIED.getErrorFieldString(), ErrorCode.PLACE_OCCUPIED);
         }
-        flightDao.updatePlace(order.getDate().toString(), order.getFlightId(), placeStr, row);
+        passenger.setPlace(placeStr);
+        passenger.setRow(row);
+        flightDao.setPassengerPlace(order.getFlightDate().getId(), passenger);
         return registerDto;
     }
 }

@@ -6,25 +6,25 @@ import java.util.List;
 
 public class FlightDate {
     private int id;
-    private int flightId;
+    private Flight flight;
     private LocalDate date;
     private int freePlaces;
     private List<Place> places;
 
-    public FlightDate(int id, int flightId, LocalDate date, int freePlaces, List<Place> places) {
+    public FlightDate(int id, Flight flight, LocalDate date, int freePlaces, List<Place> places) {
         this.id = id;
-        this.flightId = flightId;
+        this.flight = flight;
         this.date = date;
         this.freePlaces = freePlaces;
         this.places = places;
     }
 
     public FlightDate(LocalDate date, int freePlaces, List<Place> places) {
-        this(0, 0, date, freePlaces, places);
+        this(0, new Flight(), date, freePlaces, places);
     }
 
-    public FlightDate(int id, int flightId, LocalDate date, int freePlaces) {
-        this(id, flightId, date, freePlaces, new ArrayList<>());
+    public FlightDate(int id, Flight flight, LocalDate date, int freePlaces) {
+        this(id, flight, date, freePlaces, new ArrayList<>());
     }
 
     public FlightDate() {
@@ -39,12 +39,12 @@ public class FlightDate {
         this.id = id;
     }
 
-    public int getFlightId() {
-        return flightId;
+    public Flight getFlight() {
+        return flight;
     }
 
-    public void setFlightId(int flightId) {
-        this.flightId = flightId;
+    public void setFlight(Flight flight) {
+        this.flight = flight;
     }
 
     public LocalDate getDate() {

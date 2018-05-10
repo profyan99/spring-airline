@@ -7,16 +7,19 @@
 
     <resultMap id="OrderResult" type="Order">
         <id property="orderId" column="orderId"/>
-        <result property="flightId" column="flightId"/>
-        <result property="userId" column="userId"/>
         <result property="totalPrice" column="totalPrice"/>
-        <result property="date" column="date"/>
-        <result property="fromTown" column="fromTown"/>
-        <result property="toTown" column="toTown"/>
-        <result property="flightName" column="flightName"/>
-        <result property="planeName" column="planeName"/>
-        <result property="start" column="start"/>
-        <result property="duration" column="duration"/>
+        <!--<association property="flightDate" resultMap="net.thumbtack.airline.dao.mapper.FlightMapper.FlightDateResult"/>-->
+        <association property="flightDate" select="net.thumbtack.airline.dao.mapper.FlightMapper.getFlightDateById"
+                     column="flightDateId"/>
+        <association property="user" javaType="User">
+            <id property="id" column="userId"/>
+            <result property="firstName" column="u_firstName"/>
+            <result property="lastName" column="u_lastName"/>
+            <result property="patronymic" column="u_patronymic"/>
+            <result property="userType" column="userType"/>
+            <result property="login" column="login"/>
+            <result property="password" column="password"/>
+        </association>
         <collection property="passengers" ofType="Passenger">
             <id property="ticket" column="ticket"/>
             <result property="firstName" column="firstName"/>
@@ -30,13 +33,14 @@
     </resultMap>
 
     <insert id="addOrder" useGeneratedKeys="true" keyProperty="orderId" keyColumn="orderId">
-        INSERT INTO orders (flightId, userId, totalPrice, date) VALUES (#{flightId}, #{userId}, #{totalPrice}, #{date})
+        INSERT INTO orders (flightDateId, userId, totalPrice)
+        VALUES (#{flightDate.id}, #{user.id}, #{totalPrice})
     </insert>
 
-    <insert id="addPassenger">
+    <insert id="addPassenger" useGeneratedKeys="true" keyProperty="ticket" keyColumn="ticket">
         INSERT INTO passenger(orderId, firstName, lastName, nationality, passport, price, orderClass, place) VALUES
-        <foreach collection="passengers" item="e" index="index" open="(" separator="),(" close=")">
-            #{orderId},
+        <foreach collection="list" item="e" index="index" open="(" separator="),(" close=")">
+            #{order.orderId},
             #{e.firstName},
             #{e.lastName},
             #{e.nationality},
@@ -47,36 +51,46 @@
         </foreach>
     </insert>
 
-    <select id="getPassenger" resultType="Passenger">
-        SELECT *
-        FROM passenger
-        WHERE orderId = #{orderId}
-    </select>
-
     <select id="get" resultMap="OrderResult">
         SELECT
-            o.orderId,
-            o.flightId,
-            o.userId,
-            o.totalPrice,
-            o.date,
-            f.fromTown,
-            f.toTown,
-            f.flightName,
-            f.planeName,
-            f.start,
-            f.duration,
-            p.ticket,
-            p.firstName,
-            p.lastName,
-            p.nationality,
-            p.passport,
-            p.orderClass,
-            p.price,
-            p.place
+        o.orderId,
+        o.userId,
+        o.totalPrice,
+        o.flightDateId,
+
+        fd.flightId,
+
+        p.ticket,
+        p.firstName,
+        p.lastName,
+        p.nationality,
+        p.passport,
+        p.orderClass,
+        p.price,
+        p.place,
+
+        u.id AS u_id,
+        u.lastName AS u_lastName,
+        u.firstName AS u_firstName,
+        u.userType,
+        u.password,
+        u.patronymic AS u_patronymic,
+        u.login,
+
+        f.flightName,
+        f.planeName,
+        f.fromTown,
+        f.toTown,
+
+        s.toDate,
+        s.fromDate
+
         FROM orders o
-            RIGHT JOIN flight f ON o.flightId = f.id
-            RIGHT JOIN passenger p ON o.orderId = p.orderId
+        RIGHT JOIN flight_date fd ON o.flightDateId = fd.id
+        RIGHT JOIN passenger p ON o.orderId = p.orderId
+        RIGHT JOIN user u ON o.userId = u.id
+        RIGHT JOIN flight f ON fd.flightId = f.id
+        LEFT JOIN schedule s ON f.id = s.flightId
         <where>
             <if test="flightName != null">
                 f.flightName=#{flightName}
@@ -97,35 +111,47 @@
                 AND #{toDate} BETWEEN s.fromDate AND s.toDate
             </if>
             <if test="clientId != 0">
-                AND o.userId = #{clientId}
+                AND u.id = #{clientId}
             </if>
         </where>
     </select>
 
     <select id="getById" resultMap="OrderResult">
         SELECT
-        o.orderId,
-        o.flightId,
-        o.userId,
-        o.totalPrice,
-        o.date,
-        f.fromTown,
-        f.toTown,
-        f.flightName,
-        f.planeName,
-        f.start,
-        f.duration,
-        p.ticket,
-        p.firstName,
-        p.lastName,
-        p.nationality,
-        p.passport,
-        p.orderClass,
-        p.price,
-        p.place
+            o.orderId,
+            o.userId,
+            o.totalPrice,
+            o.flightDateId,
+
+            fd.id,
+            fd.freePlaces,
+            fd.date,
+            fd.flightId,
+
+            p.ticket,
+            p.firstName,
+            p.lastName,
+            p.nationality,
+            p.passport,
+            p.orderClass,
+            p.price,
+            p.place,
+
+            u.id,
+            u.lastName,
+            u.firstName,
+            u.userType,
+            u.password,
+            u.patronymic,
+            u.login
         FROM orders o
-        RIGHT JOIN flight f ON o.flightId = f.id
-        RIGHT JOIN passenger p ON o.orderId = p.orderId
+            RIGHT JOIN flight_date fd ON o.flightDateId = fd.id
+            RIGHT JOIN passenger p ON o.orderId = p.orderId
+            RIGHT JOIN user u ON o.userId = u.id
         WHERE o.orderId = #{orderId}
     </select>
+
+    <update id="updatePassenger">
+        UPDATE passenger SET place=#{place}, row=#{row} WHERE ticket=#{ticket}
+    </update>
 </mapper>

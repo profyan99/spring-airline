@@ -1,9 +1,6 @@
 package net.thumbtack.airline.dao;
 
-import net.thumbtack.airline.model.Flight;
-import net.thumbtack.airline.model.FlightDate;
-import net.thumbtack.airline.model.Place;
-import net.thumbtack.airline.model.Plane;
+import net.thumbtack.airline.model.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -85,30 +82,17 @@ public interface FlightDao {
      *
      * @param date     date of the order
      * @param flightId id of the flight
-     * @return {@link List<Place>}
+     * @return {@link Optional<Place>}
      */
-    FlightDate getFlightDate(String date, int flightId);
+    Optional<FlightDate> getFlightDate(String date, int flightId);
 
     /**
-     * Get {@link Place}
+     * Update place free status to busy and insert place and row in passenger
      *
-     * @param date     date of the order
-     * @param flightId id of the flight
-     * @param place    string literal of place (A, B, ...)
-     * @param row      integer value of row (1, 2, ...)
-     * @return {@link Place}
+     * @param flightDateId id of the {@link FlightDate}
+     * @param passenger {@link Passenger}
      */
-    Optional<Place> getPlace(String date, int flightId, String place, int row);
-
-    /**
-     * Update place free status to busy
-     *
-     * @param date     date of the order
-     * @param flightId id of the flight
-     * @param place    string literal of place (A, B, ...)
-     * @param row      integer value of row (1, 2, ...)
-     */
-    void updatePlace(String date, int flightId, String place, int row);
+    void setPassengerPlace(int flightDateId, Passenger passenger);
 
     /**
      * Get {@link Plane} by name
@@ -127,4 +111,5 @@ public interface FlightDao {
      * @return 1 if reserved successfully
      */
     int reservePlaces(String date, int flightId, int passengersAmount);
+
 }

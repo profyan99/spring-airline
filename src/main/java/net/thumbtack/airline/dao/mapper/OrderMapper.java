@@ -10,9 +10,7 @@ public interface OrderMapper {
 
     void addOrder(Order order);
 
-    void addPassenger(Order order);
-
-    List<Passenger> getPassenger(int orderId);
+    void addPassenger(@Param("order") Order order, @Param("list") List<Passenger> list);
 
     List<Order> get(@Param("fromTown") String fromTown,
                     @Param("toTown") String toTown,
@@ -23,4 +21,6 @@ public interface OrderMapper {
                     @Param("clientId") int clientId);
 
     Order getById(int orderId);
+
+    void updatePassenger(Passenger passenger);
 }

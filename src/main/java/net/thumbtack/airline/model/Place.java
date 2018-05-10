@@ -5,18 +5,18 @@ public class Place {
     private String place;
     private OrderClass type;
     private boolean free;
-    private int flightDateId;
+    private FlightDate flightDate;
 
     public Place(int row, String place, OrderClass type) {
-        this(row, place, type, true, 0);
+        this(row, place, type, true, new FlightDate());
     }
 
-    public Place(int row, String place, OrderClass type, boolean free,  int flightDateId) {
+    public Place(int row, String place, OrderClass type, boolean free,  FlightDate flightDate) {
         this.row = row;
         this.place = place;
         this.type = type;
         this.free = free;
-        this.flightDateId = flightDateId;
+        this.flightDate = flightDate;
     }
 
     public Place() {
@@ -56,10 +56,10 @@ public class Place {
     }
 
     public int getFlightDateId() {
-        return flightDateId;
+        return flightDate.getId();
     }
 
     public void setFlightDateId(int flightDateId) {
-        this.flightDateId = flightDateId;
+        this.flightDate.setId(flightDateId);
     }
 }

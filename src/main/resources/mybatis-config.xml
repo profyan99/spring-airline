@@ -6,6 +6,10 @@
 
 	<properties resource="mysql.jdbc.properties"/>
 
+	<settings>
+		<setting name="lazyLoadingEnabled" value="true"/>
+	</settings>
+
 	<typeAliases>
 		<typeAlias type="net.thumbtack.airline.model.BaseUser" alias="User"/>
 		<typeAlias type="net.thumbtack.airline.model.Admin" alias="Admin"/>
@@ -19,6 +23,7 @@
 		<typeAlias type="net.thumbtack.airline.model.Passenger" alias="Passenger"/>
 		<typeAlias type="net.thumbtack.airline.model.Place" alias="Place"/>
 		<typeAlias type="net.thumbtack.airline.model.FlightDate" alias="FlightDate"/>
+		<typeAlias type="java.time.LocalDate" alias="LocalDate"/>
 	</typeAliases>
 
 	<environments default="development">
