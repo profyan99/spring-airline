@@ -42,6 +42,9 @@ public class FlightDaoImpl extends BaseDaoImpl implements FlightDao {
             return flight;
         } catch (RuntimeException e) {
             logger.error("Couldn't add flight: " + e.toString());
+            // REVU
+            // throw new BaseException(ErrorCode.ERROR_WITH_DATABASE",  adding flight");
+            // add appropriate constructor to BaseException
             throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " adding flight",
                     ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
         }

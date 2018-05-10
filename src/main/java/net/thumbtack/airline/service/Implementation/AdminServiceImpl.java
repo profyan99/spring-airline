@@ -1,3 +1,5 @@
+// REVU no capital letters!
+// REVU net.thumbtack.airline.service.implementation;
 package net.thumbtack.airline.service.Implementation;
 
 import net.thumbtack.airline.dao.AdminDao;
@@ -86,6 +88,9 @@ public class AdminServiceImpl implements AdminService {
     public AdminUpdateResponseDto update(AdminUpdateRequestDto request) {
         AdminUpdateResponseDto response;
         Admin admin = adminDao.findAdminById(request.getId()).orElseThrow(() ->
+        // REVU do not pass whole object and it's parts
+        //  new BaseException(ErrorCode.ACCOUNT_NOT_FOUND) is enough
+        // create constructor in BaseException 
             new BaseException(
                     ErrorCode.ACCOUNT_NOT_FOUND.getErrorCodeString(),
                     ErrorCode.ACCOUNT_NOT_FOUND.getErrorFieldString(),
