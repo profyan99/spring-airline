@@ -1,4 +1,4 @@
-package net.thumbtack.airline.service.Implementation;
+package net.thumbtack.airline.service.implementation;
 
 import net.thumbtack.airline.Utils;
 import net.thumbtack.airline.dao.FlightDao;
@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
+import static net.thumbtack.airline.exception.ErrorCode.*;
+
 @Service
 public class FlightServiceImpl implements FlightService {
 
@@ -40,18 +42,14 @@ public class FlightServiceImpl implements FlightService {
     @Override
     public FlightAddResponseDto add(FlightAddRequestDto request) {
         if (flightDao.exists(request.getFlightName())) {
-            throw new BaseException(ErrorCode.FLIGHT_EXIST_ERROR.getErrorCodeString(),
-                    ErrorCode.FLIGHT_EXIST_ERROR.getErrorFieldString(), ErrorCode.FLIGHT_EXIST_ERROR);
+            throw new BaseException(FLIGHT_EXIST_ERROR);
         }
         List<LocalDate> dates = request.getDates();
         if (dates == null) {
             dates = setDates(request.getSchedule().getFromDate(), request.getSchedule().getToDate(), request.getSchedule().getPeriod());
         }
         Plane plane = flightDao.getPlane(request.getPlaneName()).orElseThrow(() ->
-                new BaseException(
-                        ErrorCode.PLANE_NOT_FOUND.getErrorCodeString(),
-                        ErrorCode.PLANE_NOT_FOUND.getErrorFieldString(),
-                        ErrorCode.PLANE_NOT_FOUND)
+            new BaseException(PLANE_NOT_FOUND)
         );
         List<Place> places = new ArrayList<>();
         setPlaces(plane, places);
@@ -73,11 +71,11 @@ public class FlightServiceImpl implements FlightService {
                 request.getPriceBusiness(),
                 request.getPriceEconomy(),
                 request.getSchedule(),
-                dates,
+                flightDates,
                 false,
                 plane
         );
-        flightDao.add(flight, flightDates);
+        flightDao.add(flight);
 
         return new FlightAddResponseDto(
                 flight.getFlightName(),
@@ -88,7 +86,7 @@ public class FlightServiceImpl implements FlightService {
                 flight.getPriceBusiness(),
                 flight.getPriceEconomy(),
                 flight.getSchedule(),
-                flight.getDates(),
+                dates,
                 flight.getId(),
                 flight.getPlane(),
                 flight.isApproved()
@@ -98,12 +96,12 @@ public class FlightServiceImpl implements FlightService {
     private static void setPlaces(Plane plane, List<Place> places) {
         for (int i = 1; i <= plane.getBusinessRows(); i++) {
             for (int j = 0; j < plane.getPlacesInBusinessRow(); j++) {
-                places.add(new Place(i, Character.toString((char)('A'+j)), OrderClass.BUSINESS));
+                places.add(new Place(i, Character.toString((char) ('A' + j)), OrderClass.BUSINESS));
             }
         }
         for (int i = plane.getBusinessRows() + 1; i <= plane.getBusinessRows() + plane.getEconomyRows(); i++) {
             for (int j = 0; j < plane.getPlacesInEconomyRow(); j++) {
-                places.add(new Place(i, Character.toString((char)('A'+j)), OrderClass.ECONOMY));
+                places.add(new Place(i, Character.toString((char) ('A' + j)), OrderClass.ECONOMY));
             }
         }
     }
@@ -161,12 +159,9 @@ public class FlightServiceImpl implements FlightService {
                     days = period.split("\\s*,\\s*");
                 } catch (PatternSyntaxException e) {
                     logger.error("Error while parsing days of period");
-                    throw new BaseException(ErrorCode.INVALID_DATE.getErrorCodeString(),
-                            ErrorCode.INVALID_DATE.getErrorFieldString(), ErrorCode.INVALID_DATE);
+                    throw new BaseException(INVALID_DATE_FORMAT);
                 }
-
                 boolean dayOfWeek;
-
                 for (String s : days) {
                     dayOfWeek = false;
                     for (FlightPeriod p : FlightPeriod.values()) { // if the day of the week is specified
@@ -181,8 +176,7 @@ public class FlightServiceImpl implements FlightService {
                             dayNumber = Integer.parseInt(s);
                         } catch (NumberFormatException e) {
                             logger.error("Error while parsing integer of day: " + s);
-                            throw new BaseException(ErrorCode.INVALID_DATE.getErrorCodeString(),
-                                    ErrorCode.INVALID_DATE_FORMAT.getErrorFieldString(), ErrorCode.INVALID_DATE_FORMAT);
+                            throw new BaseException(INVALID_DATE_FORMAT);
                         }
                         LocalDate tempDate = LocalDate.from(dateFrom);
                         for (int i = dateFrom.getMonthValue(), months = dateTo.getMonthValue(); i <= months; i++) {
@@ -210,10 +204,7 @@ public class FlightServiceImpl implements FlightService {
             dates = setDates(request.getSchedule().getFromDate(), request.getSchedule().getToDate(), request.getSchedule().getPeriod());
         }
         Plane plane = flightDao.getPlane(request.getPlaneName()).orElseThrow(() ->
-                new BaseException(
-                        ErrorCode.PLANE_NOT_FOUND.getErrorCodeString(),
-                        ErrorCode.PLANE_NOT_FOUND.getErrorFieldString(),
-                        ErrorCode.PLANE_NOT_FOUND)
+            new BaseException(PLANE_NOT_FOUND)
         );
         List<Place> places = new ArrayList<>();
         setPlaces(plane, places);
@@ -235,12 +226,12 @@ public class FlightServiceImpl implements FlightService {
                 request.getPriceBusiness(),
                 request.getPriceEconomy(),
                 request.getSchedule(),
-                dates,
+                flightDates,
                 false,
                 null,
                 request.getId()
         );
-        flightDao.update(flight, flightDates);
+        flightDao.update(flight);
         return new FlightUpdateResponseDto(
                 flight.getFlightName(),
                 flight.getFromTown(),
@@ -250,7 +241,7 @@ public class FlightServiceImpl implements FlightService {
                 flight.getPriceBusiness(),
                 flight.getPriceEconomy(),
                 flight.getSchedule(),
-                flight.getDates(),
+                dates,
                 flight.getId(),
                 flight.getPlane(),
                 flight.isApproved()
@@ -267,10 +258,7 @@ public class FlightServiceImpl implements FlightService {
     public FlightAddResponseDto get(int id) {
         checkFlightExists(id);
         Flight flight = flightDao.get(id).orElseThrow(() ->
-                new BaseException(
-                        ErrorCode.FLIGHT_NOT_FOUND.getErrorCodeString(),
-                        ErrorCode.FLIGHT_NOT_FOUND.getErrorFieldString(),
-                        ErrorCode.FLIGHT_NOT_FOUND)
+            new BaseException(FLIGHT_NOT_FOUND)
         );
         return new FlightAddResponseDto(
                 flight.getFlightName(),
@@ -358,22 +346,17 @@ public class FlightServiceImpl implements FlightService {
 
     private void checkFlightExists(int id) {
         if (!flightDao.exists(id)) {
-            throw new BaseException(ErrorCode.FLIGHT_NOT_FOUND.getErrorCodeString(),
-                    ErrorCode.FLIGHT_NOT_FOUND.getErrorFieldString(), ErrorCode.FLIGHT_NOT_FOUND);
+            throw new BaseException(FLIGHT_NOT_FOUND);
         }
     }
 
     private void checkFlightApproves(int id) {
         checkFlightExists(id);
         Flight flight = flightDao.get(id).orElseThrow(() ->
-                new BaseException(
-                        ErrorCode.FLIGHT_NOT_FOUND.getErrorCodeString(),
-                        ErrorCode.FLIGHT_NOT_FOUND.getErrorFieldString(),
-                        ErrorCode.FLIGHT_NOT_FOUND)
+            new BaseException(FLIGHT_NOT_FOUND)
         );
         if (flight.isApproved()) {
-            throw new BaseException(ErrorCode.ALREADY_APPROVED_FLIGHT.getErrorCodeString(),
-                    ErrorCode.ALREADY_APPROVED_FLIGHT.getErrorFieldString(), ErrorCode.ALREADY_APPROVED_FLIGHT);
+            throw new BaseException(ALREADY_APPROVED_FLIGHT);
         }
     }
 }

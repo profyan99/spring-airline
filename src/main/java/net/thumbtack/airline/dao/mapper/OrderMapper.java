@@ -1,5 +1,6 @@
 package net.thumbtack.airline.dao.mapper;
 
+import net.thumbtack.airline.model.Country;
 import net.thumbtack.airline.model.Order;
 import net.thumbtack.airline.model.Passenger;
 import org.apache.ibatis.annotations.Param;
@@ -7,6 +8,8 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface OrderMapper {
+
+    List<Country> getCountries();
 
     void addOrder(Order order);
 

@@ -1,4 +1,4 @@
-package net.thumbtack.airline.service.Implementation;
+package net.thumbtack.airline.service.implementation;
 
 import net.thumbtack.airline.Utils;
 import net.thumbtack.airline.dao.FlightDao;
@@ -11,7 +11,6 @@ import net.thumbtack.airline.dto.request.OrderGetParamsRequestDto;
 import net.thumbtack.airline.dto.response.OrderResponseDto;
 import net.thumbtack.airline.dto.response.PassengerResponseDto;
 import net.thumbtack.airline.exception.BaseException;
-import net.thumbtack.airline.exception.ErrorCode;
 import net.thumbtack.airline.model.*;
 import net.thumbtack.airline.service.OrderService;
 import org.slf4j.Logger;
@@ -24,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static net.thumbtack.airline.exception.ErrorCode.*;
 import static net.thumbtack.airline.model.OrderClass.*;
 
 @Service
@@ -53,39 +53,36 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderResponseDto add(OrderAddRequestDto requestDto) {
+    public List<Country> getCountries() {
+        return orderDao.getCountries();
+    }
 
+    @Override
+    public OrderResponseDto add(OrderAddRequestDto requestDto) {
         FlightDate flightDate = flightDao.getFlightDate(requestDto.getDate().toString(), requestDto.getFlightId()).orElseThrow(() ->
-                new BaseException(
-                        ErrorCode.FLIGHT_NOT_FOUND.getErrorCodeString(),
-                        ErrorCode.FLIGHT_NOT_FOUND.getErrorFieldString(),
-                        ErrorCode.FLIGHT_NOT_FOUND)
+                new BaseException(FLIGHT_NOT_FOUND)
         );
         Flight flight = flightDate.getFlight();
         if (!flight.getDates().contains(requestDto.getDate())
                 || (flight.getSchedule() != null && flight.getSchedule().getToDate().isBefore(requestDto.getDate()))) {
-            throw new BaseException(ErrorCode.INVALID_DATE.getErrorCodeString(),
-                    ErrorCode.INVALID_DATE.getErrorFieldString(), ErrorCode.INVALID_DATE);
+            throw new BaseException(INVALID_DATE);
         }
         if (!flight.isApproved()) {
-            throw new BaseException(ErrorCode.UNAPPROVED_FLIGHT.getErrorCodeString(),
-                    ErrorCode.UNAPPROVED_FLIGHT.getErrorFieldString(), ErrorCode.UNAPPROVED_FLIGHT);
+            throw new BaseException(UNAPPROVED_FLIGHT);
         }
         if (requestDto.getPassengers().isEmpty()) {
-            throw new BaseException(ErrorCode.PASSENGER_NOT_FOUND.getErrorCodeString(),
-                    ErrorCode.PASSENGER_NOT_FOUND.getErrorFieldString(), ErrorCode.PASSENGER_NOT_FOUND);
+            throw new BaseException(PASSENGER_NOT_FOUND);
         }
         int upd = flightDao.reservePlaces(requestDto.getDate().toString(), flight.getId(), requestDto.getPassengers().size());
         if (upd == 0) {
-            throw new BaseException(ErrorCode.NO_AVAILABLE_PLACES.getErrorCodeString(),
-                    ErrorCode.NO_AVAILABLE_PLACES.getErrorFieldString(), ErrorCode.NO_AVAILABLE_PLACES);
+            throw new BaseException(NO_AVAILABLE_PLACES);
         }
         Map<String, String> citizen = new HashMap<>();
         List<Passenger> passengers = new ArrayList<>();
         int totalPrice = 0;
         int currentPrice;
 
-        userDao.getCountries().forEach(country -> citizen.putIfAbsent(country.getIso3166(), country.getName()));
+        orderDao.getCountries().forEach(country -> citizen.putIfAbsent(country.getIso3166(), country.getName()));
         for (PassengerDto c : requestDto.getPassengers()) {
             currentPrice = (c.getOrderClass() == OrderClass.ECONOMY) ? (flight.getPriceEconomy()) : (flight.getPriceBusiness());
             passengers.add(new Passenger(
@@ -100,10 +97,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         BaseUser user = userDao.get(requestDto.getUserId()).orElseThrow(() ->
-                new BaseException(
-                        ErrorCode.ACCOUNT_NOT_FOUND.getErrorCodeString(),
-                        ErrorCode.ACCOUNT_NOT_FOUND.getErrorFieldString(),
-                        ErrorCode.ACCOUNT_NOT_FOUND)
+                new BaseException(ACCOUNT_NOT_FOUND)
         );
 
         Order order = new Order(
@@ -189,15 +183,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<String> getPlaces(int orderId, int userId) {
-        Order order = orderDao.get(orderId).orElseThrow(
-                () -> new BaseException(
-                        ErrorCode.ORDER_NOT_FOUND.getErrorCodeString(),
-                        ErrorCode.ORDER_NOT_FOUND.getErrorFieldString(),
-                        ErrorCode.ORDER_NOT_FOUND)
+        Order order = orderDao.get(orderId).orElseThrow(()
+                -> new BaseException(ORDER_NOT_FOUND)
         );
+
         if (order.getUser().getId() != userId) {
-            throw new BaseException(ErrorCode.NO_ACCESS.getErrorCodeString(),
-                    "Places", ErrorCode.NO_ACCESS);
+            throw new BaseException(NO_ACCESS);
         }
         List<String> places = new ArrayList<>();
         OrderClass placeType = NOT_STATED;
@@ -231,10 +222,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderPlaceRegisterDto placeRegister(OrderPlaceRegisterDto registerDto) {
         Order order = orderDao.get(registerDto.getOrderId()).orElseThrow(
-                () -> new BaseException(
-                        ErrorCode.ORDER_NOT_FOUND.getErrorCodeString(),
-                        ErrorCode.ORDER_NOT_FOUND.getErrorFieldString(),
-                        ErrorCode.ORDER_NOT_FOUND)
+                () -> new BaseException(ORDER_NOT_FOUND)
         );
         Passenger passenger = null;
         for (Passenger p : order.getPassengers()) {
@@ -245,13 +233,11 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         if (passenger == null) {
-            throw new BaseException(ErrorCode.PASSENGER_NOT_FOUND.getErrorCodeString(),
-                    ErrorCode.PASSENGER_NOT_FOUND.getErrorFieldString(), ErrorCode.PASSENGER_NOT_FOUND);
+            throw new BaseException(PASSENGER_NOT_FOUND);
         }
         String reqPlace = registerDto.getPlace();
         if (reqPlace.length() < 2) {
-            throw new BaseException(ErrorCode.INVALID_PLACE.getErrorCodeString(),
-                    ErrorCode.INVALID_PLACE.getErrorFieldString(), ErrorCode.INVALID_PLACE);
+            throw new BaseException(INVALID_PLACE);
         }
         String placeStr = reqPlace.substring(reqPlace.length() - 1);
         int row;
@@ -259,8 +245,7 @@ public class OrderServiceImpl implements OrderService {
             row = Integer.parseInt(reqPlace.substring(0, reqPlace.length() - 1));
         } catch (NumberFormatException e) {
             logger.error("Error while parsing integer of place: " + reqPlace);
-            throw new BaseException(ErrorCode.INVALID_PLACE.getErrorCodeString(),
-                    ErrorCode.INVALID_PLACE.getErrorFieldString(), ErrorCode.INVALID_PLACE);
+            throw new BaseException(INVALID_PLACE);
         }
         Place place = order
                 .getFlightDate()
@@ -269,19 +254,14 @@ public class OrderServiceImpl implements OrderService {
                 .filter(p -> p.getPlace().equals(placeStr) && p.getRow() == row)
                 .findFirst()
                 .orElseThrow(() ->
-                        new BaseException(
-                                ErrorCode.PLACE_NOT_FOUND.getErrorCodeString(),
-                                ErrorCode.PLACE_NOT_FOUND.getErrorFieldString(),
-                                ErrorCode.PLACE_NOT_FOUND)
+                        new BaseException(PLACE_NOT_FOUND)
                 );
 
         if (place.getType() != passenger.getOrderClass()) {
-            throw new BaseException(ErrorCode.INVALID_PLACE.getErrorCodeString(),
-                    ErrorCode.INVALID_PLACE.getErrorFieldString(), ErrorCode.INVALID_PLACE);
+            throw new BaseException(INVALID_PLACE);
         }
         if (!place.isFree()) {
-            throw new BaseException(ErrorCode.PLACE_OCCUPIED.getErrorCodeString(),
-                    ErrorCode.PLACE_OCCUPIED.getErrorFieldString(), ErrorCode.PLACE_OCCUPIED);
+            throw new BaseException(PLACE_OCCUPIED);
         }
         passenger.setPlace(placeStr);
         passenger.setRow(row);

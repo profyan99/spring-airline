@@ -2,7 +2,6 @@ package net.thumbtack.airline.dao.implementation;
 
 import net.thumbtack.airline.dao.AdminDao;
 import net.thumbtack.airline.exception.BaseException;
-import net.thumbtack.airline.exception.ErrorCode;
 import net.thumbtack.airline.model.Admin;
 import net.thumbtack.airline.model.Client;
 import net.thumbtack.airline.model.Plane;
@@ -16,6 +15,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+
+import static net.thumbtack.airline.exception.ErrorCode.ERROR_WITH_DATABASE;
+import static net.thumbtack.airline.exception.ErrorCode.REGISTRATION_ERROR;
 
 @Repository
 public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
@@ -38,8 +40,7 @@ public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
             return admin;
         } catch (RuntimeException e) {
             logger.error("Couldn't create admin: " + e.toString());
-            throw new BaseException(ErrorCode.REGISTRATION_ERROR.getErrorCodeString(), ErrorCode.REGISTRATION_ERROR.getErrorFieldString(),
-                    ErrorCode.REGISTRATION_ERROR);
+            throw new BaseException(REGISTRATION_ERROR);
         }
     }
 
@@ -50,8 +51,7 @@ public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
             admin = getAdminMapper(session).getAdmin(id);
         } catch (RuntimeException e) {
             logger.error("Couldn't getAdmin admin: " + e.toString());
-            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " get admin",
-                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
+            throw new BaseException(ERROR_WITH_DATABASE, "Get admin");
         }
         return Optional.ofNullable(admin);
     }
@@ -63,8 +63,7 @@ public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
             admin = getAdminMapper(session).findAdminById(id);
         } catch (RuntimeException e) {
             logger.error("Couldn't find by id admin: " + e.toString());
-            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " find admin by id",
-                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
+            throw new BaseException(ERROR_WITH_DATABASE,"Find admin by id");
         }
         return Optional.ofNullable(admin);
     }
@@ -78,8 +77,7 @@ public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
             session.commit();
         } catch (RuntimeException e) {
             logger.error("Couldn't update admin: " + e.toString());
-            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "updating admin",
-                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
+            throw new BaseException(ERROR_WITH_DATABASE,"Update admin");
         }
     }
 
@@ -90,8 +88,7 @@ public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
             clients = getClientMapper(session).getAll();
         } catch (RuntimeException e) {
             logger.error("Couldn't find all clients: " + e.toString());
-            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " get clients",
-                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
+            throw new BaseException(ERROR_WITH_DATABASE,"Get clients");
         }
         return clients;
     }
@@ -103,8 +100,7 @@ public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
             planes = getPlaneMapper(session).getAll();
         } catch (RuntimeException e) {
             logger.error("Couldn't find all planes: " + e.toString());
-            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " get planes",
-                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
+            throw new BaseException(ERROR_WITH_DATABASE,"Get planes");
         }
         return planes;
     }
@@ -116,8 +112,7 @@ public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
             session.commit();
         } catch (RuntimeException e) {
             logger.error("Couldn't clear data base: " + e.toString());
-            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " clearing DB",
-                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
+            throw new BaseException(ERROR_WITH_DATABASE,"Clear database");
         }
     }
 }

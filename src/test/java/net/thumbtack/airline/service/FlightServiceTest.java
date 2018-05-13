@@ -6,7 +6,7 @@ import net.thumbtack.airline.dto.response.FlightAddResponseDto;
 import net.thumbtack.airline.model.Flight;
 import net.thumbtack.airline.model.Plane;
 import net.thumbtack.airline.model.Schedule;
-import net.thumbtack.airline.service.Implementation.FlightServiceImpl;
+import net.thumbtack.airline.service.implementation.FlightServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +21,6 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -68,7 +67,7 @@ public class FlightServiceTest {
         }
 
         when(flightDaoMock.getPlane(anyString())).thenReturn(Optional.of(plane));
-        doAnswer(flightAddAnswer).when(flightDaoMock).add(any(Flight.class), anyList());
+        doAnswer(flightAddAnswer).when(flightDaoMock).add(any(Flight.class));
         when(flightDaoMock.exists(anyString())).thenReturn(false);
 
         FlightAddResponseDto flightAddResponseDto = flightService.add(flightAddRequestDto);
@@ -86,7 +85,7 @@ public class FlightServiceTest {
         assertEquals(flightAddRequestDto.getSchedule().getPeriod(), flightAddResponseDto.getSchedule().getPeriod());
 
         verify(flightDaoMock, times(1)).getPlane(anyString());
-        verify(flightDaoMock, times(1)).add(any(Flight.class), anyList());
+        verify(flightDaoMock, times(1)).add(any(Flight.class));
         verify(flightDaoMock, times(1)).exists(anyString());
         verifyNoMoreInteractions(flightDaoMock);
     }
@@ -109,7 +108,7 @@ public class FlightServiceTest {
         };
 
         when(flightDaoMock.getPlane(anyString())).thenReturn(Optional.of(plane));
-        doAnswer(flightAddAnswer).when(flightDaoMock).add(any(Flight.class), anyList());
+        doAnswer(flightAddAnswer).when(flightDaoMock).add(any(Flight.class));
         when(flightDaoMock.exists(anyString())).thenReturn(false);
 
         FlightAddResponseDto flightAddResponseDto = flightService.add(flightAddRequestDto);
@@ -144,7 +143,7 @@ public class FlightServiceTest {
         assertEquals(flightAddRequestDto.getSchedule().getPeriod(), flightAddResponseDto.getSchedule().getPeriod());
 
         verify(flightDaoMock, times(2)).getPlane(anyString());
-        verify(flightDaoMock, times(2)).add(any(Flight.class), anyList());
+        verify(flightDaoMock, times(2)).add(any(Flight.class));
         verify(flightDaoMock, times(2)).exists(anyString());
         verifyNoMoreInteractions(flightDaoMock);
     }
@@ -164,7 +163,7 @@ public class FlightServiceTest {
         };
 
         when(flightDaoMock.getPlane(anyString())).thenReturn(Optional.of(plane));
-        doAnswer(flightAddAnswer).when(flightDaoMock).add(any(Flight.class), anyList());
+        doAnswer(flightAddAnswer).when(flightDaoMock).add(any(Flight.class));
         when(flightDaoMock.exists(anyString())).thenReturn(false);
 
         FlightAddResponseDto flightAddResponseDto = flightService.add(flightAddRequestDto);
@@ -191,7 +190,7 @@ public class FlightServiceTest {
         assertEquals(flightAddRequestDto.getSchedule().getPeriod(), flightAddResponseDto.getSchedule().getPeriod());
 
         verify(flightDaoMock, times(2)).getPlane(anyString());
-        verify(flightDaoMock, times(2)).add(any(Flight.class), anyList());
+        verify(flightDaoMock, times(2)).add(any(Flight.class));
         verify(flightDaoMock, times(2)).exists(anyString());
         verifyNoMoreInteractions(flightDaoMock);
     }
@@ -212,15 +211,13 @@ public class FlightServiceTest {
         };
 
         when(flightDaoMock.getPlane(anyString())).thenReturn(Optional.of(plane));
-        doAnswer(flightAddAnswer).when(flightDaoMock).add(any(Flight.class), anyList());
+        doAnswer(flightAddAnswer).when(flightDaoMock).add(any(Flight.class));
         when(flightDaoMock.exists(anyString())).thenReturn(false);
 
         FlightAddResponseDto flightAddResponseDto = flightService.add(flightAddRequestDto);
         assertEquals(plane.getName(), flightAddResponseDto.getPlane().getName());
         assertEquals(flightAddRequestDto.getFromTown(), flightAddResponseDto.getFromTown());
         assertEquals(1, flightAddResponseDto.getFlightId());
-
-        System.out.println("LOOOOG_____________: "+flightAddResponseDto.getDates());
 
         actualDates = new LocalDate[flightAddResponseDto.getDates().size()];
         actualDates = flightAddResponseDto.getDates().toArray(actualDates);
@@ -241,7 +238,7 @@ public class FlightServiceTest {
         assertEquals(flightAddRequestDto.getSchedule().getPeriod(), flightAddResponseDto.getSchedule().getPeriod());
 
         verify(flightDaoMock, times(2)).getPlane(anyString());
-        verify(flightDaoMock, times(2)).add(any(Flight.class), anyList());
+    verify(flightDaoMock, times(2)).add(any(Flight.class));
         verify(flightDaoMock, times(2)).exists(anyString());
         verifyNoMoreInteractions(flightDaoMock);
     }

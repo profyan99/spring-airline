@@ -2,7 +2,6 @@ package net.thumbtack.airline.dao.implementation;
 
 import net.thumbtack.airline.dao.CookieDao;
 import net.thumbtack.airline.exception.BaseException;
-import net.thumbtack.airline.exception.ErrorCode;
 import net.thumbtack.airline.model.UserCookie;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -13,6 +12,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+
+import static net.thumbtack.airline.exception.ErrorCode.ERROR_WITH_DATABASE;
 
 @Repository
 public class CookieDaoImpl extends BaseDaoImpl implements CookieDao {
@@ -32,8 +33,7 @@ public class CookieDaoImpl extends BaseDaoImpl implements CookieDao {
             return getCookieMapper(session).exists(uuid);
         } catch (RuntimeException e) {
             logger.error("Couldn't check for exist cookie: " + e.toString());
-            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "exist cookie",
-                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
+            throw new BaseException(ERROR_WITH_DATABASE, "Exist cookie");
         }
     }
 
@@ -43,9 +43,8 @@ public class CookieDaoImpl extends BaseDaoImpl implements CookieDao {
         try (SqlSession session = sessionFactory.openSession()) {
             cookie = getCookieMapper(session).get(uuid);
         } catch (RuntimeException e) {
-            logger.error("Couldn't get cookie: " + e.toString());
-            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "get cookie",
-                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
+            logger.error("Couldn't getUser cookie: " + e.toString());
+            throw new BaseException(ERROR_WITH_DATABASE, "Get cookie");
         }
         return Optional.ofNullable(cookie);
     }
@@ -54,29 +53,21 @@ public class CookieDaoImpl extends BaseDaoImpl implements CookieDao {
     public void set(UserCookie cookie) {
         try (SqlSession session = sessionFactory.openSession()) {
             getCookieMapper(session).set(cookie);
-
             session.commit();
         } catch (RuntimeException e) {
             logger.error("Couldn't set cookie: " + e.toString());
-            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "set cookie",
-                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
+            throw new BaseException(ERROR_WITH_DATABASE, "Set cookie");
         }
     }
 
     @Override
     public void delete(String uuid) {
-        SqlSession session = sessionFactory.openSession();
-        try {
+        try(SqlSession session = sessionFactory.openSession()) {
             getCookieMapper(session).delete(uuid);
-
             session.commit();
         } catch (RuntimeException e) {
             logger.error("Couldn't delete cookie: " + e.toString());
-            session.rollback();
-            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "delete cookie",
-                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
-        } finally {
-            session.close();
+            throw new BaseException(ERROR_WITH_DATABASE, "Delete cookie");
         }
     }
 }

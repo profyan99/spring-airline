@@ -14,6 +14,14 @@ public class BaseException extends RuntimeException {
         this.errorCode = errorCode;
     }
 
+    public BaseException(ErrorCode errorCode) {
+        this(errorCode.getErrorCodeString(), errorCode.getErrorFieldString(), errorCode);
+    }
+
+    public BaseException(ErrorCode errorCode, String message) {
+        this(message, errorCode.getErrorFieldString(), errorCode);
+    }
+
     public String getField() {
         return field;
     }

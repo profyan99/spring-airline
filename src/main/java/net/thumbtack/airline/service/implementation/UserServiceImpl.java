@@ -1,4 +1,4 @@
-package net.thumbtack.airline.service.Implementation;
+package net.thumbtack.airline.service.implementation;
 
 import net.thumbtack.airline.Utils;
 import net.thumbtack.airline.dao.AdminDao;
@@ -13,17 +13,20 @@ import net.thumbtack.airline.dto.response.BaseLoginDto;
 import net.thumbtack.airline.dto.response.ClientResponseDto;
 import net.thumbtack.airline.dto.response.ServerSettingsResponseDto;
 import net.thumbtack.airline.exception.BaseException;
-import net.thumbtack.airline.exception.ErrorCode;
-import net.thumbtack.airline.model.*;
+import net.thumbtack.airline.model.BaseUser;
+import net.thumbtack.airline.model.Client;
+import net.thumbtack.airline.model.UserCookie;
+import net.thumbtack.airline.model.UserRole;
 import net.thumbtack.airline.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
+
+import static net.thumbtack.airline.exception.ErrorCode.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -37,10 +40,7 @@ public class UserServiceImpl implements UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private final Supplier<? extends RuntimeException> accountNotFoundException = () ->
-        new BaseException(
-                ErrorCode.ACCOUNT_NOT_FOUND.getErrorCodeString(),
-                ErrorCode.ACCOUNT_NOT_FOUND.getErrorFieldString(),
-                ErrorCode.ACCOUNT_NOT_FOUND);
+        new BaseException(ACCOUNT_NOT_FOUND);
 
     @Autowired
     public void setAdminDao(AdminDao adminDao) {
@@ -70,14 +70,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public BaseLoginDto login(LoginRequestDto loginRequestDto, String uuid) {
         if (exists(uuid)) {
-            throw new BaseException(ErrorCode.ALREADY_LOGIN.getErrorCodeString(),
-                    ErrorCode.ALREADY_LOGIN.getErrorFieldString(), ErrorCode.ALREADY_LOGIN);
+            throw new BaseException(ALREADY_LOGIN);
         }
         BaseLoginDto baseLoginDTO;
         BaseUser user = userDao.login(loginRequestDto.getLogin()).orElseThrow(accountNotFoundException);
         if (!user.getPassword().equals(loginRequestDto.getPassword())) {
-            throw new BaseException(ErrorCode.INVALID_PASSWORD.getErrorCodeString(),
-                    ErrorCode.INVALID_PASSWORD.getErrorFieldString(), ErrorCode.INVALID_PASSWORD);
+            throw new BaseException(INVALID_PASSWORD);
         }
         if (user.getUserType().equals(UserRole.ADMIN)) {
             baseLoginDTO = new AdminResponseDto(
@@ -104,8 +102,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    // REVU rename. get what ?
-    public UserDto get(int id) {
+    public UserDto getUser(int id) {
         UserDto userDto;
         BaseUser user = userDao.get(id).orElseThrow(accountNotFoundException);
         if (user.getUserType().equals(UserRole.ADMIN)) {
@@ -132,12 +129,6 @@ public class UserServiceImpl implements UserService {
         return userDto;
     }
 
-    // REVU why here ?
-    @Override
-    public List<Country> getCountries() {
-        return userDao.getCountries();
-    }
-
     @Override
     public boolean exists(String uuid) {
         return !uuid.isEmpty() && cookieDao.exists(uuid);
@@ -146,12 +137,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserCookieDto authorizeUser(String uuid) {
         if (uuid.isEmpty()) {
-            throw new BaseException(ErrorCode.UNAUTHORISED_ERROR.getErrorCodeString(),
-                    ErrorCode.UNAUTHORISED_ERROR.getErrorFieldString(), ErrorCode.UNAUTHORISED_ERROR);
+            throw new BaseException(UNAUTHORISED_ERROR);
         }
         UserCookie cookie = cookieDao.get(uuid).orElseThrow(
-                () -> new BaseException(ErrorCode.UNAUTHORISED_ERROR.getErrorCodeString(),
-                    ErrorCode.UNAUTHORISED_ERROR.getErrorFieldString(), ErrorCode.UNAUTHORISED_ERROR)
+                () -> new BaseException(UNAUTHORISED_ERROR)
         );
         return new UserCookieDto(cookie.getId(), cookie.getUserType());
     }
@@ -160,8 +149,7 @@ public class UserServiceImpl implements UserService {
     public UserCookieDto authorizeUser(String uuid, UserRole role) {
         UserCookieDto cookieDTO = authorizeUser(uuid);
         if (!cookieDTO.getUserType().equals(role)) {
-            throw new BaseException(ErrorCode.NO_ACCESS.getErrorCodeString(), ErrorCode.NO_ACCESS.getErrorFieldString(),
-                    ErrorCode.NO_ACCESS);
+            throw new BaseException(NO_ACCESS);
         }
         return cookieDTO;
     }
@@ -176,8 +164,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUserCookie(String uuid) {
         if (!exists(uuid)) {
-            throw new BaseException(ErrorCode.UNAUTHORISED_ERROR.getErrorCodeString(),
-                    ErrorCode.UNAUTHORISED_ERROR.getErrorFieldString(), ErrorCode.UNAUTHORISED_ERROR);
+            throw new BaseException(UNAUTHORISED_ERROR);
         }
         cookieDao.delete(uuid);
     }

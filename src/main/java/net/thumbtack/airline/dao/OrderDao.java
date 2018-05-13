@@ -1,11 +1,19 @@
 package net.thumbtack.airline.dao;
 
+import net.thumbtack.airline.model.Country;
 import net.thumbtack.airline.model.Order;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface OrderDao {
+
+    /**
+     * Get countries' names and iso3166 codes for citizenship
+     *
+     * @return {@link List< Country >}
+     */
+    List<Country> getCountries();
 
     /**
      * Add new client flight order

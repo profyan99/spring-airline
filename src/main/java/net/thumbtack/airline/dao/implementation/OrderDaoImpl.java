@@ -2,7 +2,7 @@ package net.thumbtack.airline.dao.implementation;
 
 import net.thumbtack.airline.dao.OrderDao;
 import net.thumbtack.airline.exception.BaseException;
-import net.thumbtack.airline.exception.ErrorCode;
+import net.thumbtack.airline.model.Country;
 import net.thumbtack.airline.model.Order;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -14,6 +14,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+
+import static net.thumbtack.airline.exception.ErrorCode.ERROR_WITH_DATABASE;
 
 @Repository
 public class OrderDaoImpl extends BaseDaoImpl implements OrderDao {
@@ -28,6 +30,16 @@ public class OrderDaoImpl extends BaseDaoImpl implements OrderDao {
     }
 
     @Override
+    public List<Country> getCountries() {
+        try (SqlSession session = sessionFactory.openSession()) {
+            return getOrderMapper(session).getCountries();
+        } catch (RuntimeException e) {
+            logger.error("Couldn't getUser countries for citizenship: " + e.toString());
+            throw new BaseException(ERROR_WITH_DATABASE, "Get countries");
+        }
+    }
+
+    @Override
     public Order add(Order order) {
         try (SqlSession session = sessionFactory.openSession()) {
             getOrderMapper(session).addOrder(order);
@@ -36,8 +48,7 @@ public class OrderDaoImpl extends BaseDaoImpl implements OrderDao {
             return order;
         } catch (RuntimeException e) {
             logger.error("Couldn't add order: " + e.toString());
-            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " adding order",
-                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
+            throw new BaseException(ERROR_WITH_DATABASE, "Add order");
         }
     }
 
@@ -47,9 +58,8 @@ public class OrderDaoImpl extends BaseDaoImpl implements OrderDao {
         try (SqlSession session = sessionFactory.openSession()) {
             return getOrderMapper(session).get(fromTown, toTown, flightName, planeName, fromDate, toDate, clientId);
         } catch (RuntimeException e) {
-            logger.error("Couldn't get orders: " + e.toString());
-            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " getting orders",
-                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
+            logger.error("Couldn't getUser orders: " + e.toString());
+            throw new BaseException(ERROR_WITH_DATABASE, "Get orders");
         }
     }
 
@@ -58,9 +68,8 @@ public class OrderDaoImpl extends BaseDaoImpl implements OrderDao {
         try (SqlSession session = sessionFactory.openSession()) {
             return Optional.ofNullable(getOrderMapper(session).getById(orderId));
         } catch (RuntimeException e) {
-            logger.error("Couldn't get order by id: " + e.toString());
-            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " getting order",
-                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
+            logger.error("Couldn't getUser order by id: " + e.toString());
+            throw new BaseException(ERROR_WITH_DATABASE, "Get order");
         }
     }
 }

@@ -8,7 +8,6 @@
     <resultMap id="OrderResult" type="Order">
         <id property="orderId" column="orderId"/>
         <result property="totalPrice" column="totalPrice"/>
-        <!--<association property="flightDate" resultMap="net.thumbtack.airline.dao.mapper.FlightMapper.FlightDateResult"/>-->
         <association property="flightDate" select="net.thumbtack.airline.dao.mapper.FlightMapper.getFlightDateById"
                      column="flightDateId"/>
         <association property="user" javaType="User">
@@ -31,6 +30,10 @@
             <result property="place" column="place"/>
         </collection>
     </resultMap>
+
+    <select id="getCountries" resultType="Country">
+        SELECT * FROM countries
+    </select>
 
     <insert id="addOrder" useGeneratedKeys="true" keyProperty="orderId" keyColumn="orderId">
         INSERT INTO orders (flightDateId, userId, totalPrice)
@@ -123,9 +126,6 @@
             o.totalPrice,
             o.flightDateId,
 
-            fd.id,
-            fd.freePlaces,
-            fd.date,
             fd.flightId,
 
             p.ticket,
@@ -137,12 +137,12 @@
             p.price,
             p.place,
 
-            u.id,
-            u.lastName,
-            u.firstName,
+            u.id AS u_id,
+            u.lastName AS u_lastName,
+            u.firstName AS u_firstName,
             u.userType,
             u.password,
-            u.patronymic,
+            u.patronymic AS u_patronymic,
             u.login
         FROM orders o
             RIGHT JOIN flight_date fd ON o.flightDateId = fd.id

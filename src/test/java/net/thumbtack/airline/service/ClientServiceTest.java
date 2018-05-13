@@ -9,7 +9,7 @@ import net.thumbtack.airline.dto.response.ClientUpdateResponseDto;
 import net.thumbtack.airline.exception.BaseException;
 import net.thumbtack.airline.model.Client;
 import net.thumbtack.airline.model.UserRole;
-import net.thumbtack.airline.service.Implementation.ClientServiceImpl;
+import net.thumbtack.airline.service.implementation.ClientServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

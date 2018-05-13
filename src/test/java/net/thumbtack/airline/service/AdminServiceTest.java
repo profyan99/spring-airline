@@ -11,7 +11,7 @@ import net.thumbtack.airline.exception.BaseException;
 import net.thumbtack.airline.model.Admin;
 import net.thumbtack.airline.model.Client;
 import net.thumbtack.airline.model.UserRole;
-import net.thumbtack.airline.service.Implementation.AdminServiceImpl;
+import net.thumbtack.airline.service.implementation.AdminServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

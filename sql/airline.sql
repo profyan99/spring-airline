@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Апр 22 2018 г., 12:38
+-- Время создания: Май 13 2018 г., 19:47
 -- Версия сервера: 5.6.38
 -- Версия PHP: 5.5.38
 
@@ -21,9 +21,11 @@ SET time_zone = "+00:00";
 --
 -- База данных: `airline`
 --
+
 DROP DATABASE IF EXISTS airline;
 CREATE DATABASE airline;
 USE airline;
+
 -- --------------------------------------------------------
 
 --
@@ -48,7 +50,6 @@ CREATE TABLE `client` (
   `phone` varchar(30) NOT NULL,
   `foreignKey` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 -- --------------------------------------------------------
 
@@ -333,19 +334,6 @@ INSERT INTO `countries` (`name`, `iso3166`) VALUES
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `day_flight`
---
-
-CREATE TABLE `day_flight` (
-  `id` int(11) NOT NULL,
-  `day` date NOT NULL,
-  `flightId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
--- --------------------------------------------------------
-
---
 -- Структура таблицы `flight`
 --
 
@@ -384,11 +372,12 @@ CREATE TABLE `flight_date` (
 
 CREATE TABLE `flight_date_place` (
   `flightDateId` int(11) NOT NULL,
-  `place` varchar(10) NOT NULL,
+  `place` varchar(50) NOT NULL,
   `row` int(10) NOT NULL,
   `free` tinyint(1) NOT NULL DEFAULT '1',
   `type` enum('BUSINESS','ECONOMY','','') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 -- --------------------------------------------------------
 
@@ -398,10 +387,9 @@ CREATE TABLE `flight_date_place` (
 
 CREATE TABLE `orders` (
   `orderId` int(11) NOT NULL,
-  `flightId` int(11) NOT NULL,
+  `flightDateId` int(11) NOT NULL,
   `userId` int(11) NOT NULL,
-  `totalPrice` int(11) NOT NULL,
-  `date` date NOT NULL
+  `totalPrice` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -419,7 +407,8 @@ CREATE TABLE `passenger` (
   `passport` varchar(60) NOT NULL,
   `price` int(11) NOT NULL,
   `orderClass` enum('BUSINESS','ECONOMY','','') NOT NULL,
-  `place` varchar(11) NOT NULL
+  `place` varchar(11) NOT NULL,
+  `row` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -441,7 +430,7 @@ CREATE TABLE `plane` (
 --
 
 INSERT INTO `plane` (`name`, `businessRows`, `economyRows`, `placesInBusinessRow`, `placesInEconomyRow`) VALUES
-('Airbus  A319', 5, 16, 4, 6);
+('Airbus A319', 5, 16, 4, 6);
 
 -- --------------------------------------------------------
 
@@ -456,7 +445,6 @@ CREATE TABLE `schedule` (
   `flightId` int(11) NOT NULL,
   `period` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 -- --------------------------------------------------------
 
@@ -507,13 +495,6 @@ ALTER TABLE `countries`
   ADD UNIQUE KEY `iso3166` (`iso3166`);
 
 --
--- Индексы таблицы `day_flight`
---
-ALTER TABLE `day_flight`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `day_flight_ibfk_1` (`flightId`);
-
---
 -- Индексы таблицы `flight`
 --
 ALTER TABLE `flight`
@@ -539,8 +520,8 @@ ALTER TABLE `flight_date_place`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`orderId`),
-  ADD KEY `orders_ibfk_1` (`flightId`),
-  ADD KEY `orders_ibfk_2` (`userId`);
+  ADD KEY `orders_ibfk_2` (`userId`),
+  ADD KEY `orders_ibfk_3` (`flightDateId`);
 
 --
 -- Индексы таблицы `passenger`
@@ -576,55 +557,49 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT для таблицы `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT для таблицы `client`
 --
 ALTER TABLE `client`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT для таблицы `day_flight`
---
-ALTER TABLE `day_flight`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT для таблицы `flight`
 --
 ALTER TABLE `flight`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT для таблицы `flight_date`
 --
 ALTER TABLE `flight_date`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT для таблицы `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `orderId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `orderId` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT для таблицы `passenger`
 --
 ALTER TABLE `passenger`
-  MODIFY `ticket` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `ticket` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT для таблицы `schedule`
 --
 ALTER TABLE `schedule`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT для таблицы `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц
@@ -649,12 +624,6 @@ ALTER TABLE `cookies`
   ADD CONSTRAINT `cookies_ibfk_1` FOREIGN KEY (`id`) REFERENCES `user` (`id`) ON DELETE CASCADE;
 
 --
--- Ограничения внешнего ключа таблицы `day_flight`
---
-ALTER TABLE `day_flight`
-  ADD CONSTRAINT `day_flight_ibfk_1` FOREIGN KEY (`flightId`) REFERENCES `flight` (`id`) ON DELETE CASCADE;
-
---
 -- Ограничения внешнего ключа таблицы `flight`
 --
 ALTER TABLE `flight`
@@ -676,8 +645,8 @@ ALTER TABLE `flight_date_place`
 -- Ограничения внешнего ключа таблицы `orders`
 --
 ALTER TABLE `orders`
-  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`flightId`) REFERENCES `flight` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `orders_ibfk_3` FOREIGN KEY (`flightDateId`) REFERENCES `flight_date` (`id`) ON DELETE CASCADE;
 
 --
 -- Ограничения внешнего ключа таблицы `passenger`

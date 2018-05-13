@@ -5,17 +5,12 @@ import net.thumbtack.airline.dto.UserDto;
 import net.thumbtack.airline.dto.request.LoginRequestDto;
 import net.thumbtack.airline.dto.response.BaseLoginDto;
 import net.thumbtack.airline.dto.response.ServerSettingsResponseDto;
-import net.thumbtack.airline.model.Country;
 import net.thumbtack.airline.model.UserRole;
-
-import java.util.List;
 
 public interface UserService {
     BaseLoginDto login(LoginRequestDto loginRequestDto, String uuid);
 
-    UserDto get(int id);
-
-    List<Country> getCountries();
+    UserDto getUser(int id);
 
     UserCookieDto authorizeUser(String uuid);
 

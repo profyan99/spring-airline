@@ -1,6 +1,7 @@
 package net.thumbtack.airline.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Flight {
@@ -13,17 +14,17 @@ public class Flight {
     private int priceBusiness;
     private int priceEconomy;
     private Schedule schedule;
-    private List<LocalDate> dates;
+    private List<FlightDate> flightDates;
     private boolean approved;
     private Plane plane;
 
     public Flight(String flightName, String fromTown, String toTown, String start, String duration,
-                  int priceBusiness, int priceEconomy, Schedule schedule, List<LocalDate> dates, boolean approved, Plane plane) {
+                  int priceBusiness, int priceEconomy, Schedule schedule, List<FlightDate> dates, boolean approved, Plane plane) {
         this(flightName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, schedule, dates, approved, plane, 0);
     }
 
     public Flight(String flightName, String fromTown, String toTown, String start, String duration,
-                  int priceBusiness, int priceEconomy, Schedule schedule, List<LocalDate> dates, boolean approved, Plane plane,
+                  int priceBusiness, int priceEconomy, Schedule schedule, List<FlightDate> dates, boolean approved, Plane plane,
                   int id) {
         this.flightName = flightName;
         this.fromTown = fromTown;
@@ -33,7 +34,7 @@ public class Flight {
         this.priceBusiness = priceBusiness;
         this.priceEconomy = priceEconomy;
         this.schedule = schedule;
-        this.dates = dates;
+        this.flightDates = dates;
         this.approved = approved;
         this.plane = plane;
         this.id = id;
@@ -123,12 +124,20 @@ public class Flight {
         this.schedule = schedule;
     }
 
-    public List<LocalDate> getDates() {
+   public List<LocalDate> getDates() {
+       List<LocalDate> dates = new ArrayList<>(getFlightDates().size());
+       for (FlightDate date : getFlightDates()) {
+           dates.add(date.getDate());
+       }
         return dates;
     }
 
-    public void setDates(List<LocalDate> dates) {
-        this.dates = dates;
+    public List<FlightDate> getFlightDates() {
+        return flightDates;
+    }
+
+    public void setFlightDates(List<FlightDate> flightDates) {
+        this.flightDates = flightDates;
     }
 
     public boolean isApproved() {
@@ -159,9 +168,9 @@ public class Flight {
                 ", priceBusiness=" + priceBusiness +
                 ", priceEconomy=" + priceEconomy +
                 ", schedule=" + (schedule == null) +
-                ", dates=" + (dates == null) +
+                ", dates=" + (flightDates == null) +
                 ", approved=" + approved +
-                ", plane=" + (plane==null) +
+                ", plane=" + (plane == null) +
                 '}';
     }
 }

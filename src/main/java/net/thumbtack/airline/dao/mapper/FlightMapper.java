@@ -9,7 +9,7 @@ import java.util.List;
 public interface FlightMapper {
     int addFlight(Flight flight);
 
-    void addDateAndSchedule(Flight flight);
+    void addSchedule(Flight flight);
 
     boolean existsByName(String flightName);
 
@@ -17,7 +17,7 @@ public interface FlightMapper {
 
     Flight get(int flightId);
 
-    void update(@Param("flight") Flight flight, @Param("flightDates") List<FlightDate> flightDates);
+    void update(@Param("flight") Flight flight);
 
     void delete(int flightId);
 
@@ -33,6 +33,8 @@ public interface FlightMapper {
     FlightDate getFlightDate(@Param("date") String date, @Param("flightId") int flightId);
 
     FlightDate getFlightDateById(int flightDateId);
+
+    List<FlightDate> getFlightDateByFlight(int flightId);
 
     void updatePlace( @Param("flightDateId") int flightDateId,
                      @Param("place") String place, @Param("row") int row);

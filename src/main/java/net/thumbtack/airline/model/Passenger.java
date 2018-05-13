@@ -1,14 +1,21 @@
 package net.thumbtack.airline.model;
 
+import net.thumbtack.airline.Utils;
+
+import javax.validation.constraints.NotNull;
+
 public class Passenger {
     private int ticket;
 
+    @NotNull(message = Utils.BAD_FIRSTNAME)
     private String firstName;
 
+    @NotNull(message = Utils.BAD_LASTNAME)
     private String lastName;
 
     private String nationality;
 
+    @NotNull(message = Utils.BAD_PASSPORT)
     private String passport;
 
     private OrderClass orderClass;

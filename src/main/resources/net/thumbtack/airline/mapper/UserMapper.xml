@@ -26,8 +26,4 @@
         UPDATE user SET firstName=#{firstName}, lastName=#{lastName}, patronymic=#{patronymic}, password=#{password}
     </update>
 
-    <select id="getCountries" resultType="Country">
-        SELECT * FROM countries
-    </select>
-
 </mapper>

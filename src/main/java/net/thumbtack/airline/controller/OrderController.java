@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -37,8 +38,15 @@ public class OrderController {
         this.orderService = orderService;
     }
 
+    @GetMapping(path = "/countries")
+    public ResponseEntity<?> countries(@CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
+        userService.authorizeUser(uuid);
+        return ResponseEntity.ok(orderService.getCountries());
+    }
+
+
     @PostMapping(path = "/orders")
-    public ResponseEntity<?> add(@RequestBody OrderAddRequestDto request,
+    public ResponseEntity<?> add(@Valid @RequestBody OrderAddRequestDto request,
                                  @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
         request.setUserId(userService.authorizeUser(uuid, UserRole.CLIENT).getId());
         return ResponseEntity.ok(orderService.add(request));

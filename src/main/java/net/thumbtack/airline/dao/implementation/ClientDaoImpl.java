@@ -2,7 +2,6 @@ package net.thumbtack.airline.dao.implementation;
 
 import net.thumbtack.airline.dao.ClientDao;
 import net.thumbtack.airline.exception.BaseException;
-import net.thumbtack.airline.exception.ErrorCode;
 import net.thumbtack.airline.model.Client;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -13,6 +12,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+
+import static net.thumbtack.airline.exception.ErrorCode.ERROR_WITH_DATABASE;
+import static net.thumbtack.airline.exception.ErrorCode.REGISTRATION_ERROR;
 
 @Repository
 public class ClientDaoImpl extends BaseDaoImpl implements ClientDao {
@@ -36,8 +38,7 @@ public class ClientDaoImpl extends BaseDaoImpl implements ClientDao {
             return client;
         } catch (RuntimeException e) {
             logger.error("Couldn't create client: " + e.toString());
-            throw new BaseException(ErrorCode.REGISTRATION_ERROR.getErrorCodeString(),
-                    ErrorCode.REGISTRATION_ERROR.getErrorFieldString(), ErrorCode.REGISTRATION_ERROR);
+            throw new BaseException(REGISTRATION_ERROR);
         }
     }
 
@@ -47,9 +48,8 @@ public class ClientDaoImpl extends BaseDaoImpl implements ClientDao {
         try (SqlSession session = sessionFactory.openSession()) {
             client = getClientMapper(session).getClient(id);
         } catch (RuntimeException e) {
-            logger.error("Couldn't get client: " + e.toString());
-            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "get client",
-                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
+            logger.error("Couldn't getUser client: " + e.toString());
+            throw new BaseException(ERROR_WITH_DATABASE,"Get client");
         }
         return Optional.ofNullable(client);
     }
@@ -63,8 +63,7 @@ public class ClientDaoImpl extends BaseDaoImpl implements ClientDao {
             session.commit();
         } catch (RuntimeException e) {
             logger.error("Couldn't update client: " + e.toString());
-            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + "updating client",
-                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
+            throw new BaseException(ERROR_WITH_DATABASE,"Update client");
         }
     }
 
@@ -75,8 +74,7 @@ public class ClientDaoImpl extends BaseDaoImpl implements ClientDao {
             client = getClientMapper(session).findClientById(id);
         } catch (RuntimeException e) {
             logger.error("Couldn't find by id client: " + e.toString());
-            throw new BaseException(ErrorCode.ERROR_WITH_DATABASE.getErrorCodeString() + " find client by id",
-                    ErrorCode.ERROR_WITH_DATABASE.getErrorFieldString(), ErrorCode.ERROR_WITH_DATABASE);
+            throw new BaseException(ERROR_WITH_DATABASE,"Find client by id");
         }
         return Optional.ofNullable(client);
     }

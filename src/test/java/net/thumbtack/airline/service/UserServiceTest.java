@@ -12,7 +12,7 @@ import net.thumbtack.airline.model.Admin;
 import net.thumbtack.airline.model.BaseUser;
 import net.thumbtack.airline.model.Client;
 import net.thumbtack.airline.model.UserRole;
-import net.thumbtack.airline.service.Implementation.UserServiceImpl;
+import net.thumbtack.airline.service.implementation.UserServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -193,7 +193,7 @@ public class UserServiceTest {
         when(clientDaoMock.getClient(anyInt())).thenReturn(Optional.of(client));
         when(adminDaoMock.getAdmin(anyInt())).thenReturn(Optional.of(new Admin()));
 
-        ClientResponseDto clientResponseDto = (ClientResponseDto) userService.get(id);
+        ClientResponseDto clientResponseDto = (ClientResponseDto) userService.getUser(id);
         assertEquals(clientResponseDto.getPhone(), client.getPhone());
         assertEquals(clientResponseDto.getUserType(), baseUser.getUserType());
         assertEquals(clientResponseDto.getId(), baseUser.getId());

@@ -11,10 +11,9 @@ public interface FlightDao {
      * Add new flight
      *
      * @param flight      {@link Flight}
-     * @param flightDates {@link List<FlightDate>} contains information about places for all dates in flight
      * @return {@link Flight}
      */
-    Flight add(Flight flight, List<FlightDate> flightDates);
+    Flight add(Flight flight);
 
     /**
      * Check for {@link Flight} existing
@@ -33,7 +32,7 @@ public interface FlightDao {
     boolean exists(int flightId);
 
     /**
-     * get {@link Flight}
+     * getUser {@link Flight}
      *
      * @param flightId id of the flight
      * @return {@link Flight}
@@ -44,10 +43,9 @@ public interface FlightDao {
      * Update {@link Flight}
      *
      * @param flight      - flight object, which will be updated
-     * @param flightDates {@link List<FlightDate>} contains information about places for all dates in flight
      * @return {@link Flight}
      */
-    Flight update(Flight flight, List<FlightDate> flightDates);
+    Flight update(Flight flight);
 
     /**
      * Delete {@link Flight} with schedule and dates

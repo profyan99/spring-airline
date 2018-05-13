@@ -1,4 +1,4 @@
-package net.thumbtack.airline.service.Implementation;
+package net.thumbtack.airline.service.implementation;
 
 import net.thumbtack.airline.dao.ClientDao;
 import net.thumbtack.airline.dao.UserDao;
@@ -7,13 +7,14 @@ import net.thumbtack.airline.dto.request.ClientUpdateRequestDto;
 import net.thumbtack.airline.dto.response.ClientResponseDto;
 import net.thumbtack.airline.dto.response.ClientUpdateResponseDto;
 import net.thumbtack.airline.exception.BaseException;
-import net.thumbtack.airline.exception.ErrorCode;
 import net.thumbtack.airline.model.Client;
 import net.thumbtack.airline.service.ClientService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import static net.thumbtack.airline.exception.ErrorCode.*;
 
 @Service
 public class ClientServiceImpl implements ClientService {
@@ -38,8 +39,7 @@ public class ClientServiceImpl implements ClientService {
     public ClientResponseDto register(ClientRegistrationRequestDto request) {
         ClientResponseDto responseDTO;
         if (userDao.exists(request.getLogin())) {
-            throw new BaseException(ErrorCode.ACCOUNT_EXIST_ERROR.getErrorCodeString(),
-                    ErrorCode.ACCOUNT_EXIST_ERROR.getErrorFieldString(), ErrorCode.ACCOUNT_EXIST_ERROR);
+            throw new BaseException(ACCOUNT_EXIST_ERROR);
         }
         Client client = new Client(
                 request.getFirstName(),
@@ -68,14 +68,10 @@ public class ClientServiceImpl implements ClientService {
     public ClientUpdateResponseDto update(ClientUpdateRequestDto request) {
         ClientUpdateResponseDto response;
         Client client = clientDao.findClientById(request.getId()).orElseThrow(() ->
-            new BaseException(
-                    ErrorCode.ACCOUNT_NOT_FOUND.getErrorCodeString(),
-                    ErrorCode.ACCOUNT_NOT_FOUND.getErrorFieldString(),
-                    ErrorCode.ACCOUNT_NOT_FOUND)
+                new BaseException(ACCOUNT_NOT_FOUND)
         );
         if (!client.getPassword().equals(request.getOldPassword())) {
-            throw new BaseException(ErrorCode.INVALID_PASSWORD.getErrorCodeString(),
-                    ErrorCode.INVALID_PASSWORD.getErrorFieldString(), ErrorCode.INVALID_PASSWORD);
+            throw new BaseException(INVALID_PASSWORD);
         }
         client.setFirstName(request.getFirstName());
         client.setLastName(request.getLastName());

@@ -1,6 +1,6 @@
 // REVU no capital letters!
 // REVU net.thumbtack.airline.service.implementation;
-package net.thumbtack.airline.service.Implementation;
+package net.thumbtack.airline.service.implementation;
 
 import net.thumbtack.airline.dao.AdminDao;
 import net.thumbtack.airline.dao.UserDao;
@@ -10,7 +10,6 @@ import net.thumbtack.airline.dto.response.AdminResponseDto;
 import net.thumbtack.airline.dto.response.AdminUpdateResponseDto;
 import net.thumbtack.airline.dto.response.ClientResponseDto;
 import net.thumbtack.airline.exception.BaseException;
-import net.thumbtack.airline.exception.ErrorCode;
 import net.thumbtack.airline.model.Admin;
 import net.thumbtack.airline.model.Plane;
 import net.thumbtack.airline.service.AdminService;
@@ -21,6 +20,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static net.thumbtack.airline.exception.ErrorCode.*;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -45,8 +46,7 @@ public class AdminServiceImpl implements AdminService {
     public AdminResponseDto register(AdminRegistrationRequestDto request) {
         AdminResponseDto responseDTO;
         if (userDao.exists(request.getLogin())) {
-            throw new BaseException(ErrorCode.ACCOUNT_EXIST_ERROR.getErrorCodeString(),
-                    ErrorCode.ACCOUNT_EXIST_ERROR.getErrorFieldString(), ErrorCode.ACCOUNT_EXIST_ERROR);
+            throw new BaseException(ACCOUNT_EXIST_ERROR);
         }
         Admin admin = new Admin(
                 request.getFirstName(),
@@ -88,17 +88,10 @@ public class AdminServiceImpl implements AdminService {
     public AdminUpdateResponseDto update(AdminUpdateRequestDto request) {
         AdminUpdateResponseDto response;
         Admin admin = adminDao.findAdminById(request.getId()).orElseThrow(() ->
-        // REVU do not pass whole object and it's parts
-        //  new BaseException(ErrorCode.ACCOUNT_NOT_FOUND) is enough
-        // create constructor in BaseException 
-            new BaseException(
-                    ErrorCode.ACCOUNT_NOT_FOUND.getErrorCodeString(),
-                    ErrorCode.ACCOUNT_NOT_FOUND.getErrorFieldString(),
-                    ErrorCode.ACCOUNT_NOT_FOUND)
+                new BaseException(ACCOUNT_NOT_FOUND)
         );
         if (!admin.getPassword().equals(request.getOldPassword())) {
-            throw new BaseException(ErrorCode.INVALID_PASSWORD.getErrorCodeString(),
-                    ErrorCode.INVALID_PASSWORD.getErrorFieldString(), ErrorCode.INVALID_PASSWORD);
+            throw new BaseException(INVALID_PASSWORD);
         }
         admin.setFirstName(request.getFirstName());
         admin.setLastName(request.getLastName());
