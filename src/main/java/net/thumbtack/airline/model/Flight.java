@@ -1,6 +1,7 @@
 package net.thumbtack.airline.model;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,8 +10,8 @@ public class Flight {
     private String flightName;
     private String fromTown;
     private String toTown;
-    private String start;
-    private String duration;
+    private LocalTime start;
+    private LocalTime duration;
     private int priceBusiness;
     private int priceEconomy;
     private Schedule schedule;
@@ -18,12 +19,12 @@ public class Flight {
     private boolean approved;
     private Plane plane;
 
-    public Flight(String flightName, String fromTown, String toTown, String start, String duration,
+    public Flight(String flightName, String fromTown, String toTown, LocalTime start, LocalTime duration,
                   int priceBusiness, int priceEconomy, Schedule schedule, List<FlightDate> dates, boolean approved, Plane plane) {
         this(flightName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, schedule, dates, approved, plane, 0);
     }
 
-    public Flight(String flightName, String fromTown, String toTown, String start, String duration,
+    public Flight(String flightName, String fromTown, String toTown, LocalTime start, LocalTime duration,
                   int priceBusiness, int priceEconomy, Schedule schedule, List<FlightDate> dates, boolean approved, Plane plane,
                   int id) {
         this.flightName = flightName;
@@ -84,19 +85,19 @@ public class Flight {
         this.toTown = toTown;
     }
 
-    public String getStart() {
+    public LocalTime getStart() {
         return start;
     }
 
-    public void setStart(String start) {
+    public void setStart(LocalTime start) {
         this.start = start;
     }
 
-    public String getDuration() {
+    public LocalTime getDuration() {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(LocalTime duration) {
         this.duration = duration;
     }
 
@@ -124,11 +125,11 @@ public class Flight {
         this.schedule = schedule;
     }
 
-   public List<LocalDate> getDates() {
-       List<LocalDate> dates = new ArrayList<>(getFlightDates().size());
-       for (FlightDate date : getFlightDates()) {
-           dates.add(date.getDate());
-       }
+    public List<LocalDate> getDates() {
+        List<LocalDate> dates = new ArrayList<>(getFlightDates().size());
+        for (FlightDate date : getFlightDates()) {
+            dates.add(date.getDate());
+        }
         return dates;
     }
 

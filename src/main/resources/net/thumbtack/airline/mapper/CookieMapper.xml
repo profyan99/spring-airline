@@ -6,19 +6,24 @@
 <mapper namespace="net.thumbtack.airline.dao.mapper.CookieMapper">
 
     <insert id="set" parameterType="Cookie">
-        INSERT INTO cookies(uuid, id, userType) VALUES(#{uuid}, #{id}, #{userType})
+        INSERT INTO cookies (uuid, id, userType) VALUES (#{uuid}, #{id}, #{userType})
     </insert>
 
     <select id="get" parameterType="string" resultType="Cookie">
-        SELECT * FROM cookies WHERE uuid=#{uuid}
+        SELECT *
+        FROM cookies
+        WHERE uuid = #{uuid}
     </select>
 
     <delete id="delete" parameterType="string">
-        DELETE FROM cookies WHERE uuid=#{uuid}
+        DELETE FROM cookies
+        WHERE uuid = #{uuid}
     </delete>
 
     <select id="exists" parameterType="string" resultType="_boolean">
-        SELECT EXISTS(SELECT 1 FROM cookies WHERE uuid=#{uuid})
+        SELECT EXISTS(SELECT 1
+                      FROM cookies
+                      WHERE uuid = #{uuid})
     </select>
 
 </mapper>

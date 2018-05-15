@@ -63,7 +63,7 @@ public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
             admin = getAdminMapper(session).findAdminById(id);
         } catch (RuntimeException e) {
             logger.error("Couldn't find by id admin: " + e.toString());
-            throw new BaseException(ERROR_WITH_DATABASE,"Find admin by id");
+            throw new BaseException(ERROR_WITH_DATABASE, "Find admin by id");
         }
         return Optional.ofNullable(admin);
     }
@@ -77,7 +77,7 @@ public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
             session.commit();
         } catch (RuntimeException e) {
             logger.error("Couldn't update admin: " + e.toString());
-            throw new BaseException(ERROR_WITH_DATABASE,"Update admin");
+            throw new BaseException(ERROR_WITH_DATABASE, "Update admin");
         }
     }
 
@@ -88,7 +88,7 @@ public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
             clients = getClientMapper(session).getAll();
         } catch (RuntimeException e) {
             logger.error("Couldn't find all clients: " + e.toString());
-            throw new BaseException(ERROR_WITH_DATABASE,"Get clients");
+            throw new BaseException(ERROR_WITH_DATABASE, "Get clients");
         }
         return clients;
     }
@@ -100,7 +100,7 @@ public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
             planes = getPlaneMapper(session).getAll();
         } catch (RuntimeException e) {
             logger.error("Couldn't find all planes: " + e.toString());
-            throw new BaseException(ERROR_WITH_DATABASE,"Get planes");
+            throw new BaseException(ERROR_WITH_DATABASE, "Get planes");
         }
         return planes;
     }
@@ -112,7 +112,7 @@ public class AdminDaoImpl extends BaseDaoImpl implements AdminDao {
             session.commit();
         } catch (RuntimeException e) {
             logger.error("Couldn't clear data base: " + e.toString());
-            throw new BaseException(ERROR_WITH_DATABASE,"Clear database");
+            throw new BaseException(ERROR_WITH_DATABASE, "Clear database");
         }
     }
 }

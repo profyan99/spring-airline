@@ -1,7 +1,14 @@
 package net.thumbtack.airline.dto;
 
+import javax.validation.constraints.Positive;
+
 public class OrderPlaceRegisterDto {
+    private int userId;
+
+    @Positive(message = "Bad orderId.")
     private int orderId;
+
+    @Positive(message = "Bad ticket.")
     private int ticket;
     private String lastName;
     private String firstName;
@@ -17,6 +24,14 @@ public class OrderPlaceRegisterDto {
 
     public OrderPlaceRegisterDto() {
 
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public int getOrderId() {

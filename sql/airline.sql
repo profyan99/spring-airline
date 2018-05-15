@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Май 13 2018 г., 19:47
+-- Время создания: Май 15 2018 г., 19:52
 -- Версия сервера: 5.6.38
 -- Версия PHP: 5.5.38
 
@@ -25,6 +25,7 @@ SET time_zone = "+00:00";
 DROP DATABASE IF EXISTS airline;
 CREATE DATABASE airline;
 USE airline;
+
 
 -- --------------------------------------------------------
 
@@ -63,7 +64,6 @@ CREATE TABLE `cookies` (
   `userType` enum('ADMIN','CLIENT','','') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 -- --------------------------------------------------------
 
 --
@@ -83,19 +83,19 @@ INSERT INTO `countries` (`name`, `iso3166`) VALUES
 ('Андорра', 'AD'),
 ('Объединенные Арабские Эмираты', 'AE'),
 ('Афганистан', 'AF'),
-('Antigua and Barbuda', 'AG'),
+('Антигуа и Барбуда', 'AG'),
 ('Ангуила', 'AI'),
 ('Албания', 'AL'),
 ('Армения', 'AM'),
 ('Нидерландские Антильские острова', 'AN'),
 ('Ангола', 'AO'),
-('Antarctica', 'AQ'),
+('Антарктида', 'AQ'),
 ('Аргентина', 'AR'),
-('American Samoa', 'AS'),
+('Американское Самоа', 'AS'),
 ('Австрия', 'AT'),
 ('Австралия', 'AU'),
 ('Аруба', 'AW'),
-('Åland Islands', 'AX'),
+('Аландские острова', 'AX'),
 ('Азербайджан', 'AZ'),
 ('Босния и Герцеговина', 'BA'),
 ('Барбадос', 'BB'),
@@ -106,26 +106,26 @@ INSERT INTO `countries` (`name`, `iso3166`) VALUES
 ('Бахрейн', 'BH'),
 ('Бурунди', 'BI'),
 ('Бенин', 'BJ'),
-('Saint Barthélemy', 'BL'),
+('Сен-Бартелеми', 'BL'),
 ('Бермудские острова', 'BM'),
 ('Бруней', 'BN'),
 ('Боливия', 'BO'),
-('Bonaire, Sint Eustatius and Saba', 'BQ'),
+('Бонэйр, Синт-Эстатиус и Саба', 'BQ'),
 ('Бразилия', 'BR'),
 ('Багамские острова', 'BS'),
 ('Бутан', 'BT'),
-('Bouvet Island', 'BV'),
+('Остров Буве', 'BV'),
 ('Ботсвана', 'BW'),
 ('Беларусь', 'BY'),
 ('Белиз', 'BZ'),
 ('Канада', 'CA'),
-('Cocos Islands', 'CC'),
-('The Democratic Republic Of Congo', 'CD'),
+('Кокосовые острова', 'CC'),
+('Демократическая Республика Конго', 'CD'),
 ('Центральноафриканская Республика', 'CF'),
 ('Конго', 'CG'),
 ('Швейцария', 'CH'),
-('Кот-д\'Ивуар', 'CI'),
-('Cook Islands', 'CK'),
+('Кот-д’Ивуар', 'CI'),
+('Острова Кука', 'CK'),
 ('Чили', 'CL'),
 ('Камерун', 'CM'),
 ('Китай', 'CN'),
@@ -133,8 +133,8 @@ INSERT INTO `countries` (`name`, `iso3166`) VALUES
 ('Коста-Рика', 'CR'),
 ('Куба', 'CU'),
 ('Зеленый Мыс', 'CV'),
-('Curaçao', 'CW'),
-('Christmas Island', 'CX'),
+('Кюрасао', 'CW'),
+('Остров Рождества', 'CX'),
 ('Кипр', 'CY'),
 ('Чехия', 'CZ'),
 ('Германия', 'DE'),
@@ -152,31 +152,31 @@ INSERT INTO `countries` (`name`, `iso3166`) VALUES
 ('Эфиопия', 'ET'),
 ('Финляндия', 'FI'),
 ('Фиджи', 'FJ'),
-('Falkland Islands', 'FK'),
+('Фолклендские острова', 'FK'),
 ('Микронезия', 'FM'),
-('Faroe Islands', 'FO'),
+('Фареры', 'FO'),
 ('Франция', 'FR'),
 ('Габон', 'GA'),
 ('Соединенное Королевство', 'GB'),
-('Grenada', 'GD'),
+('Гренада', 'GD'),
 ('Грузия', 'GE'),
 ('Французская Гвинея', 'GF'),
-('Guernsey', 'GG'),
+('Гернси', 'GG'),
 ('Гана', 'GH'),
-('Gibraltar', 'GI'),
-('Greenland', 'GL'),
+('Гибралтар', 'GI'),
+('Гренландия', 'GL'),
 ('Гамбия', 'GM'),
 ('Гвинея', 'GN'),
 ('Гваделупа', 'GP'),
 ('Экваториальная Гвинея', 'GQ'),
 ('Греция', 'GR'),
-('South Georgia And The South Sandwich Islands', 'GS'),
+('Южная Георгия и Южные Сандвичевы Острова', 'GS'),
 ('Гватемала', 'GT'),
-('Guam', 'GU'),
+('Гуам', 'GU'),
 ('Гвинея-Бисау', 'GW'),
 ('Гайана', 'GY'),
 ('Гонконг', 'HK'),
-('Heard Island And McDonald Islands', 'HM'),
+('Херд и Макдональд', 'HM'),
 ('Гондурас', 'HN'),
 ('Хорватия', 'HR'),
 ('Гаити', 'HT'),
@@ -184,14 +184,14 @@ INSERT INTO `countries` (`name`, `iso3166`) VALUES
 ('Индонезия', 'ID'),
 ('Ирландия', 'IE'),
 ('Израиль', 'IL'),
-('Isle Of Man', 'IM'),
+('Остров Мэн', 'IM'),
 ('Индия', 'IN'),
-('British Indian Ocean Territory', 'IO'),
+('Британская территория в Индийском океане', 'IO'),
 ('Ирак', 'IQ'),
 ('Иран', 'IR'),
 ('Исландия', 'IS'),
 ('Италия', 'IT'),
-('Jersey', 'JE'),
+('Джерси', 'JE'),
 ('Ямайка', 'JM'),
 ('Иордания', 'JO'),
 ('Япония', 'JP'),
@@ -200,15 +200,15 @@ INSERT INTO `countries` (`name`, `iso3166`) VALUES
 ('Камбоджа', 'KH'),
 ('Кирибати', 'KI'),
 ('Коморос', 'KM'),
-('Saint Kitts And Nevis', 'KN'),
+('Сент-Китс и Невис', 'KN'),
 ('Северная Корея', 'KP'),
 ('Южная Корея', 'KR'),
 ('Кувейт', 'KW'),
-('Cayman Islands', 'KY'),
+('Острова Кайман', 'KY'),
 ('Казахстан', 'KZ'),
 ('Лаос', 'LA'),
 ('Ливан', 'LB'),
-('Saint Lucia', 'LC'),
+('Сент-Люсия', 'LC'),
 ('Лихтенштейн', 'LI'),
 ('Шри-Ланка', 'LK'),
 ('Либерия', 'LR'),
@@ -220,36 +220,36 @@ INSERT INTO `countries` (`name`, `iso3166`) VALUES
 ('Марокко', 'MA'),
 ('Монако', 'MC'),
 ('Молдова', 'MD'),
-('Montenegro', 'ME'),
-('Saint Martin', 'MF'),
+('Черногория', 'ME'),
+('Сен-Мартен', 'MF'),
 ('Мадагаскар', 'MG'),
-('Marshall Islands', 'MH'),
+('Маршалловы Острова', 'MH'),
 ('Македония', 'MK'),
 ('Мали', 'ML'),
 ('Мьянма', 'MM'),
 ('Монголия', 'MN'),
 ('Macao', 'MO'),
-('Northern Mariana Islands', 'MP'),
+('Северные Марианские Острова', 'MP'),
 ('Мартиника', 'MQ'),
 ('Мавритания', 'MR'),
 ('Монтсерат', 'MS'),
 ('Мальта', 'MT'),
 ('Маврикий', 'MU'),
-('Maldives', 'MV'),
-('Malawi', 'MW'),
+('Мальдивы', 'MV'),
+('Малави', 'MW'),
 ('Мексика', 'MX'),
 ('Малайзия', 'MY'),
 ('Мозамбик', 'MZ'),
 ('Намибия', 'NA'),
 ('Новая Каледония', 'NC'),
 ('Нигер', 'NE'),
-('Norfolk Island', 'NF'),
+('Остров Норфолк', 'NF'),
 ('Нигерия', 'NG'),
 ('Никарагуа', 'NI'),
 ('Нидерланды', 'NL'),
 ('Норвегия', 'NO'),
 ('Непал', 'NP'),
-('Nauru', 'NR'),
+('Науру', 'NR'),
 ('Нию', 'NU'),
 ('Новая Зеландия', 'NZ'),
 ('Оман', 'OM'),
@@ -260,71 +260,71 @@ INSERT INTO `countries` (`name`, `iso3166`) VALUES
 ('Филиппины', 'PH'),
 ('Пакистан', 'PK'),
 ('Польша', 'PL'),
-('Saint Pierre And Miquelon', 'PM'),
-('Pitcairn', 'PN'),
+('Сен-Пьер и Микелон', 'PM'),
+('Острова Питкэрн', 'PN'),
 ('Пуэрто-Рико', 'PR'),
-('Palestine', 'PS'),
+('Государство Палестина', 'PS'),
 ('Португалия', 'PT'),
-('Palau', 'PW'),
+('Палау', 'PW'),
 ('Парагвай', 'PY'),
 ('Катар', 'QA'),
-('Reunion', 'RE'),
+('Реюньон', 'RE'),
 ('Румыния', 'RO'),
-('Serbia', 'RS'),
+('Сербия', 'RS'),
 ('Россия', 'RU'),
 ('Руанда', 'RW'),
 ('Саудовская Аравия', 'SA'),
-('Solomon Islands', 'SB'),
+('Соломоновы Острова', 'SB'),
 ('Сейшельские Острова', 'SC'),
 ('Судан', 'SD'),
 ('Швеция', 'SE'),
 ('Сингапур', 'SG'),
-('Saint Helena', 'SH'),
+('Острова Святой Елены, Вознесения и Тристан-да-Кунья', 'SH'),
 ('Словения', 'SI'),
-('Svalbard And Jan Mayen', 'SJ'),
+('Шпицберген и Ян-Майен', 'SJ'),
 ('Словакия', 'SK'),
 ('Сьерра-Леоне', 'SL'),
-('San Marino', 'SM'),
+('Сан-Марино', 'SM'),
 ('Сенегал', 'SN'),
 ('Сомали', 'SO'),
 ('Суринам', 'SR'),
-('South Sudan', 'SS'),
-('Sao Tome And Principe', 'ST'),
+('Южный Судан', 'SS'),
+('Сан-Томе и Принсипи', 'ST'),
 ('Сальвадор', 'SV'),
-('Sint Maarten (Dutch part)', 'SX'),
+('Синт-Мартен', 'SX'),
 ('Сирия', 'SY'),
 ('Свазиленд', 'SZ'),
-('Turks And Caicos Islands', 'TC'),
+('Тёркс и Кайкос', 'TC'),
 ('Чад', 'TD'),
 ('французские южные территории', 'TF'),
 ('Того', 'TG'),
 ('Таиланд', 'TH'),
 ('Таджикистан', 'TJ'),
 ('Токелау', 'TK'),
-('Timor-Leste', 'TL'),
+('Восточный Тимор', 'TL'),
 ('Туркменистан', 'TM'),
 ('Тунис', 'TN'),
 ('Тонга', 'TO'),
 ('Турция', 'TR'),
 ('Тринидад и Тобаго', 'TT'),
-('Tuvalu', 'TV'),
+('Тувалу', 'TV'),
 ('Тайвань', 'TW'),
 ('Танзания', 'TZ'),
 ('Украина', 'UA'),
 ('Уганда', 'UG'),
-('United States Minor Outlying Islands', 'UM'),
+('Внешние малые острова (США)', 'UM'),
 ('Соединенные Штаты', 'US'),
 ('Уругвай', 'UY'),
 ('Узбекистан', 'UZ'),
 ('Ватикан', 'VA'),
-('Saint Vincent And The Grenadines', 'VC'),
+('Сент-Винсент и Гренадины', 'VC'),
 ('Венесуэла', 'VE'),
 ('Британские Виргинские острова', 'VG'),
 ('Виргинские острова Соединенных Штатов', 'VI'),
 ('Вьетнам', 'VN'),
 ('Вануату', 'VU'),
-('Wallis And Futuna', 'WF'),
-('Samoa', 'WS'),
+('Уоллис и Футуна', 'WF'),
+('Самоа', 'WS'),
 ('Йемен', 'YE'),
 ('Майотте', 'YT'),
 ('Южная Африка', 'ZA'),
@@ -350,7 +350,6 @@ CREATE TABLE `flight` (
   `approved` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 -- --------------------------------------------------------
 
 --
@@ -361,7 +360,8 @@ CREATE TABLE `flight_date` (
   `id` int(11) NOT NULL,
   `date` date NOT NULL,
   `flightId` int(11) NOT NULL,
-  `freePlaces` int(11) NOT NULL
+  `freeEconomyPlaces` int(11) NOT NULL,
+  `freeBusinessPlaces` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -377,7 +377,6 @@ CREATE TABLE `flight_date_place` (
   `free` tinyint(1) NOT NULL DEFAULT '1',
   `type` enum('BUSINESS','ECONOMY','','') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 -- --------------------------------------------------------
 
@@ -430,7 +429,11 @@ CREATE TABLE `plane` (
 --
 
 INSERT INTO `plane` (`name`, `businessRows`, `economyRows`, `placesInBusinessRow`, `placesInEconomyRow`) VALUES
-('Airbus A319', 5, 16, 4, 6);
+('Аэрокарета', 2, 0, 2, 0),
+('Боинг', 4, 4, 6, 6),
+('Кукурузник', 2, 4, 2, 4),
+('Летающая антилопа', 0, 1, 0, 4),
+('Пепелац', 2, 2, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -461,7 +464,6 @@ CREATE TABLE `user` (
   `login` varchar(30) NOT NULL,
   `password` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 --
 -- Индексы сохранённых таблиц
@@ -557,49 +559,49 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT для таблицы `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT для таблицы `client`
 --
 ALTER TABLE `client`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT для таблицы `flight`
 --
 ALTER TABLE `flight`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT для таблицы `flight_date`
 --
 ALTER TABLE `flight_date`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=165;
 
 --
 -- AUTO_INCREMENT для таблицы `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `orderId` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `orderId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT для таблицы `passenger`
 --
 ALTER TABLE `passenger`
-  MODIFY `ticket` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ticket` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT для таблицы `schedule`
 --
 ALTER TABLE `schedule`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT для таблицы `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц

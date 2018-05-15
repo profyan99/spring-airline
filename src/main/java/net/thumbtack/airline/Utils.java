@@ -12,6 +12,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+import static net.thumbtack.airline.exception.ErrorCode.EXPECTED_FLIGHT_NAME_TO_TOWN_FROM_TOWN;
+
 @Configuration
 @ConfigurationProperties
 @PropertySource("classpath:constants.properties")
@@ -57,9 +59,13 @@ public class Utils {
             params.setToTown(null);
         } else if (params.getFromTown().isEmpty() && !params.getToTown().isEmpty()) { // прилетающие в town
             params.setFromTown(null);
-        } else if (params.getFromTown().isEmpty() && params.getToTown().isEmpty()) { // не указан город
-            throw new BaseException(ErrorCode.INVALID_REQUEST_DATA.getErrorCodeString(),
-                    "location", ErrorCode.INVALID_REQUEST_DATA);
+        } else if (params.getFromTown().isEmpty() && params.getToTown().isEmpty()) {
+            if (params.getFlightName().isEmpty()) {
+                throw new BaseException(EXPECTED_FLIGHT_NAME_TO_TOWN_FROM_TOWN);    // не указан город и название
+            } else {
+                params.setFromTown(null);
+                params.setToTown(null);
+            }
         }
         if (params.getFlightName().isEmpty()) {
             params.setFlightName(null);

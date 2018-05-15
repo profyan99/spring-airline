@@ -45,11 +45,17 @@ public class FlightServiceImpl implements FlightService {
             throw new BaseException(FLIGHT_EXIST_ERROR);
         }
         List<LocalDate> dates = request.getDates();
+        if (dates == null && request.getSchedule() == null) {
+            throw new BaseException(EXPECTED_SCHEDULE_OR_DATES);
+        }
+        if (request.getPriceBusiness() <= 0 || request.getPriceEconomy() <= 0) {
+            throw new BaseException(FLIGHT_WRONG_PRICE);
+        }
         if (dates == null) {
             dates = setDates(request.getSchedule().getFromDate(), request.getSchedule().getToDate(), request.getSchedule().getPeriod());
         }
         Plane plane = flightDao.getPlane(request.getPlaneName()).orElseThrow(() ->
-            new BaseException(PLANE_NOT_FOUND)
+                new BaseException(PLANE_NOT_FOUND)
         );
         List<Place> places = new ArrayList<>();
         setPlaces(plane, places);
@@ -57,7 +63,8 @@ public class FlightServiceImpl implements FlightService {
         for (LocalDate date : dates) {
             flightDates.add(new FlightDate(
                     date,
-                    places.size(),
+                    plane.getEconomyRows() * plane.getPlacesInEconomyRow(),
+                    plane.getBusinessRows() * plane.getPlacesInBusinessRow(),
                     places
             ));
         }
@@ -200,11 +207,17 @@ public class FlightServiceImpl implements FlightService {
     public FlightUpdateResponseDto update(FlightUpdateRequestDto request) {
         checkFlightApproves(request.getId());
         List<LocalDate> dates = request.getDates();
+        if (dates == null && request.getSchedule() == null) {
+            throw new BaseException(EXPECTED_SCHEDULE_OR_DATES);
+        }
+        if (request.getPriceBusiness() <= 0 || request.getPriceEconomy() <= 0) {
+            throw new BaseException(FLIGHT_WRONG_PRICE);
+        }
         if (dates == null) {
             dates = setDates(request.getSchedule().getFromDate(), request.getSchedule().getToDate(), request.getSchedule().getPeriod());
         }
         Plane plane = flightDao.getPlane(request.getPlaneName()).orElseThrow(() ->
-            new BaseException(PLANE_NOT_FOUND)
+                new BaseException(PLANE_NOT_FOUND)
         );
         List<Place> places = new ArrayList<>();
         setPlaces(plane, places);
@@ -212,7 +225,8 @@ public class FlightServiceImpl implements FlightService {
         for (LocalDate date : dates) {
             flightDates.add(new FlightDate(
                     date,
-                    places.size(),
+                    plane.getEconomyRows() * plane.getPlacesInEconomyRow(),
+                    plane.getBusinessRows() * plane.getPlacesInBusinessRow(),
                     places
             ));
         }
@@ -228,7 +242,7 @@ public class FlightServiceImpl implements FlightService {
                 request.getSchedule(),
                 flightDates,
                 false,
-                null,
+                plane,
                 request.getId()
         );
         flightDao.update(flight);
@@ -258,7 +272,7 @@ public class FlightServiceImpl implements FlightService {
     public FlightAddResponseDto get(int id) {
         checkFlightExists(id);
         Flight flight = flightDao.get(id).orElseThrow(() ->
-            new BaseException(FLIGHT_NOT_FOUND)
+                new BaseException(FLIGHT_NOT_FOUND)
         );
         return new FlightAddResponseDto(
                 flight.getFlightName(),
@@ -325,21 +339,25 @@ public class FlightServiceImpl implements FlightService {
                         e.getPlane(),
                         e.isApproved()
                 );
+                response.add(flightDto);
             } else {
-                flightDto = new FlightGetResponseDto(
-                        e.getFlightName(),
-                        e.getFromTown(),
-                        e.getToTown(),
-                        e.getStart(),
-                        e.getDuration(),
-                        e.getPriceBusiness(),
-                        e.getPriceEconomy(),
-                        e.getSchedule(),
-                        e.getDates(),
-                        e.getId()
-                );
+                if (e.isApproved()) {
+                    flightDto = new FlightGetResponseDto(
+                            e.getFlightName(),
+                            e.getFromTown(),
+                            e.getToTown(),
+                            e.getStart(),
+                            e.getDuration(),
+                            e.getPriceBusiness(),
+                            e.getPriceEconomy(),
+                            e.getSchedule(),
+                            e.getDates(),
+                            e.getId()
+                    );
+                    response.add(flightDto);
+                }
             }
-            response.add(flightDto);
+
         });
         return response;
     }
@@ -353,7 +371,7 @@ public class FlightServiceImpl implements FlightService {
     private void checkFlightApproves(int id) {
         checkFlightExists(id);
         Flight flight = flightDao.get(id).orElseThrow(() ->
-            new BaseException(FLIGHT_NOT_FOUND)
+                new BaseException(FLIGHT_NOT_FOUND)
         );
         if (flight.isApproved()) {
             throw new BaseException(ALREADY_APPROVED_FLIGHT);

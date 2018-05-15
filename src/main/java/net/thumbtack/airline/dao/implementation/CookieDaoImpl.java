@@ -62,7 +62,7 @@ public class CookieDaoImpl extends BaseDaoImpl implements CookieDao {
 
     @Override
     public void delete(String uuid) {
-        try(SqlSession session = sessionFactory.openSession()) {
+        try (SqlSession session = sessionFactory.openSession()) {
             getCookieMapper(session).delete(uuid);
             session.commit();
         } catch (RuntimeException e) {

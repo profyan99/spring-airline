@@ -1,14 +1,10 @@
 package net.thumbtack.airline.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import net.thumbtack.airline.Utils;
-
 import java.time.LocalDate;
 
 public class OrderDto {
     private int flightId;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Utils.DATE_PATTERN)
     private LocalDate date;
 
     public OrderDto(int flightId, LocalDate date) {

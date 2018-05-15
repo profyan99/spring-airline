@@ -6,32 +6,56 @@
 <mapper namespace="net.thumbtack.airline.dao.mapper.ClientMapper">
 
     <resultMap type="Client" id="ClientResult">
-        <id 	property="id" column="id"/>
+        <id property="id" column="id"/>
         <result property="firstName" column="firstName"/>
         <result property="lastName" column="lastName"/>
         <result property="patronymic" column="patronymic"/>
-        <result property="login" column="login" />
-        <result property="password" column="password" />
-        <result property="email" column="email" />
-        <result property="phone" column="phone" />
+        <result property="login" column="login"/>
+        <result property="password" column="password"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
     </resultMap>
 
     <insert id="register" parameterType="Client">
-        INSERT INTO client(email, phone, foreignKey) VALUES (#{email}, #{phone}, #{id})
+        INSERT INTO client (email, phone, foreignKey) VALUES (#{email}, #{phone}, #{id})
     </insert>
 
     <select id="findClientById" resultMap="ClientResult" parameterType="_int">
-        SELECT u.id, u.firstName, u.lastName, u.patronymic, u.login, u.password, c.email, c.phone FROM user u
-        RIGHT JOIN client c ON u.id = c.foreignKey WHERE u.id=#{id}
+        SELECT
+            u.id,
+            u.firstName,
+            u.lastName,
+            u.patronymic,
+            u.login,
+            u.password,
+            c.email,
+            c.phone
+        FROM user u
+            RIGHT JOIN client c ON u.id = c.foreignKey
+        WHERE u.id = #{id}
     </select>
 
     <select id="getClient" resultType="Client" parameterType="_int">
-        SELECT email, phone FROM client WHERE foreignKey=#{id}
+        SELECT
+            email,
+            phone
+        FROM client
+        WHERE foreignKey = #{id}
     </select>
 
     <select id="getAll" resultMap="ClientResult">
-        SELECT u.id, u.firstName, u.lastName, u.patronymic, u.login, u.password, c.email, c.phone FROM user u
-        RIGHT JOIN client c ON u.id = c.foreignKey WHERE u.userType='CLIENT'
+        SELECT
+            u.id,
+            u.firstName,
+            u.lastName,
+            u.patronymic,
+            u.login,
+            u.password,
+            c.email,
+            c.phone
+        FROM user u
+            RIGHT JOIN client c ON u.id = c.foreignKey
+        WHERE u.userType = 'CLIENT'
     </select>
 
 </mapper>

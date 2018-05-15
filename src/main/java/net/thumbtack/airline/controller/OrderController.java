@@ -46,7 +46,7 @@ public class OrderController {
 
 
     @PostMapping(path = "/orders")
-    public ResponseEntity<?> add(@Valid @RequestBody OrderAddRequestDto request,
+    public ResponseEntity<?> add(@RequestBody @Valid OrderAddRequestDto request,
                                  @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
         request.setUserId(userService.authorizeUser(uuid, UserRole.CLIENT).getId());
         return ResponseEntity.ok(orderService.add(request));
@@ -56,7 +56,7 @@ public class OrderController {
     public ResponseEntity<?> get(
             @RequestParam(required = false, value = "fromTown", defaultValue = "") String fromTown,
             @RequestParam(required = false, value = "toTown", defaultValue = "") String toTown,
-            @RequestParam(required = false, value = "flightName ", defaultValue = "") String flightName,
+            @RequestParam(required = false, value = "flightName", defaultValue = "") String flightName,
             @RequestParam(required = false, value = "planeName", defaultValue = "") String planeName,
             @RequestParam(required = false, value = "fromDate", defaultValue = "") String fromDate,
             @RequestParam(required = false, value = "toDate", defaultValue = "") String toDate,
@@ -79,10 +79,10 @@ public class OrderController {
 
     @PostMapping(path = "/places")
     public ResponseEntity<?> registry(
-            @RequestBody OrderPlaceRegisterDto request,
+            @RequestBody @Valid OrderPlaceRegisterDto request,
             @CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
 
-        userService.authorizeUser(uuid, UserRole.CLIENT);
+        request.setUserId(userService.authorizeUser(uuid, UserRole.CLIENT).getId());
         return ResponseEntity.ok(orderService.placeRegister(request));
     }
 }

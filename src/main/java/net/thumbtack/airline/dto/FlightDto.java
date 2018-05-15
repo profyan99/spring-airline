@@ -1,31 +1,28 @@
 package net.thumbtack.airline.dto;
 
-import net.thumbtack.airline.dto.validator.annotation.TimeValid;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import net.thumbtack.airline.model.Schedule;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 public class FlightDto {
     private String flightName;
     private String fromTown;
     private String toTown;
-
-    @TimeValid
-    private String start;
-
-    @TimeValid
-    private String duration;
+    private LocalTime start;
+    private LocalTime duration;
     private int priceBusiness;
     private int priceEconomy;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Schedule schedule;
 
-    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Utils.DATE_PATTERN)
-    //@JsonSerialize(contentUsing = StringSerializer.class)
     private List<LocalDate> dates;
 
-    public FlightDto(String flightName, String fromTown, String toTown, String start,
-                     String duration, int priceBusiness, int priceEconomy, Schedule schedule) {
+    public FlightDto(String flightName, String fromTown, String toTown, LocalTime start,
+                     LocalTime duration, int priceBusiness, int priceEconomy, Schedule schedule) {
 
         this.flightName = flightName;
         this.fromTown = fromTown;
@@ -39,8 +36,8 @@ public class FlightDto {
     }
 
     // For FlightAddResponseDto, because we need schedule and dates together
-    public FlightDto(String flightName, String fromTown, String toTown, String start,
-                     String duration, int priceBusiness, int priceEconomy, Schedule schedule, List<LocalDate> dates) {
+    public FlightDto(String flightName, String fromTown, String toTown, LocalTime start,
+                     LocalTime duration, int priceBusiness, int priceEconomy, Schedule schedule, List<LocalDate> dates) {
         this.flightName = flightName;
         this.fromTown = fromTown;
         this.toTown = toTown;
@@ -52,8 +49,8 @@ public class FlightDto {
         this.dates = dates;
     }
 
-    public FlightDto(String flightName, String fromTown, String toTown, String start,
-                     String duration, int priceBusiness, int priceEconomy, List<LocalDate> dates) {
+    public FlightDto(String flightName, String fromTown, String toTown, LocalTime start,
+                     LocalTime duration, int priceBusiness, int priceEconomy, List<LocalDate> dates) {
 
         this.flightName = flightName;
         this.fromTown = fromTown;
@@ -94,19 +91,19 @@ public class FlightDto {
         this.toTown = toTown;
     }
 
-    public String getStart() {
+    public LocalTime getStart() {
         return start;
     }
 
-    public void setStart(String start) {
+    public void setStart(LocalTime start) {
         this.start = start;
     }
 
-    public String getDuration() {
+    public LocalTime getDuration() {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(LocalTime duration) {
         this.duration = duration;
     }
 

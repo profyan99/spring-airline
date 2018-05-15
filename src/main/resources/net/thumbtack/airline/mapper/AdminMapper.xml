@@ -7,30 +7,43 @@
 
 
     <resultMap type="Admin" id="AdminResult">
-        <id 	property="id" column="id"/>
+        <id property="id" column="id"/>
         <result property="firstName" column="firstName"/>
         <result property="lastName" column="lastName"/>
         <result property="patronymic" column="patronymic"/>
-        <result property="login" column="login" />
-        <result property="password" column="password" />
+        <result property="login" column="login"/>
+        <result property="password" column="password"/>
         <result property="position" column="position"/>
     </resultMap>
 
     <insert id="register" parameterType="Admin">
-        INSERT INTO admin(position, foreignKey) VALUES (#{position}, #{id});
+        INSERT INTO admin (position, foreignKey) VALUES (#{position}, #{id});
     </insert>
 
     <select id="findAdminById" resultMap="AdminResult" parameterType="_int">
-        SELECT user.id, firstName, lastName, patronymic, login, password, position FROM user
-        JOIN admin ON user.id = admin.foreignKey WHERE user.id=#{id}
+        SELECT
+            user.id,
+            firstName,
+            lastName,
+            patronymic,
+            login,
+            password,
+            position
+        FROM user
+            JOIN admin ON user.id = admin.foreignKey
+        WHERE user.id = #{id}
     </select>
 
     <select id="getAdmin" resultType="Admin" parameterType="_int">
-        SELECT position FROM admin WHERE foreignKey=#{id}
+        SELECT position
+        FROM admin
+        WHERE foreignKey = #{id}
     </select>
 
     <update id="updateAdmin" parameterType="Admin">
-        UPDATE admin SET position=#{position} WHERE foreignKey=#{id}
+        UPDATE admin
+        SET position = #{position}
+        WHERE foreignKey = #{id}
     </update>
 
     <delete id="clearDataBase">

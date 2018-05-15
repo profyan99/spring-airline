@@ -6,24 +6,31 @@
 <mapper namespace="net.thumbtack.airline.dao.mapper.UserMapper">
 
     <insert id="register" parameterType="User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
-        INSERT INTO user(firstName, lastName, patronymic, userType, login, password)
+        INSERT INTO user (firstName, lastName, patronymic, userType, login, password)
         VALUES (#{firstName}, #{lastName}, #{patronymic}, #{userType.name}, #{login}, #{password})
     </insert>
 
     <select id="exists" parameterType="string" resultType="_boolean">
-        SELECT EXISTS(SELECT 1 FROM user WHERE UPPER(login)=UPPER(#{login}))
+        SELECT EXISTS(SELECT 1
+                      FROM user
+                      WHERE UPPER(login) = UPPER(#{login}))
     </select>
 
     <select id="login" parameterType="string" resultType="User">
-        SELECT * FROM user WHERE UPPER(login)=UPPER(#{login})
+        SELECT *
+        FROM user
+        WHERE UPPER(login) = UPPER(#{login})
     </select>
 
     <select id="get" parameterType="_int" resultType="User">
-        SELECT * FROM user WHERE id=#{id}
+        SELECT *
+        FROM user
+        WHERE id = #{id}
     </select>
 
     <update id="update" parameterType="User">
-        UPDATE user SET firstName=#{firstName}, lastName=#{lastName}, patronymic=#{patronymic}, password=#{password}
+        UPDATE user
+        SET firstName = #{firstName}, lastName = #{lastName}, patronymic = #{patronymic}, password = #{password}
     </update>
 
 </mapper>

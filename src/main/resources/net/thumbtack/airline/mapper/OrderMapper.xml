@@ -32,7 +32,8 @@
     </resultMap>
 
     <select id="getCountries" resultType="Country">
-        SELECT * FROM countries
+        SELECT *
+        FROM countries
     </select>
 
     <insert id="addOrder" useGeneratedKeys="true" keyProperty="orderId" keyColumn="orderId">
@@ -41,7 +42,7 @@
     </insert>
 
     <insert id="addPassenger" useGeneratedKeys="true" keyProperty="ticket" keyColumn="ticket">
-        INSERT INTO passenger(orderId, firstName, lastName, nationality, passport, price, orderClass, place) VALUES
+        INSERT INTO passenger(orderId, firstName, lastName, nationality, passport, price, orderClass, place, row) VALUES
         <foreach collection="list" item="e" index="index" open="(" separator="),(" close=")">
             #{order.orderId},
             #{e.firstName},
@@ -50,7 +51,8 @@
             #{e.passport},
             #{e.price},
             #{e.orderClass},
-            #{e.place}
+            #{e.place},
+            #{e.row}
         </foreach>
     </insert>
 
@@ -62,6 +64,7 @@
         o.flightDateId,
 
         fd.flightId,
+        fd.date,
 
         p.ticket,
         p.firstName,
@@ -83,17 +86,13 @@
         f.flightName,
         f.planeName,
         f.fromTown,
-        f.toTown,
-
-        s.toDate,
-        s.fromDate
+        f.toTown
 
         FROM orders o
         RIGHT JOIN flight_date fd ON o.flightDateId = fd.id
         RIGHT JOIN passenger p ON o.orderId = p.orderId
         RIGHT JOIN user u ON o.userId = u.id
         RIGHT JOIN flight f ON fd.flightId = f.id
-        LEFT JOIN schedule s ON f.id = s.flightId
         <where>
             <if test="flightName != null">
                 f.flightName=#{flightName}
@@ -108,10 +107,10 @@
                 AND f.toTown = #{toTown}
             </if>
             <if test="fromDate != null">
-                AND #{fromDate} BETWEEN s.fromDate AND s.toDate
+                AND fd.date &gt;= #{fromDate}
             </if>
             <if test="toDate != null">
-                AND #{toDate} BETWEEN s.fromDate AND s.toDate
+                AND fd.date &lt;= #{toDate}
             </if>
             <if test="clientId != 0">
                 AND u.id = #{clientId}
@@ -137,9 +136,9 @@
             p.price,
             p.place,
 
-            u.id AS u_id,
-            u.lastName AS u_lastName,
-            u.firstName AS u_firstName,
+            u.id         AS u_id,
+            u.lastName   AS u_lastName,
+            u.firstName  AS u_firstName,
             u.userType,
             u.password,
             u.patronymic AS u_patronymic,
@@ -152,6 +151,8 @@
     </select>
 
     <update id="updatePassenger">
-        UPDATE passenger SET place=#{place}, row=#{row} WHERE ticket=#{ticket}
+        UPDATE passenger
+        SET place = #{place}, row = #{row}
+        WHERE ticket = #{ticket}
     </update>
 </mapper>

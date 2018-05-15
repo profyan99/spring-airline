@@ -49,7 +49,7 @@ public class ClientDaoImpl extends BaseDaoImpl implements ClientDao {
             client = getClientMapper(session).getClient(id);
         } catch (RuntimeException e) {
             logger.error("Couldn't getUser client: " + e.toString());
-            throw new BaseException(ERROR_WITH_DATABASE,"Get client");
+            throw new BaseException(ERROR_WITH_DATABASE, "Get client");
         }
         return Optional.ofNullable(client);
     }
@@ -63,7 +63,7 @@ public class ClientDaoImpl extends BaseDaoImpl implements ClientDao {
             session.commit();
         } catch (RuntimeException e) {
             logger.error("Couldn't update client: " + e.toString());
-            throw new BaseException(ERROR_WITH_DATABASE,"Update client");
+            throw new BaseException(ERROR_WITH_DATABASE, "Update client");
         }
     }
 
@@ -74,7 +74,7 @@ public class ClientDaoImpl extends BaseDaoImpl implements ClientDao {
             client = getClientMapper(session).findClientById(id);
         } catch (RuntimeException e) {
             logger.error("Couldn't find by id client: " + e.toString());
-            throw new BaseException(ERROR_WITH_DATABASE,"Find client by id");
+            throw new BaseException(ERROR_WITH_DATABASE, "Find client by id");
         }
         return Optional.ofNullable(client);
     }

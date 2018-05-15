@@ -10,7 +10,7 @@ public interface FlightDao {
     /**
      * Add new flight
      *
-     * @param flight      {@link Flight}
+     * @param flight {@link Flight}
      * @return {@link Flight}
      */
     Flight add(Flight flight);
@@ -42,7 +42,7 @@ public interface FlightDao {
     /**
      * Update {@link Flight}
      *
-     * @param flight      - flight object, which will be updated
+     * @param flight - flight object, which will be updated
      * @return {@link Flight}
      */
     Flight update(Flight flight);
@@ -88,7 +88,7 @@ public interface FlightDao {
      * Update place free status to busy and insert place and row in passenger
      *
      * @param flightDateId id of the {@link FlightDate}
-     * @param passenger {@link Passenger}
+     * @param passenger    {@link Passenger}
      */
     void setPassengerPlace(int flightDateId, Passenger passenger);
 
@@ -103,11 +103,12 @@ public interface FlightDao {
     /**
      * Try to reserve places in FlightDay
      *
-     * @param date             Date of the {@link net.thumbtack.airline.model.Order}
-     * @param flightId         id of the {@link Flight}
-     * @param passengersAmount amount of places which will be reserved
+     * @param date           Date of the {@link net.thumbtack.airline.model.Order}
+     * @param flightId       id of the {@link Flight}
+     * @param economyAmount  amount of economy places in order
+     * @param businessAmount amount of business places in order
      * @return 1 if reserved successfully
      */
-    int reservePlaces(String date, int flightId, int passengersAmount);
+    int reservePlaces(String date, int flightId, int economyAmount, int businessAmount);
 
 }

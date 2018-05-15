@@ -4,22 +4,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import net.thumbtack.airline.Utils;
 import net.thumbtack.airline.model.OrderClass;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 public class PassengerDto {
     @NotNull(message = Utils.BAD_FIRSTNAME)
-    @NotBlank(message = Utils.BAD_FIRSTNAME)
+    @NotEmpty(message = Utils.BAD_FIRSTNAME)
     private String firstName;
 
     @NotNull(message = Utils.BAD_LASTNAME)
-    @NotBlank(message = Utils.BAD_LASTNAME)
+    @NotEmpty(message = Utils.BAD_FIRSTNAME)
     private String lastName;
 
     private String nationality;
 
     @NotNull(message = Utils.BAD_PASSPORT)
-    @NotBlank(message = Utils.BAD_PASSPORT)
+    @NotEmpty(message = Utils.BAD_FIRSTNAME)
     private String passport;
 
     private OrderClass orderClass;

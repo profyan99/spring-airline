@@ -11,7 +11,7 @@ import javax.validation.constraints.Email;
 public class ClientRegistrationRequestDto extends UserDto {
 
     @Email(message = Utils.BAD_EMAIL,
-    regexp = Utils.EMAIL_REGEX)
+            regexp = Utils.EMAIL_REGEX)
     private String email;
 
     @PhoneValid(message = Utils.BAD_PHONE)

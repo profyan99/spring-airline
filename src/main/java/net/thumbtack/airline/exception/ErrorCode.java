@@ -11,9 +11,9 @@ public enum ErrorCode {
     FLIGHT_NOT_FOUND("Flight not found.", "Flight"),
     INVALID_JSON_FORMAT("You have error in your JSON syntax, please check request data and send again.", ""),
     INVALID_DATE("Invalid value of date.", "Date"),
-    INVALID_REQUEST_DATA("Invalid request. Please check and send again.", ""),
+    EXPECTED_FLIGHT_NAME_TO_TOWN_FROM_TOWN("Expected flightName or toTown, or fromTown, but not found.", "Params"),
     ERROR_WITH_DATABASE("Error with ", "Database"),
-    NO_ACCESS("You haven't got permissions to get this resource.", ""),
+    NO_ACCESS("You haven't got permissions to getUser this resource.", ""),
     UNAPPROVED_FLIGHT("Flight didn't approved.", "Flight"),
     ALREADY_APPROVED_FLIGHT("You can't vary flight, because it approved.", "Flight"),
     PASSENGER_NOT_FOUND("Passenger not found.", "Passenger"),
@@ -22,7 +22,13 @@ public enum ErrorCode {
     PLACE_OCCUPIED("Place has already occupied. Please choose another one.", "Place"),
     PLANE_NOT_FOUND("Plane not found.", "Plane"),
     PLACE_NOT_FOUND("Place not found.", "Place"),
-    NO_AVAILABLE_PLACES("There are no free seats on this flight.", "Place"),
+    NO_AVAILABLE_ECONOMY_PLACES("There are no free economy seats on this flight.", "Place"),
+    NO_AVAILABLE_BUSINESS_PLACES("There are no free business seats on this flight.", "Place"),
+    EXPECTED_SCHEDULE_OR_DATES("Expected schedule or dates, but not found.", "Flight"),
+    FLIGHT_WRONG_PRICE("Wrong price in flight", "Flight"),
+    INVALID_NATIONALITY("Nationality is invalid.", "Passenger"),
+    INVALID_ORDER_ID_FOR_CLIENT("Order for user not found.", "Order"),
+    PASSENGER_ALREADY_REGISTERED("Passenger already registered.", "Passenger"),
     INVALID_DATE_FORMAT("Invalid date format. Please check and send again.", "Date");
 
     private final String

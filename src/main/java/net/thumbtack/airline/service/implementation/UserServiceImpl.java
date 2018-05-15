@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private final Supplier<? extends RuntimeException> accountNotFoundException = () ->
-        new BaseException(ACCOUNT_NOT_FOUND);
+            new BaseException(ACCOUNT_NOT_FOUND);
 
     @Autowired
     public void setAdminDao(AdminDao adminDao) {
@@ -179,7 +179,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ServerSettingsResponseDto getSettings(UserRole role) {
-        // Role not used
         return getSettings();
     }
 }

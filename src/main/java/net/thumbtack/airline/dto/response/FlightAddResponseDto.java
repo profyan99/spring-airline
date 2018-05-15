@@ -5,6 +5,7 @@ import net.thumbtack.airline.model.Plane;
 import net.thumbtack.airline.model.Schedule;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 public class FlightAddResponseDto extends FlightDto {
@@ -12,7 +13,7 @@ public class FlightAddResponseDto extends FlightDto {
     private Plane plane;
     private boolean approved;
 
-    public FlightAddResponseDto(String flightName, String fromTown, String toTown, String start, String duration,
+    public FlightAddResponseDto(String flightName, String fromTown, String toTown, LocalTime start, LocalTime duration,
                                 int priceBusiness, int priceEconomy, Schedule schedule, List<LocalDate> dates, int flightId,
                                 Plane plane, boolean approved) {
         super(flightName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, schedule, dates);
@@ -21,7 +22,7 @@ public class FlightAddResponseDto extends FlightDto {
         this.approved = approved;
     }
 
-    public FlightAddResponseDto(String flightName, String fromTown, String toTown, String start, String duration,
+    public FlightAddResponseDto(String flightName, String fromTown, String toTown, LocalTime start, LocalTime duration,
                                 int priceBusiness, int priceEconomy, List<LocalDate> dates, int flightId, Plane plane,
                                 boolean approved) {
         super(flightName, fromTown, toTown, start, duration, priceBusiness, priceEconomy, dates);

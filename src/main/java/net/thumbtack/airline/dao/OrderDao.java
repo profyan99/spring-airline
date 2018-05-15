@@ -1,6 +1,7 @@
 package net.thumbtack.airline.dao;
 
 import net.thumbtack.airline.model.Country;
+import net.thumbtack.airline.model.FlightDate;
 import net.thumbtack.airline.model.Order;
 
 import java.util.List;
@@ -11,17 +12,18 @@ public interface OrderDao {
     /**
      * Get countries' names and iso3166 codes for citizenship
      *
-     * @return {@link List< Country >}
+     * @return {@link List<Country>}
      */
     List<Country> getCountries();
 
     /**
      * Add new client flight order
      *
-     * @param order {@link Order}
+     * @param order      {@link Order}
+     * @param flightDate {@link FlightDate} needs for reserving places in one transaction
      * @return filled {@link Order}
      */
-    Order add(Order order);
+    Order add(Order order, FlightDate flightDate);
 
     /**
      * Get {@link Order} with conditions
@@ -40,6 +42,7 @@ public interface OrderDao {
 
     /**
      * Get single {@link Order}
+     *
      * @param orderId id of the order
      * @return {@link Order}
      */

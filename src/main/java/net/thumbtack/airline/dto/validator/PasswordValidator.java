@@ -9,7 +9,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 @Component
-public class PasswordValidator implements ConstraintValidator<PasswordValid, String>{
+public class PasswordValidator implements ConstraintValidator<PasswordValid, String> {
     private Utils utils;
 
     @Autowired

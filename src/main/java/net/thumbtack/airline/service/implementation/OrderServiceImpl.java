@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +60,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderResponseDto add(OrderAddRequestDto requestDto) {
+        if (requestDto.getDate().isBefore(LocalDate.now())) {
+            throw new BaseException(INVALID_DATE);
+        }
         FlightDate flightDate = flightDao.getFlightDate(requestDto.getDate().toString(), requestDto.getFlightId()).orElseThrow(() ->
                 new BaseException(FLIGHT_NOT_FOUND)
         );
@@ -73,22 +77,23 @@ public class OrderServiceImpl implements OrderService {
         if (requestDto.getPassengers().isEmpty()) {
             throw new BaseException(PASSENGER_NOT_FOUND);
         }
-        int upd = flightDao.reservePlaces(requestDto.getDate().toString(), flight.getId(), requestDto.getPassengers().size());
-        if (upd == 0) {
-            throw new BaseException(NO_AVAILABLE_PLACES);
-        }
         Map<String, String> citizen = new HashMap<>();
         List<Passenger> passengers = new ArrayList<>();
         int totalPrice = 0;
         int currentPrice;
 
         orderDao.getCountries().forEach(country -> citizen.putIfAbsent(country.getIso3166(), country.getName()));
+        String isoNationality;
         for (PassengerDto c : requestDto.getPassengers()) {
+            isoNationality = citizen.get(c.getNationality());
+            if (isoNationality == null) {
+                throw new BaseException(INVALID_NATIONALITY);
+            }
             currentPrice = (c.getOrderClass() == OrderClass.ECONOMY) ? (flight.getPriceEconomy()) : (flight.getPriceBusiness());
             passengers.add(new Passenger(
                     c.getFirstName(),
                     c.getLastName(),
-                    c.getNationality() + "-" + citizen.get(c.getNationality()),
+                    c.getNationality() + "-" + isoNationality,
                     c.getPassport(),
                     c.getOrderClass(),
                     currentPrice
@@ -100,13 +105,30 @@ public class OrderServiceImpl implements OrderService {
                 new BaseException(ACCOUNT_NOT_FOUND)
         );
 
+        int businessAmount = 0, economyAmount = 0;
+        for (PassengerDto p : requestDto.getPassengers()) {
+            if (p.getOrderClass() == BUSINESS) {
+                businessAmount++;
+            } else {
+                economyAmount++;
+            }
+        }
+        FlightDate currentFlightDate = new FlightDate(
+                flightDate.getId(),
+                flight,
+                requestDto.getDate(),
+                economyAmount,
+                businessAmount
+        );
         Order order = new Order(
                 flightDate,
                 user,
                 totalPrice,
                 passengers
         );
-        orderDao.add(order);
+        orderDao.add(order, currentFlightDate);
+
+
         List<PassengerResponseDto> passengerResponseDtos = new ArrayList<>(passengers.size());
         order.getPassengers().forEach(passenger ->
                 passengerResponseDtos.add(new PassengerResponseDto(
@@ -136,6 +158,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderResponseDto> get(OrderGetParamsRequestDto params) {
+        logger.error("ERR: " + params.getFlightName());
         Utils.validateRequestParams(params);
         if (params.getUserType() == UserRole.CLIENT) {
             params.setClientId(params.getUserId());
@@ -224,6 +247,9 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderDao.get(registerDto.getOrderId()).orElseThrow(
                 () -> new BaseException(ORDER_NOT_FOUND)
         );
+        if (registerDto.getUserId() != order.getUser().getId()) {
+            throw new BaseException(INVALID_ORDER_ID_FOR_CLIENT);
+        }
         Passenger passenger = null;
         for (Passenger p : order.getPassengers()) {
             if (p.getTicket() == registerDto.getTicket()
@@ -234,6 +260,9 @@ public class OrderServiceImpl implements OrderService {
         }
         if (passenger == null) {
             throw new BaseException(PASSENGER_NOT_FOUND);
+        }
+        if (!passenger.getPlace().isEmpty() && !passenger.getPlace().isEmpty()) {
+            throw new BaseException(PASSENGER_ALREADY_REGISTERED);
         }
         String reqPlace = registerDto.getPlace();
         if (reqPlace.length() < 2) {

@@ -17,21 +17,21 @@ import java.io.InputStream;
 @Import(Utils.class)
 public class AirlineApplication {
 
-	private static final Logger logger = LoggerFactory.getLogger(AirlineApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(AirlineApplication.class);
 
-	public static void main(String[] args) {
-		SpringApplication.run(AirlineApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(AirlineApplication.class, args);
+    }
 
-	@Bean(name = "SimpleSqlFactory")
-	public SqlSessionFactory mysqlSessionFactory() throws Exception {
-		String resource = "mybatis-config.xml";
-		InputStream inputStream = Resources.getResourceAsStream(resource);
-		return new SqlSessionFactoryBuilder().build(inputStream);
-	}
+    @Bean(name = "SimpleSqlFactory")
+    public SqlSessionFactory mysqlSessionFactory() throws Exception {
+        String resource = "mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        return new SqlSessionFactoryBuilder().build(inputStream);
+    }
 
-	@Bean(name = "SimpleSqlSession")
-	public SqlSessionTemplate sqlSession() throws Exception {
-		return new SqlSessionTemplate(mysqlSessionFactory());
-	}
+    @Bean(name = "SimpleSqlSession")
+    public SqlSessionTemplate sqlSession() throws Exception {
+        return new SqlSessionTemplate(mysqlSessionFactory());
+    }
 }

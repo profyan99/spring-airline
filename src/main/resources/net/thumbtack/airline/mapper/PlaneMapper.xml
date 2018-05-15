@@ -6,11 +6,19 @@
 <mapper namespace="net.thumbtack.airline.dao.mapper.PlaneMapper">
 
     <select id="getAll" resultType="Plane">
-        SELECT * FROM plane
+        SELECT *
+        FROM plane
     </select>
-    
+
     <select id="get" resultType="Plane" parameterType="string">
-        SELECT name, businessRows, economyRows, placesInBusinessRow, placesInEconomyRow FROM plane WHERE name=#{planeName}
+        SELECT
+            name,
+            businessRows,
+            economyRows,
+            placesInBusinessRow,
+            placesInEconomyRow
+        FROM plane
+        WHERE name = #{planeName}
     </select>
 
 </mapper>

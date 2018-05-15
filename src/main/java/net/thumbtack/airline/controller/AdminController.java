@@ -70,9 +70,8 @@ public class AdminController {
     }
 
     //TODO switch off in production
-    @DeleteMapping("/debug/clear")
-    public ResponseEntity<?> clear(@CookieValue(value = "${cookie}", defaultValue = "") String uuid) {
-        userService.authorizeUser(uuid, UserRole.ADMIN);
+    @PostMapping("/debug/clear")
+    public ResponseEntity<?> clear() {
         adminService.clearDataBase();
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body("{}");
     }

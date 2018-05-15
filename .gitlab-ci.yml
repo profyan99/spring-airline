@@ -49,7 +49,7 @@ variables:
 
 test:
     script:
-    #- apt-get update && apt-get -y upgrade && apt-get -y install mysql-client
+    #- apt-getUser update && apt-getUser -y upgrade && apt-getUser -y install mysql-client
     #- service mysql start 
     - mysql -h mysql -u test -ptest < sql/airline.sql
     - mvn $MAVEN_CLI_OPTS clean package

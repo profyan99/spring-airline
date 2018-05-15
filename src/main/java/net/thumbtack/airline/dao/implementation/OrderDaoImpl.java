@@ -3,6 +3,7 @@ package net.thumbtack.airline.dao.implementation;
 import net.thumbtack.airline.dao.OrderDao;
 import net.thumbtack.airline.exception.BaseException;
 import net.thumbtack.airline.model.Country;
+import net.thumbtack.airline.model.FlightDate;
 import net.thumbtack.airline.model.Order;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-import static net.thumbtack.airline.exception.ErrorCode.ERROR_WITH_DATABASE;
+import static net.thumbtack.airline.exception.ErrorCode.*;
 
 @Repository
 public class OrderDaoImpl extends BaseDaoImpl implements OrderDao {
@@ -40,16 +41,38 @@ public class OrderDaoImpl extends BaseDaoImpl implements OrderDao {
     }
 
     @Override
-    public Order add(Order order) {
+    public Order add(Order order, FlightDate flightDate) {
+        int err = 0;
         try (SqlSession session = sessionFactory.openSession()) {
             getOrderMapper(session).addOrder(order);
             getOrderMapper(session).addPassenger(order, order.getPassengers());
+            int economySuccess =
+                    getFlightMapper(session).reserveEconomyPlaces(flightDate.getDate().toString(),
+                            flightDate.getFlight().getId(), flightDate.getFreeEconomyPlaces());
+            int businessSuccess =
+                    getFlightMapper(session).reserveBusinessPlaces(flightDate.getDate().toString(),
+                            flightDate.getFlight().getId(), flightDate.getFreeBusinessPlaces());
+            if(economySuccess == 0) {
+                err = 1;
+                throw new BaseException(NO_AVAILABLE_ECONOMY_PLACES);
+            }
+            else if(businessSuccess == 0) {
+                err = 2;
+                throw new BaseException(NO_AVAILABLE_BUSINESS_PLACES);
+            }
             session.commit();
             return order;
         } catch (RuntimeException e) {
             logger.error("Couldn't add order: " + e.toString());
+            if (err == 1) {
+                throw new BaseException(NO_AVAILABLE_ECONOMY_PLACES);
+            }
+            if(err == 2) {
+                throw new BaseException(NO_AVAILABLE_BUSINESS_PLACES);
+            }
             throw new BaseException(ERROR_WITH_DATABASE, "Add order");
         }
+
     }
 
     @Override

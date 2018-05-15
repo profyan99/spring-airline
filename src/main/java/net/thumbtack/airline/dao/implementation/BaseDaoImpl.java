@@ -24,7 +24,11 @@ public class BaseDaoImpl {
         return session.getMapper(PlaneMapper.class);
     }
 
-    protected FlightMapper getFlightMapper(SqlSession session) { return session.getMapper(FlightMapper.class); }
+    protected FlightMapper getFlightMapper(SqlSession session) {
+        return session.getMapper(FlightMapper.class);
+    }
 
-    protected OrderMapper getOrderMapper(SqlSession session) { return session.getMapper(OrderMapper.class); }
+    protected OrderMapper getOrderMapper(SqlSession session) {
+        return session.getMapper(OrderMapper.class);
+    }
 }

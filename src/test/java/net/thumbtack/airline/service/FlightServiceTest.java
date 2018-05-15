@@ -52,7 +52,7 @@ public class FlightServiceTest {
     @Test
     public void addFlightService_SimpleSchedule_ShouldReturnFlightAddResponseDto() {
         FlightAddRequestDto flightAddRequestDto = new FlightAddRequestDto(
-                "flightOne", "Омск", "Питер", LocalTime.now().toString(), LocalTime.of(3, 20).toString(),
+                "flightOne", "Омск", "Питер", LocalTime.now(), LocalTime.of(3, 20),
                 10000, 5000, new Schedule(LocalDate.of(2018, Month.AUGUST, 5),
                 LocalDate.of(2018, Month.AUGUST, 12), "daily"),
                 plane.getName()
@@ -93,7 +93,7 @@ public class FlightServiceTest {
     @Test
     public void addFlightService_OddAndEvenSchedule_ShouldReturnFlightAddResponseDto() {
         FlightAddRequestDto flightAddRequestDto = new FlightAddRequestDto(
-                "flightOne", "Омск", "Питер", LocalTime.now().toString(), LocalTime.of(3, 20).toString(),
+                "flightOne", "Омск", "Питер", LocalTime.now(), LocalTime.of(3, 20),
                 10000, 5000, new Schedule(LocalDate.of(2018, Month.APRIL, 25),
                 LocalDate.of(2018, Month.MAY, 4), "odd"),
                 plane.getName()
@@ -151,7 +151,7 @@ public class FlightServiceTest {
     @Test
     public void addFlightService_WeekSchedule_ShouldReturnFlightAddResponseDto() {
         FlightAddRequestDto flightAddRequestDto = new FlightAddRequestDto(
-                "flightOne", "Омск", "Питер", LocalTime.now().toString(), LocalTime.of(3, 20).toString(),
+                "flightOne", "Омск", "Питер", LocalTime.now(), LocalTime.of(3, 20),
                 10000, 5000, new Schedule(LocalDate.of(2018, Month.APRIL, 27),
                 LocalDate.of(2018, Month.MAY, 4), "SAT,SUN"),
                 plane.getName()
@@ -198,7 +198,7 @@ public class FlightServiceTest {
     @Test
     public void addFlightService_MonthDaySchedule_ShouldReturnFlightAddResponseDto() {
         FlightAddRequestDto flightAddRequestDto = new FlightAddRequestDto(
-                "flightOne", "Омск", "Питер", LocalTime.now().toString(), LocalTime.of(3, 20).toString(),
+                "flightOne", "Омск", "Питер", LocalTime.now(), LocalTime.of(3, 20),
                 10000, 5000, new Schedule(
                 LocalDate.of(2018, Month.FEBRUARY, 23),
                 LocalDate.of(2018, Month.MARCH, 12),

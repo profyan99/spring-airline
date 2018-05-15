@@ -3,6 +3,7 @@ package net.thumbtack.airline.dto.response;
 import net.thumbtack.airline.dto.OrderDto;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 public class OrderResponseDto extends OrderDto {
@@ -12,12 +13,12 @@ public class OrderResponseDto extends OrderDto {
     private String planeName;
     private String fromTown;
     private String toTown;
-    private String start;
-    private String duration;
+    private LocalTime start;
+    private LocalTime duration;
     private List<PassengerResponseDto> passengers;
 
     public OrderResponseDto(int flightId, LocalDate date, int orderId, int totalPrice, String flightName,
-                            String planeName, String fromTown, String toTown, String start, String duration, List<PassengerResponseDto> passengers) {
+                            String planeName, String fromTown, String toTown, LocalTime start, LocalTime duration, List<PassengerResponseDto> passengers) {
         super(flightId, date);
         this.orderId = orderId;
         this.totalPrice = totalPrice;
@@ -82,19 +83,19 @@ public class OrderResponseDto extends OrderDto {
         this.toTown = toTown;
     }
 
-    public String getStart() {
+    public LocalTime getStart() {
         return start;
     }
 
-    public void setStart(String start) {
+    public void setStart(LocalTime start) {
         this.start = start;
     }
 
-    public String getDuration() {
+    public LocalTime getDuration() {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(LocalTime duration) {
         this.duration = duration;
     }
 

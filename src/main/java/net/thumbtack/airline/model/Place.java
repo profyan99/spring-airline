@@ -11,7 +11,7 @@ public class Place {
         this(row, place, type, true, new FlightDate());
     }
 
-    public Place(int row, String place, OrderClass type, boolean free,  FlightDate flightDate) {
+    public Place(int row, String place, OrderClass type, boolean free, FlightDate flightDate) {
         this.row = row;
         this.place = place;
         this.type = type;

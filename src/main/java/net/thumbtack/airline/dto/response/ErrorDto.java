@@ -2,9 +2,9 @@ package net.thumbtack.airline.dto.response;
 
 public class ErrorDto {
 
-    private  String errorCode;
-    private  String field;
-    private  String message;
+    private String errorCode;
+    private String field;
+    private String message;
 
     public ErrorDto() {
 

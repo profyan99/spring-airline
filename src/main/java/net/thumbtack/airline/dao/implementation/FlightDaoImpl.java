@@ -35,7 +35,9 @@ public class FlightDaoImpl extends BaseDaoImpl implements FlightDao {
     public Flight add(Flight flight) {
         try (SqlSession session = sessionFactory.openSession()) {
             getFlightMapper(session).addFlight(flight);
-            getFlightMapper(session).addSchedule(flight);
+            if(flight.getSchedule() != null) {
+                getFlightMapper(session).addSchedule(flight);
+            }
             getFlightMapper(session).addFlightDates(flight, flight.getFlightDates());
             getFlightMapper(session).addPlaces(flight.getFlightDates());
             flight.setPlane(getPlaneMapper(session).get(flight.getPlaneName()));
@@ -159,11 +161,19 @@ public class FlightDaoImpl extends BaseDaoImpl implements FlightDao {
     }
 
     @Override
-    public int reservePlaces(String date, int flightId, int passengersAmount) {
+    public int reservePlaces(String date, int flightId, int economyAmount, int businessAmount) {
         try (SqlSession session = sessionFactory.openSession()) {
-            int amount = getFlightMapper(session).reservePlaces(date, flightId, passengersAmount);
+            int returnValue = 0;
+            int economySuccess = getFlightMapper(session).reserveEconomyPlaces(date, flightId, economyAmount);
+            int businessSuccess = getFlightMapper(session).reserveBusinessPlaces(date, flightId, businessAmount);
+            if(economySuccess == 0) {
+                returnValue = 1;
+            }
+            else if(businessSuccess == 0) {
+                returnValue = -1;
+            }
             session.commit();
-            return amount;
+            return returnValue;
         } catch (RuntimeException e) {
             logger.error("Couldn't reserve places: " + e.toString());
             throw new BaseException(ERROR_WITH_DATABASE, "Reserve places");

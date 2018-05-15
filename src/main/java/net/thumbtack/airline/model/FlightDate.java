@@ -8,23 +8,25 @@ public class FlightDate {
     private int id;
     private Flight flight;
     private LocalDate date;
-    private int freePlaces;
+    private int freeEconomyPlaces;
+    private int freeBusinessPlaces;
     private List<Place> places;
 
-    public FlightDate(int id, Flight flight, LocalDate date, int freePlaces, List<Place> places) {
+    public FlightDate(int id, Flight flight, LocalDate date, int freeEconomyPlaces, int freeBusinessPlaces, List<Place> places) {
         this.id = id;
         this.flight = flight;
         this.date = date;
-        this.freePlaces = freePlaces;
+        this.freeEconomyPlaces = freeEconomyPlaces;
+        this.freeBusinessPlaces = freeBusinessPlaces;
         this.places = places;
     }
 
-    public FlightDate(LocalDate date, int freePlaces, List<Place> places) {
-        this(0, new Flight(), date, freePlaces, places);
+    public FlightDate(LocalDate date, int freeEconomyPlaces, int freeBusinessPlaces, List<Place> places) {
+        this(0, new Flight(), date, freeEconomyPlaces, freeBusinessPlaces, places);
     }
 
-    public FlightDate(int id, Flight flight, LocalDate date, int freePlaces) {
-        this(id, flight, date, freePlaces, new ArrayList<>());
+    public FlightDate(int id, Flight flight, LocalDate date, int freeEconomyPlaces, int freeBusinessPlaces) {
+        this(id, flight, date, freeEconomyPlaces, freeBusinessPlaces, new ArrayList<>());
     }
 
     public FlightDate() {
@@ -55,12 +57,20 @@ public class FlightDate {
         this.date = date;
     }
 
-    public int getFreePlaces() {
-        return freePlaces;
+    public int getFreeEconomyPlaces() {
+        return freeEconomyPlaces;
     }
 
-    public void setFreePlaces(int freePlaces) {
-        this.freePlaces = freePlaces;
+    public void setFreeEconomyPlaces(int freeEconomyPlaces) {
+        this.freeEconomyPlaces = freeEconomyPlaces;
+    }
+
+    public int getFreeBusinessPlaces() {
+        return freeBusinessPlaces;
+    }
+
+    public void setFreeBusinessPlaces(int freeBusinessPlaces) {
+        this.freeBusinessPlaces = freeBusinessPlaces;
     }
 
     public List<Place> getPlaces() {

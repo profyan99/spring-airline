@@ -27,14 +27,15 @@
             <result column="placesInBusinessRow" property="placesInBusinessRow"/>
             <result column="placesInEconomyRow" property="placesInEconomyRow"/>
         </association>
-        <collection property="dates" ofType="LocalDate" select="getFlightDateByFlight" column="f_id">
+        <collection property="flightDates" ofType="LocalDate" select="getFlightDateByFlight" column="f_id">
         </collection>
     </resultMap>
 
     <resultMap id="FlightDateResult" type="FlightDate">
         <id property="id" column="id"/>
         <result property="date" column="date"/>
-        <result property="freePlaces" column="freePlaces"/>
+        <result property="freeEconomyPlaces" column="freeEconomyPlaces"/>
+        <result property="freeBusinessPlaces" column="freeBusinessPlaces"/>
         <association property="flight" select="get" column="flightId"/>
         <collection property="places" ofType="Place" resultMap="PlaceResult"/>
     </resultMap>
@@ -73,7 +74,6 @@
         FROM flight f
             LEFT JOIN schedule s ON f.id = s.flightId
             RIGHT JOIN plane p ON f.planeName = p.name
-            <!--RIGHT JOIN flight_date fd ON f.id = fd.flightId-->
         WHERE
             f.id = #{flightId}
     </select>
@@ -98,11 +98,10 @@
              #{approved});
     </insert>
 
-    <insert id="addSchedule" parameterType="Flight">
-        <if test="schedule != null">
-            INSERT INTO schedule (fromDate, toDate, flightId, period) VALUES (#{schedule.fromDate}, #{schedule.toDate},
-            #{id}, #{schedule.period})
-        </if>;
+    <insert id="addSchedule">
+        INSERT INTO schedule (fromDate, toDate, flightId, period)
+        VALUES (#{flight.schedule.fromDate}, #{flight.schedule.toDate},
+                #{flight.id}, #{flight.schedule.period})
     </insert>
 
     <update id="update">
@@ -111,15 +110,15 @@
         #{flight.toTown},
         start = #{flight.start}, duration = #{flight.duration}, priceBusiness = #{flight.priceBusiness}, priceEconomy =
         #{flight.priceEconomy},
-        approved = #{approved} WHERE id = #{id};
+        approved = #{flight.approved} WHERE id = #{flight.id};
 
-        <if test="schedule != null">
+        <if test="flight.schedule != null">
             UPDATE schedule SET fromDate = #{flight.schedule.fromDate}, toDate = #{flight.schedule.toDate}, period =
             #{flight.schedule.period}
             WHERE flightId = #{flight.id}
         </if>;
 
-        DELETE FROM flight_date_place WHERE flightDateId IN (SELECT id FROM flight_date WHERE flightId=#{flightId});
+        DELETE FROM flight_date_place WHERE flightDateId IN (SELECT id FROM flight_date WHERE flightId=#{flight.id});
 
         DELETE FROM flight_date WHERE flightId = #{flight.id};
     </update>
@@ -156,12 +155,14 @@
         p.businessRows,
         p.economyRows,
         p.placesInBusinessRow,
-        p.placesInEconomyRow
+        p.placesInEconomyRow,
+
+        fd.date
 
         FROM flight f
         LEFT JOIN schedule s ON f.id = s.flightId
         RIGHT JOIN plane p ON f.planeName = p.name
-       <!-- RIGHT JOIN day_flight df ON f.id = df.flightId -->
+        RIGHT JOIN flight_date fd ON f.id = fd.flightId
         <where>
             <if test="flightName != null">
                 f.flightName=#{flightName}
@@ -175,23 +176,32 @@
             <if test="toTown != null">
                 AND f.toTown = #{toTown}
             </if>
-            <if test="fromDate != null">
-                AND #{fromDate} BETWEEN s.fromDate AND s.toDate
-            </if>
-            <if test="toDate != null">
-                AND #{toDate} BETWEEN s.fromDate AND s.toDate
-            </if>
+            <choose>
+                <when test="fromDate != null and toDate == null">
+                    AND (#{fromDate} BETWEEN s.fromDate AND s.toDate OR fd.date = #{fromDate})
+                </when>
+                <when test="fromDate == null and toDate != null">
+                    AND (#{toDate} BETWEEN s.fromDate AND s.toDate OR fd.date = #{toDate})
+                </when>
+                <when test="fromDate != null and toDate != null">
+                    AND (#{toDate} BETWEEN s.fromDate AND s.toDate OR
+                    #{fromDate} BETWEEN s.fromDate AND s.toDate OR
+                    fd.date = #{toDate} OR fd.date = #{fromDate})
+                </when>
+            </choose>
+
         </where>
     </select>
 
     <!--  FlightDate  -->
 
     <insert id="addFlightDates" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        INSERT INTO flight_date(date, flightId, freePlaces) VALUES
+        INSERT INTO flight_date(date, flightId, freeEconomyPlaces, freeBusinessPlaces) VALUES
         <foreach collection="list" item="e" index="index" open="(" separator="),(" close=")">
             #{e.date},
             #{flight.id},
-            #{e.freePlaces}
+            #{e.freeEconomyPlaces},
+            #{e.freeBusinessPlaces}
         </foreach>
     </insert>
 
@@ -213,43 +223,46 @@
             fd.id,
             fd.flightId,
             fd.date,
-            fd.freePlaces,
+            fd.freeEconomyPlaces,
+            fd.freeBusinessPlaces,
             fdp.free,
             fdp.row,
             fdp.place,
             fdp.type
         FROM flight_date fd
-        RIGHT JOIN flight_date_place fdp ON fd.id = fdp.flightDateId
+            RIGHT JOIN flight_date_place fdp ON fd.id = fdp.flightDateId
         WHERE fd.date = #{date} AND fd.flightId = #{flightId}
     </select>
 
     <select id="getFlightDateByFlight" resultMap="FlightDateResult">
         SELECT
-        fd.id,
-        fd.flightId,
-        fd.date,
-        fd.freePlaces,
-        fdp.free,
-        fdp.row,
-        fdp.place,
-        fdp.type
+            fd.id,
+            fd.flightId,
+            fd.date,
+            fd.freeEconomyPlaces,
+            fd.freeBusinessPlaces,
+            fdp.free,
+            fdp.row,
+            fdp.place,
+            fdp.type
         FROM flight_date fd
-        RIGHT JOIN flight_date_place fdp ON fd.id = fdp.flightDateId
-        WHERE fd.date = #{date} AND fd.flightId = #{flightId}
+            RIGHT JOIN flight_date_place fdp ON fd.id = fdp.flightDateId
+        WHERE fd.flightId = #{flightId}
     </select>
 
     <select id="getFlightDateById" resultMap="FlightDateResult">
         SELECT
-        fd.id,
-        fd.flightId,
-        fd.date,
-        fd.freePlaces,
-        fdp.free,
-        fdp.row,
-        fdp.place,
-        fdp.type
+            fd.id,
+            fd.flightId,
+            fd.date,
+            fd.freeEconomyPlaces,
+            fd.freeBusinessPlaces,
+            fdp.free,
+            fdp.row,
+            fdp.place,
+            fdp.type
         FROM flight_date fd
-        RIGHT JOIN flight_date_place fdp ON fd.id = fdp.flightDateId
+            RIGHT JOIN flight_date_place fdp ON fd.id = fdp.flightDateId
         WHERE fd.id = #{flightDateId}
     </select>
 
@@ -259,11 +272,18 @@
         WHERE flightDateId = #{flightDateId} AND place = #{place} AND row = #{row}
     </update>
 
-    <update id="reservePlaces">
+    <update id="reserveEconomyPlaces">
         UPDATE flight_date
-        SET freePlaces = freePlaces - #{amountPassengers}
+        SET freeEconomyPlaces = freeEconomyPlaces - #{amountEconomy}
         WHERE date = #{date} AND flightId = #{flightId}
-              AND freePlaces &gt;= #{amountPassengers}
+              AND freeEconomyPlaces &gt;= #{amountEconomy}
+    </update>
+
+    <update id="reserveBusinessPlaces">
+        UPDATE flight_date
+        SET freeBusinessPlaces = freeBusinessPlaces - #{amountBusiness}
+        WHERE date = #{date} AND flightId = #{flightId}
+              AND freeBusinessPlaces &gt;= #{amountBusiness}
     </update>
 
 </mapper>
